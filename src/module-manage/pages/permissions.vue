@@ -149,7 +149,7 @@ export default {
     // permissionsApiAdd,
     PageTool
   },
-  data () {
+  data() {
     return {
       PermissionsAdd: 'PermissionsAdd',
       permissionsApiAdd: 'permissionsApiAdd',
@@ -187,21 +187,21 @@ export default {
   computed: {},
   methods: {
     // 获取列表数据
-    getList (params) {
+    getList(params) {
       this.listLoading = true
       list(this.requestParameters)
-        .then(data => {
+        .then((data) => {
           this.dataList = data.data.list
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
     // 数据排序
-    changesort (a, b) {
+    changesort(a, b) {
       const oldTime = new Date(a.date).getTime() / 1000
       const newime = new Date(b.date).getTime() / 1000
       if (oldTime - newime > 0) {
@@ -211,62 +211,62 @@ export default {
       }
     },
     // 重置
-    resetForm () {
+    resetForm() {
       this.$refs.requestParameters.resetFields()
     },
     // 搜索信息
-    handleFilter () {
+    handleFilter() {
       this.requestParameters.page = 1
       this.getList(this.requestParameters)
     },
     // 每页显示信息条数
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.requestParameters.pagesize = val
       if (this.requestParameters.page === 1) {
         this.getList(this.requestParameters)
       }
     },
     // 进入某一页
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.requestParameters.page = val
       this.getList()
     },
     // 新增用户刷新列表
-    handleLoadDataList () {
+    handleLoadDataList() {
       this.getList()
     },
     // **********************************
     // 新增用户
-    handleCreate () {
+    handleCreate() {
       this.text = '创建'
       this.$refs.editPermission.handleResetForm()
       this.$refs.editPermission.dialogFormV()
     },
     // 窗口操作**********************************
     // 弹框关闭
-    handleCloseModal () {
+    handleCloseModal() {
       this.$refs.editPermission.dialogFormH()
     },
     // 编辑
-    handleUpdate (objeditId) {
+    handleUpdate(objeditId) {
       var _this = this
       this.text = '编辑'
       this.$refs.editPermission.dialogFormV()
       this.$refs.editPermission.hanldeEditForm(objeditId)
     },
     // 删除
-    removeUser (user) {
+    removeUser(user) {
       this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
         type: 'warning'
       })
         .then(() => {
           remove({ id: user })
-            .then(response => {
+            .then((response) => {
               this.$message.success('成功删除了用户' + '!')
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败!')
             })
         })
@@ -276,14 +276,14 @@ export default {
     },
     // 高级接口权限
 
-    handleApiSet (objeditId) {
+    handleApiSet(objeditId) {
       this.$refs.editPermissionApi.dialogFormV()
     }
   },
   // 挂载结束
   mounted: function () {},
   // 创建完毕状态
-  created () {
+  created() {
     this.getList()
     // 键盘enter操作
     var lett = this

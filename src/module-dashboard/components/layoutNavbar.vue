@@ -2,10 +2,10 @@
   <el-menu class="navbar" mode="horizontal">
     <div style="float:left">
       <div class="sidebar-logo">
-        <img src="../assets/logo.png">
+        <img src="../assets/logo.png" />
       </div>
       <div class="sidebar-logo-mini">
-        <img src="../assets/minilogo.png">
+        <img src="../assets/minilogo.png" />
       </div>
     </div>
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
@@ -80,7 +80,7 @@ export default {
   computed: {
     ...mapGetters(['sidebar', 'name', 'avatar'])
   },
-  data () {
+  data() {
     return {
       searchVal: '',
       timeout: null,
@@ -89,39 +89,35 @@ export default {
     }
   },
   methods: {
-    toggleSideBar () {
+    toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
-    logout () {
+    logout() {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // In order to re-instantiate the vue-router object to avoid bugs
       })
     },
-    handleBtnSearch () {
+    handleBtnSearch() {
       this.showSearchInput = !this.showSearchInput
       this.$nextTick(() => {
         this.$refs.searchInput.focus()
       })
     },
-    querySearchAsync (queryString, cb) {
+    querySearchAsync(queryString, cb) {
       var restaurants = this.restaurants
-      var results = queryString
-        ? restaurants.filter(this.createStateFilter(queryString))
-        : restaurants
+      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants
 
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         cb(results)
       }, 1000 * Math.random())
     },
-    createStateFilter (queryString) {
-      return state => {
-        return (
-          state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        )
+    createStateFilter(queryString) {
+      return (state) => {
+        return state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
       }
     },
-    handleSelect (item) {
+    handleSelect(item) {
       this.searchVal = ''
       this.showSearchInput = false
       console.log(item)
@@ -131,7 +127,7 @@ export default {
       })
     }
   },
-  mounted () {
+  mounted() {
     this.restaurants = search()
   }
 }

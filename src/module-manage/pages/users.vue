@@ -202,7 +202,7 @@ export default {
     UserAdd,
     PageTool
   },
-  data () {
+  data() {
     return {
       UserAdd: 'userAdd',
       pageTitle: '用户', // 页面标题
@@ -234,9 +234,7 @@ export default {
       },
       ruleInline: {
         // 表单验证
-        username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
-        ],
+        username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
         email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
         // role: [{ required: true, message: '角色不能为空', trigger: 'blur' }],
@@ -254,52 +252,52 @@ export default {
   computed: {},
   methods: {
     // 获取列表数据
-    getList (params) {
+    getList(params) {
       this.listLoading = true
       list(this.requestParameters)
-        .then(data => {
+        .then((data) => {
           this.dataList = data.data.list
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
     // 权限列表
-    setupData () {
-      simple().then(data => {
+    setupData() {
+      simple().then((data) => {
         this.PermissionGroupsList = data.data
       })
     },
     // 重置
-    resetForm () {
+    resetForm() {
       this.$refs.requestParameters.resetFields()
     },
     // 搜索信息
-    handleFilter () {
+    handleFilter() {
       this.requestParameters.page = 1
       this.getList(this.requestParameters)
     },
     // 每页显示信息条数
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.requestParameters.pagesize = val
       if (this.requestParameters.page === 1) {
         this.getList(this.requestParameters)
       }
     },
     // 进入某一页
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.requestParameters.page = val
       this.getList()
     },
     // 新增用户刷新列表
-    handleLoadDataList () {
+    handleLoadDataList() {
       this.getList()
     },
     // 数据删除后显示样式
-    rowClassStatus (row) {
+    rowClassStatus(row) {
       if (row.row.is_deleted === 1) {
         this.deletedDate = true
         this.showDate = false
@@ -310,7 +308,7 @@ export default {
     },
     // **********************************
     // 搜索的项目
-    query () {
+    query() {
       this.formData = {
         email: '',
         phone: '',
@@ -323,7 +321,7 @@ export default {
       }
     },
     // 新增用户
-    handleCreate () {
+    handleCreate() {
       this.query()
       this.text = '创建'
       this.$refs.editUser.dialogFormV()
@@ -331,12 +329,12 @@ export default {
     },
     // 窗口操作**********************************
     // 弹框关闭
-    handleCloseModal () {
+    handleCloseModal() {
       this.$refs.editUser.dialogFormH()
     },
     // 编辑
     // 表单详情数据加载
-    hanldeEditForm (objeditId) {
+    hanldeEditForm(objeditId) {
       this.formData.id = objeditId
       this.setupData()
       detail({ id: objeditId }).then((data, err) => {
@@ -356,7 +354,7 @@ export default {
         this.formData.permission_group_title = datalist.permission_group_title
       })
     },
-    handleUpdate (objeditId) {
+    handleUpdate(objeditId) {
       this.query()
       var _this = this
       this.text = '编辑'
@@ -364,18 +362,18 @@ export default {
       _this.hanldeEditForm(objeditId)
     },
     // 删除
-    removeUser (user) {
+    removeUser(user) {
       this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
         type: 'warning'
       })
         .then(() => {
           remove({ id: user })
-            .then(response => {
+            .then((response) => {
               this.$message.success('成功删除了用户' + '!')
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败!')
             })
         })
@@ -387,7 +385,7 @@ export default {
   // 挂载结束
   mounted: function () {},
   // 创建完毕状态
-  created () {
+  created() {
     // 读取数据
     this.getList()
     // 键盘enter操作
