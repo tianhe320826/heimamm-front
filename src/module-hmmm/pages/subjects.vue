@@ -1,5 +1,5 @@
 <template>
-  <div class='container'>学科管理</div>
+  <div class="container">学科管理123</div>
 </template>
 
 <script>
