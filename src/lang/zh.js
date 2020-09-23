@@ -88,6 +88,8 @@ export default {
     results: '执行结果',
     describe: '描述',
     preserve: '保存',
-    signOut: '退出'
+    signOut: '退出',
+    clear: '清除',
+    addSubjects: '新增学科'
   }
 }
