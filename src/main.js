@@ -6,7 +6,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import router from './router'
 import store from './store'
-import i18n from './lang' // Internationalization
+import i18n from './lang' // Internationalization 国际化
 import './icons' // icon
 import './errorLog' // error log
 import * as filters from './filters' // global filters
@@ -20,6 +20,12 @@ import dashboard from '@/module-dashboard/' // 面板
 import base from '@/module-manage/' // 用户管理
 import hmmm from '@/module-hmmm/' // 黑马面面
 
+// 富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+Vue.use(VueQuillEditor)
 Vue.use(dashboard, store)
 Vue.use(base, store)
 // Vue.use(list, store)
