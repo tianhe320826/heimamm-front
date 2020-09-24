@@ -17,33 +17,23 @@
 export default {
   name: 'PageTool',
   props: ['total', 'paginationPage', 'paginationPagesize'],
-<<<<<<< HEAD
-  data () {
-    return {
-    }
-=======
   data() {
     return {}
->>>>>>> b4e37615ec39115664e43e42448da16c0a8dfb11
   },
   methods: {
     // 进入某一页
-    onPageChange: function (pageNum) {
+    onPageChange: function(pageNum) {
       this.$emit('pageChange', pageNum)
     },
     // 每页显示信息条数
-    onPageSizeChange: function (pageSize) {
+    onPageSizeChange: function(pageSize) {
       this.$emit('pageSizeChange', pageSize)
     }
   }
 }
 </script>
 <style>
-<<<<<<< HEAD
-.blue{color: #409EFF;}
-=======
 .blue {
   color: #409eff;
 }
->>>>>>> b4e37615ec39115664e43e42448da16c0a8dfb11
 </style>
