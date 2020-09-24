@@ -15,7 +15,7 @@
             <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
           </div>
         </el-form>
-        <!-- 新增学科弹框 -->
+        <!-- 记录总条数的弹框 -->
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
@@ -131,12 +131,12 @@
 // import { simple } from '@/api/base/permissions'
 import { list } from '@/api/hmmm/subjects'
 import PageTool from '@/module-dashboard/components/pageTool'
-// import UserAdd from './../components/user-add'
+import SubjectsAdd from './../components/subjects-add'
 
 export default {
   name: 'base-subject',
   components: {
-    // UserAdd,
+    SubjectsAdd,
     PageTool
   },
   data() {
@@ -157,15 +157,15 @@ export default {
       },
       subjectName: '',
       formData: {
-        // email: '',
-        // phone: '',
-        // username: '',
-        // password: '',
-        // role: '',
-        // permission_group_id: '',
-        // permission_group_title: '',
-        // avatar: '',
-        // introduction: ''
+        email: '',
+        phone: '',
+        username: '',
+        password: '',
+        role: '',
+        permission_group_id: '',
+        permission_group_title: '',
+        avatar: '',
+        introduction: ''
       }
     }
   },
