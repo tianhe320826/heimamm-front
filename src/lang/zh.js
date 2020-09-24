@@ -95,6 +95,7 @@ export default {
     directoryName: '目录名称',
     subjectName: '所属学科',
     createdBy: '创建者',
-    QuestionsNum: '面试题数量'
+    QuestionsNum: '面试题数量',
+    addSubjects: '新增学科'
   }
 }
