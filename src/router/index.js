@@ -62,7 +62,7 @@ export const constantRouterMap = [
  * 配置路由
  **/
 const router = new Router({
-  // mode: 'history', // require service support
+  // mode: 'history', // require service support 需要服务支持
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })

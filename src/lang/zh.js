@@ -64,6 +64,7 @@ export default {
     creatdate: '创建日期',
     remarks: '备注',
     state: '状态',
+    enable: '启用',
     prohibit: '禁用',
     permissionNew: '新增权限组',
     permissionUser: '权限组名称',
@@ -88,6 +89,13 @@ export default {
     results: '执行结果',
     describe: '描述',
     preserve: '保存',
-    signOut: '退出'
+    signOut: '退出',
+    clear: '清除',
+    addDirectory: '新增目录',
+    directoryName: '目录名称',
+    subjectName: '所属学科',
+    createdBy: '创建者',
+    QuestionsNum: '面试题数量',
+    addSubjects: '新增学科'
   }
 }

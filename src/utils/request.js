@@ -89,7 +89,7 @@ export const createFormAPI = (url, method, data) => {
   }
   config.responseType = 'json'
   config.transformRequest = [
-    function (data) {
+    function(data) {
       let ret = ''
       for (const it in data) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
