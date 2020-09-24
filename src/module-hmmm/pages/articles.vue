@@ -4,7 +4,14 @@
       <div class="container">
         <el-card shadow="never">
           <!-- 顶部栏 -->
-
+          <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="关键字">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="状态">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-form>
           <!-- 顶部栏 -->
 
           <!-- 提示 -->
@@ -25,7 +32,18 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      }
+    }
   }
 }
 </script>
