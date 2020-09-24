@@ -1,26 +1,16 @@
 <template>
   <div class="pages">
-<<<<<<< HEAD
-      <el-pagination background
-=======
     <el-pagination
       background
->>>>>>> b4e37615ec39115664e43e42448da16c0a8dfb11
       @size-change="onPageSizeChange"
       @current-change="onPageChange"
       :current-page="Number(paginationPage)"
       :total="Number(total)"
       :page-size="Number(paginationPagesize)"
-<<<<<<< HEAD
-      :page-sizes="[10,20,30, 50]"
+      :page-sizes="[10, 20, 30, 50]"
       layout="sizes, prev, pager, next, jumper"
-      >
-      </el-pagination>
-=======
-      :page-sizes="[5,10,20,30]"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
->>>>>>> b4e37615ec39115664e43e42448da16c0a8dfb11
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
