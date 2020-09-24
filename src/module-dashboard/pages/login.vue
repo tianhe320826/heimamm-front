@@ -2,59 +2,59 @@
   <div class="login-container">
     <div class="loginBox">
       <el-form
-      class="login-form"
-      autocomplete="on"
-      :model="loginForm"
-      :rules="loginRules"
-      ref="loginForm"
-      label-position="left"
-    >
-      <div class="title-container">
-        <!-- <h3 class="title">{{$t('login.title')}}</h3> -->
-        <div class="logoInfo clearfix">
-          <em class="logo"></em>
-          <span class="logoFontZ">黑马面面</span>
-          <span>用户登录</span>
+        class="login-form"
+        autocomplete="on"
+        :model="loginForm"
+        :rules="loginRules"
+        ref="loginForm"
+        label-position="left"
+      >
+        <div class="title-container">
+          <!-- <h3 class="title">{{$t('login.title')}}</h3> -->
+          <div class="logoInfo clearfix">
+            <em class="logo"></em>
+            <span class="logoFontZ">黑马面面1</span>
+            <span>用户登录</span>
+          </div>
+          <lang-select class="set-language"></lang-select>
         </div>
-        <lang-select class="set-language"></lang-select>
-      </div>
-      <el-form-item prop="username">
-        <span class="svg-container svg-container_login">
-          <svg-icon icon-class="user"/>
-        </span>
-        <el-input
-          name="username"
-          type="text"
-          v-model="loginForm.username"
-          autocomplete="on"
-          placeholder="username"
-        />
-      </el-form-item>
+        <el-form-item prop="username">
+          <span class="svg-container svg-container_login">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input
+            name="username"
+            type="text"
+            v-model="loginForm.username"
+            autocomplete="on"
+            placeholder="username"
+          />
+        </el-form-item>
 
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password"/>
-        </span>
-        <el-input
-          name="password"
-          :type="passwordType"
-          @keyup.enter.native="handleLogin"
-          v-model="loginForm.password"
-          autocomplete="on"
-          placeholder="password"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon icon-class="eye"/>
-        </span>
-      </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            name="password"
+            :type="passwordType"
+            @keyup.enter.native="handleLogin"
+            v-model="loginForm.password"
+            autocomplete="on"
+            placeholder="password"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon icon-class="eye" />
+          </span>
+        </el-form-item>
 
-      <el-button
-        type="primary"
-        style="width:100%;margin-bottom:30px;"
-        :loading="loading"
-        @click.native.prevent="handleLogin"
-      >{{$t('login.logIn')}}</el-button>
-    </el-form>
+        <el-button
+          type="primary"
+          style="width:100%;margin-bottom:30px;"
+          :loading="loading"
+          @click.native.prevent="handleLogin"
+        >{{$t('login.logIn')}}</el-button>
+      </el-form>
     </div>
   </div>
 </template>
@@ -67,7 +67,7 @@ import shajs from 'sha.js'
 export default {
   components: { LangSelect },
   name: 'login',
-  data () {
+  data() {
     const validateUsername = (rule, value, callback) => {
       if (!validateEmail(value)) {
         callback(new Error('Please enter the email user name'))
@@ -88,12 +88,8 @@ export default {
         password: '123456'
       },
       loginRules: {
-        username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
-        ],
-        password: [
-          { required: true, trigger: 'blur', validator: validatePassword }
-        ]
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
       loading: false,
@@ -101,23 +97,21 @@ export default {
     }
   },
   methods: {
-    showPwd () {
+    showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
       } else {
         this.passwordType = 'password'
       }
     },
-    handleLogin () {
-      this.$refs.loginForm.validate(async valid => {
+    handleLogin() {
+      this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           this.loading = true
           await this.$store
             .dispatch('LoginByUsername', {
               username: this.loginForm.username,
-              password: shajs('sha256')
-                .update(this.loginForm.password)
-                .digest('hex')
+              password: shajs('sha256').update(this.loginForm.password).digest('hex')
             })
             .then(() => {
               this.loading = false
@@ -133,10 +127,8 @@ export default {
       })
     }
   },
-  created () {
-  },
-  destroyed () {
-  }
+  created() {},
+  destroyed() {}
 }
 </script>
 
@@ -165,12 +157,12 @@ $light_gray: #333;
     }
   }
   .el-form-item {
-    border: 1px solid #DCDFE6;
+    border: 1px solid #dcdfe6;
     background: #fff;
     border-radius: 5px;
     color: #454545;
   }
-  .el-button--medium{
+  .el-button--medium {
     height: 50px;
     line-height: 20px;
     font-size: 22px;
@@ -193,9 +185,9 @@ $light_gray: #333;
   -moz-background-size: 100% 100%;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  .loginBox{
-     height: 100%;
-     width: 100%;
+  .loginBox {
+    height: 100%;
+    width: 100%;
     background: url('./../assets/logingBg.png') no-repeat 100% 100%;
     position: relative;
   }
@@ -206,7 +198,7 @@ $light_gray: #333;
     width: 520px;
     padding: 35px 35px 15px 35px;
     margin: -200px 0 0 0;
-    background:#f5f5f5;
+    background: #f5f5f5;
   }
   .tips {
     font-size: 14px;
@@ -260,17 +252,17 @@ $light_gray: #333;
     bottom: 28px;
   }
 }
-.logoInfo{
-  padding-bottom:15px;
+.logoInfo {
+  padding-bottom: 15px;
 }
-.logoInfo span{
+.logoInfo span {
   font-size: 22px;
   padding: 0 10px;
   float: left;
 }
-.logoInfo .logo{
+.logoInfo .logo {
   background: url(../assets/loginLogo.png) no-repeat;
-  display:inline-block;
+  display: inline-block;
   width: 35px;
   height: 26px;
   float: left;
