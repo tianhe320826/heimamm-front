@@ -6,13 +6,7 @@
         <el-form :inline="true" :model="requestParameters" ref="requestParameters">
           <div class="filter-container">
             <el-form-item :label="$t('table.keyword')">
-              <el-input
-                @keyup.enter="handleFilter"
-                style="width: 200px;"
-                :placeholder="$t('table.searchKeyword')"
-                class="filter-item"
-                v-model="requestParameters.keyword"
-              ></el-input>
+              <el-input @keyup.enter="handleFilter" style="width: 200px;" :placeholder="$t('table.searchKeyword')" class="filter-item" v-model="requestParameters.keyword"></el-input>
             </el-form-item>
             <el-form-item :label="$t('table.state')">
               <el-select placeholder="请选择" clearable v-model="requestParameters.state">
@@ -24,85 +18,52 @@
               <el-button class="filter-item" type="default" size="small" @click="resetForm">清空</el-button>
             </el-form-item>
             <el-form-item>
-              <el-button
-                class="filter-item"
-                size="small"
-                type="primary"
-                @click="handleFilter"
-              >{{$t('table.search')}}</el-button>
+              <el-button class="filter-item" size="small" type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
             </el-form-item>
-            <el-button
-              class="filter-item fr"
-              size="small"
-              style="margin-left: 10px;"
-              @click="handleCreate"
-              type="success"
-              icon="el-icon-edit"
-            >{{$t('table.addSkill')}}</el-button>
+            <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="handleCreate" type="success" icon="el-icon-edit">{{ $t('table.addSkill') }}</el-button>
           </div>
         </el-form>
-        <el-alert
-          v-if="alertText !== ''"
-          :title="alertText"
-          type="info"
-          class="alert"
-          :closable="false"
-          show-icon
-        ></el-alert>
+        <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
-        <el-table
-          :key="tableKey"
-          :data="dataList"
-          :row-class-name="rowClassStatus"
-          v-loading="listLoading"
-          element-loading-text="给我一点时间"
-          fit
-          highlight-current-row
-          style="width: 100%"
-        >
+        <el-table :key="tableKey" :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%">
           <el-table-column align="center" :label="$t('table.id')" width="60">
             <template slot-scope="scope">
-              <span>{{scope.row.id}}</span>
+              <span>{{ scope.row.id }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" :label="$t('table.articleTitle')" width="400">
             <template slot-scope="scope">
-              <span>{{scope.row.title}}</span>
+              <span>{{ scope.row.title }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('table.reads')">
             <template slot-scope="scope">
-              <span>{{scope.row.visits}}</span>
+              <span>{{ scope.row.visits }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" :label="$t('table.creator')">
             <template slot-scope="scope">
-              <span>{{scope.row.username}}</span>
+              <span>{{ scope.row.username }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" :label="$t('table.inputtime')">
             <template slot-scope="scope">
-              <span>{{scope.row.createTime|parseTimeByString()}}</span>
+              <span>{{ scope.row.createTime | parseTimeByString() }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" :label="$t('table.state')">
             <template slot-scope="scope">
-              <span>{{scope.row.state===1?"已启用":"已禁用"}}</span>
+              <span>{{ scope.row.state === 1 ? '已启用' : '已禁用' }}</span>
             </template>
           </el-table-column>
           <!-- 按钮 -->
-          <el-table-column
-            align="center"
-            :label="$t('table.actions')"
-            class-name="small-padding fixed-width"
-            width="170"
-          >
+          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width" width="170">
             <template slot-scope="scope">
-              <a class="handleText" @click="handlePreview(scope.row.id)">{{$t('table.preview')}}</a>
-              <a class="handleText" @click="handleUse(scope.row.id)">{{$t('table.use')}}</a>
-              <a class="handleText" @click="handleUpdate(scope.row.id)">{{$t('table.edit')}}</a>
-              <a class="handleText" @click="removeUser(scope.row.id)">{{$t('table.delete')}}</a>
+              <el-link :underline="false" type="primary" @click="handlePreview(scope.row)">{{ $t('table.preview') }} </el-link>
+              <el-link :underline="false" type="primary" @click="handleUse(scope.row)">{{ $t(scope.row.state ? 'table.use' : 'table.unused') }}</el-link>
+              <el-link :underline="false" :type="scope.row.state ? 'primary' : 'info'" :disabled="scope.row.state ? false : true" @click="handleUpdate(scope.row.id)">{{ $t('table.edit') }}</el-link>
+              <el-link :underline="false" :type="scope.row.state ? 'primary' : 'info'" :disabled="scope.row.state ? false : true" @click="removeUser(scope.row.id)">{{ $t('table.delete') }}</el-link>
             </template>
           </el-table-column>
 
@@ -156,6 +117,8 @@
           v-on:newDataes="handleLoadDataList"
           v-on:handleCloseModal="handleCloseModal"
         ></component>-->
+        <!-- 预览标签弹层 -->
+        <articles-preview ref="artPreview" :articleInfo="articleInfo" :text="text" :pageTitle="pageTitle"></articles-preview>
       </el-card>
     </div>
   </div>
@@ -194,36 +157,34 @@
   color: #999;
   cursor: not-allowed;
 }
-.handleText {
-  color: #409eff;
+.el-link {
   padding: 5px;
-}
-.handleText:hover {
-  color: #409eff;
 }
 </style>
 <script>
-import { simple } from '@/api/base/permissions'
-import { list, remove } from '@/api/hmmm/articles'
+// import { simple } from '@/api/base/permissions'
+import { list, remove, changeState } from '@/api/hmmm/articles'
 import PageTool from './../components/pageTool'
+import ArticlesPreview from './../components/articles-preview'
 // import UserAdd from './../components/user-add'
 
 export default {
   name: 'base-users',
   components: {
-    // UserAdd,
+    ArticlesPreview,
     PageTool
   },
   data() {
     return {
+      articleInfo: {},
       UserAdd: 'userAdd',
-      pageTitle: '用户', // 页面标题
-      text: '', // 新增、编辑文本
+      pageTitle: '文章', // 页面标题
+      text: '', // 新增、预览、编辑文本
       tableKey: 0,
       // deletedDate: false,
       // showDate: true,
       dataList: [],
-      PermissionGroupsList: [], // 权限组加载
+      // PermissionGroupsList: [], // 权限组加载
       total: null,
       listLoading: true,
       dialogStatus: '',
@@ -271,23 +232,24 @@ export default {
         this.requestParameters.state = null
       }
       list(params)
-        .then((data) => {
-          console.log(data)
+        .then(data => {
+          // console.log(data)
           this.dataList = data.data.items
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch((e) => {
+        .catch(e => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
-    // 权限列表
-    setupData() {
-      simple().then((data) => {
-        this.PermissionGroupsList = data.data
-      })
-    },
+    // 文章简单列表
+    // setupData() {
+    //   simple(this.requestParameters).then(data => {
+    //     this.PermissionGroupsList = data.data
+    //     console.log(data)
+    //   })
+    // },
     // 清空
     resetForm() {
       this.requestParameters.keyword = ''
@@ -339,7 +301,7 @@ export default {
       this.query()
       this.text = '创建'
       this.$refs.editUser.dialogFormV()
-      this.setupData()
+      // this.setupData()
     },
     // 窗口操作**********************************
     // 弹框关闭
@@ -350,7 +312,7 @@ export default {
     // 表单详情数据加载
     hanldeEditForm(objeditId) {
       this.formData.id = objeditId
-      this.setupData()
+      // this.setupData()
       detail({ id: objeditId }).then((data, err) => {
         var datalist = data.data
         if (err) {
@@ -382,29 +344,61 @@ export default {
       })
         .then(() => {
           remove({ id: user })
-            .then((response) => {
+            .then(response => {
               this.$message.success('成功删除了用户' + '!')
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error('删除失败!')
             })
         })
         .catch(() => {
           this.$message.info('已取消操作!')
         })
+    },
+    // 预览
+    handlePreview(info) {
+      this.text = '预览'
+      this.$refs.artPreview.dialogFormV()
+      this.articleInfo = info
+      // console.log(info)
+      // console.log(this.articleInfo)
+    },
+    // 启用 禁用
+    handleUse(row) {
+      // console.log(id)
+      const params = {
+        id: row.id,
+        state: row.state ? 0 : 1
+      }
+      changeState(params)
+        .then(data => {
+          this.$message.success('操作成功')
+          // this.dataList.splice(user, 1)
+          // if (this.state) {
+          //   this.state = 0
+          // } else {
+          //   this.state = 1
+          // }
+          row.state = row.state ? 0 : 1
+          console.log(data)
+          this.getList()
+        })
+        .catch(data => {
+          this.$message.error('操作失败!')
+        })
     }
   },
   // 挂载结束
-  mounted: function () {},
+  mounted: function() {},
   // 创建完毕状态
   created() {
     // 读取数据
-    this.getList()
+    this.getList(this.requestParameters)
     // 键盘enter操作
     var lett = this
-    document.onkeydown = function (e) {
+    document.onkeydown = function(e) {
       var key = window.event.keyCode
       if (key === 13) {
         lett.handleFilter(this.requestParameters)
@@ -412,7 +406,6 @@ export default {
     }
   },
   // 组件更新
-  updated: function () {}
+  updated: function() {}
 }
 </script>
-
