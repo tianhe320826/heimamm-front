@@ -33,6 +33,7 @@ export default {
   },
   // 删除
   delete: config => {
+    console.log(config)
     const body = JSON.parse(config.body)
     const index = list.findIndex(item => item.id === body.id)
     list.splice(index, 1)

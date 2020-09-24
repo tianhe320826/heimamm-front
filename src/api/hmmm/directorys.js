@@ -25,8 +25,7 @@ export const add = data => createAPI('/directorys', 'post', data)
 export const update = data => createAPI(`/directorys/${data.id}`, 'put', data)
 
 // 目录删除
-export const remove = data =>
-  createAPI(`/directorys/${data.id}`, 'delete', data)
+export const remove = data => createAPI(`/directorys/${data.id}`, 'delete', data)
 
 // 目录状态
 export const changeState = data => createAPI(`/directorys/${data.id}/${data.state}`, 'post', data)
