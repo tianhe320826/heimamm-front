@@ -12,7 +12,7 @@
               <el-button class="filter-item" size="small" type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
               <el-button class="filter-item" size="small" type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
             </el-form-item>
-            <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
+            <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="isShow = true" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
           </div>
         </el-form>
         <!-- 记录总条数的弹框 -->
@@ -78,24 +78,15 @@
           ></PageTool>
         </div>
         <!-- end -->
-        <!-- 新增标签弹层 -->
-        <component
-          v-bind:is="SubjectsAdd"
-          ref="editUser"
-          :formData.sync="requestParameters"
-          :text="text"
-          :pageTitle="pageTitle"
-          :formBase="formData"
-          :ruleInline="ruleInline"
-          :PermissionGroupsList="PermissionGroupsList"
-          v-on:newDataes="handleLoadDataList"
-          v-on:handleCloseModal="handleCloseModal"
-        ></component>
+        <!-- 新增标签弹层    -->
+        <!-- :ruleInline="ruleInline"     :formBase="formData"     :text="text"         :formData.sync="requestParameters"-->
+        <subjects-add v-if="isShow" ref="addSubjects" :pageTitle="pageTitle" @newDataes="handleLoadDataList" @handleCloseModal="handleCloseModal"></subjects-add>
       </el-card>
     </div>
   </div>
 </template>
-<style rel="stylesheet/scss" lang="scss" scoped>
+
+<style lang="scss" scoped>
 .alert {
   margin: 10px 0px;
 }
@@ -105,7 +96,7 @@
 }
 </style>
 
-<style>
+<style lang="scss" scoped>
 .el-table th {
   background-color: #fafafa;
 }
@@ -127,6 +118,7 @@
   cursor: not-allowed;
 }
 </style>
+
 <script>
 // import { simple } from '@/api/base/permissions'
 import { list } from '@/api/hmmm/subjects'
@@ -156,17 +148,25 @@ export default {
         pagesize: 10
       },
       subjectName: '',
-      formData: {
-        email: '',
-        phone: '',
-        username: '',
-        password: '',
-        role: '',
-        permission_group_id: '',
-        permission_group_title: '',
-        avatar: '',
-        introduction: ''
-      }
+      isShow: false
+      // ruleInline: {
+      //   // 表单验证
+      //   subjectsName,
+      //   // 是否显示
+      //   isShow,
+      //   username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+      //   email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
+      //   password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+      //   // role: [{ required: true, message: '角色不能为空', trigger: 'blur' }],
+      //   // permission_group_id: [
+      //   //   {
+      //   //     type: 'number',
+      //   //     required: true,
+      //   //     message: '权限组名称不能为空',
+      //   //     trigger: 'blur'
+      //   //   }
+      //   // ]
+      // }
     }
   },
   computed: {},
@@ -194,7 +194,6 @@ export default {
     // },
     // 重置
     resetForm() {
-      // this.$refs.requestParameters.resetFields()
       this.requestParameters.subjectName = ''
       this.getSubjectsList()
     },
@@ -215,10 +214,10 @@ export default {
       this.requestParameters.page = val
       this.getSubjectsList()
     },
-    // 新增用户刷新列表
-    // handleLoadDataList() {
-    //   this.getList()
-    // },
+    // 新增学科刷新列表
+    handleLoadDataList() {
+      this.getSubjectsList()
+    },
     // 数据删除后显示样式
     rowClassStatus(row) {
       // if (row.row.is_deleted === 1) {
@@ -231,37 +230,28 @@ export default {
     },
     // **********************************
     // 搜索的项目
-    query() {
-      this.formData = {
-        email: '',
-        phone: '',
-        username: '',
-        role: '',
-        password: '',
-        permission_group_id: '',
-        avatar: '',
-        introduction: ''
-      }
-    },
+    // query() {
+    //   this.formData = {}
+    // },
     // 新增学科
-    handleCreate() {
-      this.$refs.editUser.dialogFormV()
-    },
+    // handleCreate() {
+    //   this.$refs.addSubjects.dialogFormV()
+    // },
     // 窗口操作**********************************
     // 弹框关闭
     handleCloseModal() {
-      this.$refs.editUser.dialogFormH()
+      this.$refs.addSubjects.dialogFormH()
     },
     // 编辑
     // 表单详情数据加载
-    hanldeEditForm(objeditId) {},
-    handleUpdate(objeditId) {
-      this.query()
-      var _this = this
-      this.text = '编辑'
-      this.$refs.editUser.dialogFormV()
-      _this.hanldeEditForm(objeditId)
-    },
+    // hanldeEditForm(objeditId) {},
+    // handleUpdate(objeditId) {
+    //   this.query()
+    //   var _this = this
+    //   this.text = '编辑'
+    //   this.$refs.editUser.dialogFormV()
+    //   _this.hanldeEditForm(objeditId)
+    // },
     // 删除
     removeUser(user) {
       // this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
