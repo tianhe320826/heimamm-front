@@ -1,12 +1,12 @@
 <template>
   <div class="add-form">
-    <el-dialog :title="text + pageTitle" :visible.sync="dialogFormVisible">
-      <el-form label-position="left" label-width="120px" style="width: 400px; margin-left:120px;">
-        <el-form-item label="学科名称" prop="username">
-          <el-input placeholder="请输入学科名称"></el-input>
+    <el-dialog title="新增学科" :visible.sync="dialogFormVisible" width="25%">
+      <el-form label-position="left" label-width="120px" style="width: 400px;" :model="addForm" :rules="addFormRules" ref="addFormRef">
+        <el-form-item label="学科名称" prop="subjectName">
+          <el-input placeholder="请输入学科名称" v-model="addForm.subjectName"></el-input>
         </el-form-item>
-        <el-form-item :label="是否显示">
-          <el-switch v-model="form.delivery"></el-switch>
+        <el-form-item label="是否显示">
+          <el-switch v-model="addForm.isFrontDisplay" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -19,18 +19,24 @@
 
 <script>
 // import { remove, update, add } from '@/api/hmmm/subjects'
-// import { add } from '@/api/hmmm/subjects'
+import { add } from '@/api/hmmm/subjects'
 export default {
   name: 'subjectssAdd',
-  props: ['pageTitle'],
   data() {
     return {
-      dialogFormVisible: false
-      // fileList: [],
-      // importFileUrl: 'https://jsonplaceholder.typicode.com/posts/',
+      addForm: {
+        subjectName: '',
+        isFrontDisplay: true
+      },
+      dialogFormVisible: false,
+      addFormRules: {
+        subjectName: [
+          // 表单验证规则
+          { required: true, message: '请输入学科名称', trigger: 'blur' }
+        ]
+      }
     }
   },
-  computed: {},
   methods: {
     // 弹层显示
     dialogFormV() {
@@ -43,38 +49,23 @@ export default {
     // 退出
     handleClose() {
       this.$emit('handleCloseModal')
+    },
+
+    // 确定提交
+    createData() {
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) return false
+        await add(this.addForm)
+        // 让父组件关闭弹框
+        this.$emit('handleCloseModal')
+        this.$message.success('添加学科成功！')
+        this.addForm = {}
+        // 让父组件更新学科列表
+        this.$emit('updateSubject')
+      })
     }
-
-    // 表单提交
-    // createData() {
-    //   this.$refs.dataForm.validate(valid => {
-    //     if (valid) {
-    //       this.$emit('handleCloseModal')
-    //       const data = {
-    //         ...this.formBase
-    //       }
-    //       if (this.formBase.id) {
-    //         update(data).then(() => {
-    //           this.$emit('newDataes', this.formBase)
-    //         })
-    //       } else {
-    //         add(this.formBase).then(() => {
-    //           this.$emit('newDataes', this.formBase)
-    //         })
-    //       }
-    //     } else {
-    //       this.$Message.error('*号为必填项!')
-    //     }
-    //   })
-    // }
   },
-  // 挂载结束
-
-  mounted: function() {},
-  // 创建完毕状态
   created() {}
-  // 组件更新
-  // updated: function() {}
 }
 </script>
 <style lang="scss" scoped>

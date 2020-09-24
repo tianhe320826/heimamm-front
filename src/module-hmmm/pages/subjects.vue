@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <el-card shadow="never">
+      <el-card>
         <!-- 搜索 -->
         <el-form :model="requestParameters" ref="requestParameters" :inline="true">
           <div class="filter-container">
@@ -12,21 +12,21 @@
               <el-button class="filter-item" size="small" type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
               <el-button class="filter-item" size="small" type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
             </el-form-item>
-            <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="isShow = true" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
+            <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
           </div>
         </el-form>
         <!-- 记录总条数的弹框 -->
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
-        <el-table :key="tableKey" :data="dataList" :row-class-name="rowClassStatus" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%" border>
-          <el-table-column type="index" width="50" label="序号"> </el-table-column>
-          <el-table-column align="center" width="200" label="学科名称">
+        <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%" border>
+          <el-table-column type="index" width="50" align="center" label="序号"> </el-table-column>
+          <el-table-column align="center" width="220" label="学科名称">
             <template slot-scope="scope">
               <span>{{ scope.row.subjectName }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" width="200" label="创建者">
+          <el-table-column align="center" width="220" label="创建者">
             <template slot-scope="scope">
               <span>{{ scope.row.username }}</span>
             </template>
@@ -36,33 +36,33 @@
               <span>{{ scope.row.addDate | parseTimeByString() }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="前台是否显示">
+          <el-table-column width="140" align="center" label="前台是否显示">
             <template slot-scope="scope">
               <span>{{ scope.row.isFrontDisplay ? '是' : '否' }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="二级目录">
+          <el-table-column width="140" align="center" label="二级目录">
             <template slot-scope="scope">
               <span>{{ scope.row.twoLevelDirectory }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="标签">
+          <el-table-column width="140" align="center" label="标签">
             <template slot-scope="scope">
               <span>{{ scope.row.tags }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="题目数量">
+          <el-table-column width="140" align="center" label="题目数量">
             <template slot-scope="scope">
               <span>{{ scope.row.totals }}</span>
             </template>
           </el-table-column>
           <!-- 按钮 -->
-          <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="text" size="mini" @click="handleUpdate(scope.row.id)">学科分类</el-button>
-              <el-button type="text" size="mini" @click="handleUpdate(scope.row.id)">学科标签</el-button>
-              <el-button type="text" size="mini" @click="handleUpdate(scope.row.id)">修改</el-button>
-              <el-button type="text" size="mini" @click="removeUser(scope.row.id)">删除</el-button>
+              <el-button type="text" size="medium" @click="toCatagory(scope.row)">学科分类</el-button>
+              <el-button type="text" size="medium" @click="toLabel(scope.row)">学科标签</el-button>
+              <el-button type="text" size="medium" @click="handleUpdate(scope.row)">修改</el-button>
+              <el-button type="text" size="medium" @click="removeUser(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -78,9 +78,24 @@
           ></PageTool>
         </div>
         <!-- end -->
-        <!-- 新增标签弹层    -->
-        <!-- :ruleInline="ruleInline"     :formBase="formData"     :text="text"         :formData.sync="requestParameters"-->
-        <subjects-add v-if="isShow" ref="addSubjects" :pageTitle="pageTitle" @newDataes="handleLoadDataList" @handleCloseModal="handleCloseModal"></subjects-add>
+        <!-- 新增标签弹层  -->
+        <subjects-add ref="addSubjects" @newDataes="handleLoadDataList" @handleCloseModal="handleCloseModal" @updateSubject="updateSubject"></subjects-add>
+
+        <!-- 编辑弹框 -->
+        <el-dialog title="编辑学科" :visible.sync="dialogEditVisible" width="25%">
+          <el-form label-position="left" label-width="120px" style="width: 400px;" :model="editForm" :rules="editFormRules" ref="editFormRef">
+            <el-form-item label="学科名称" prop="subjectName">
+              <el-input v-model="editForm.subjectName"></el-input>
+            </el-form-item>
+            <el-form-item label="是否显示">
+              <el-switch v-model="editForm.isFrontDisplay" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogEditVisible = false">取消</el-button>
+            <el-button type="primary" @click="createEdit">确认</el-button>
+          </div>
+        </el-dialog>
       </el-card>
     </div>
   </div>
@@ -92,7 +107,7 @@
 }
 .pagination {
   margin-top: 10px;
-  // text-align: right;
+  text-align: right;
 }
 </style>
 
@@ -103,9 +118,6 @@
 .el-table th.is-leaf {
   border-bottom: 2px solid #e8e8e8;
 }
-/* .el-form-item {
-  margin-bottom: 0;
-} */
 .disabled td {
   background-color: #f9f9f9;
   color: #c1c1c1;
@@ -120,8 +132,7 @@
 </style>
 
 <script>
-// import { simple } from '@/api/base/permissions'
-import { list } from '@/api/hmmm/subjects'
+import { list, remove, update } from '@/api/hmmm/subjects'
 import PageTool from '@/module-dashboard/components/pageTool'
 import SubjectsAdd from './../components/subjects-add'
 
@@ -133,49 +144,37 @@ export default {
   },
   data() {
     return {
-      pageTitle: '用户', // 页面标题
-      text: '', // 新增、编辑文本
-      tableKey: 0,
-      deletedDate: false,
-      showDate: true,
       alertText: '',
       // 用来保存获取的数组
       dataList: [],
       total: null,
       listLoading: false,
+      // 编辑弹框
+      dialogEditVisible: false,
+      editForm: {},
+      editFormRules: {
+        subjectName: [
+          // 表单验证规则
+          { required: true, message: '请输入学科名称', trigger: 'blur' }
+        ]
+      },
       requestParameters: {
         page: 1,
-        pagesize: 10
-      },
-      subjectName: '',
-      isShow: false
-      // ruleInline: {
-      //   // 表单验证
-      //   subjectsName,
-      //   // 是否显示
-      //   isShow,
-      //   username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-      //   email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
-      //   password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
-      //   // role: [{ required: true, message: '角色不能为空', trigger: 'blur' }],
-      //   // permission_group_id: [
-      //   //   {
-      //   //     type: 'number',
-      //   //     required: true,
-      //   //     message: '权限组名称不能为空',
-      //   //     trigger: 'blur'
-      //   //   }
-      //   // ]
-      // }
+        pagesize: 10,
+        subjectName: ''
+      }
     }
   },
-  computed: {},
+  created() {
+    // 读取数据
+    this.getSubjectsList()
+  },
   methods: {
     // 获取列表数据
     async getSubjectsList(params) {
       this.listLoading = false
       const { data } = await list(this.requestParameters)
-      console.log(data)
+      // console.log(data)
       try {
         this.dataList = data.items
         this.total = data.counts
@@ -186,15 +185,13 @@ export default {
         this.$message.e('错了哦，这是一条错误消息')
       }
     },
-    // 权限列表
-    // setupData() {
-    //   simple().then(data => {
-    //     this.PermissionGroupsList = data.data
-    //   })
-    // },
     // 重置
     resetForm() {
       this.requestParameters.subjectName = ''
+      this.getSubjectsList()
+    },
+    // 子组件传来的更新列表
+    updateSubject() {
       this.getSubjectsList()
     },
     // 搜索信息
@@ -218,69 +215,78 @@ export default {
     handleLoadDataList() {
       this.getSubjectsList()
     },
-    // 数据删除后显示样式
-    rowClassStatus(row) {
-      // if (row.row.is_deleted === 1) {
-      //   this.deletedDate = true
-      //   this.showDate = false
-      //   return 'disabled'
-      // } else {
-      //   return ''
-      // }
-    },
-    // **********************************
-    // 搜索的项目
-    // query() {
-    //   this.formData = {}
-    // },
     // 新增学科
-    // handleCreate() {
-    //   this.$refs.addSubjects.dialogFormV()
-    // },
+    handleCreate() {
+      this.$refs.addSubjects.dialogFormV()
+    },
+    // 确认编辑按钮
+    createEdit() {
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return false
+        await update(this.editForm)
+        // console.log(data)
+        // 关闭弹框
+        this.dialogEditVisible = false
+        this.$message.success('编辑成功！')
+        // this.editForm = {}
+        // 更新学科列表
+        this.getSubjectsList()
+      })
+    },
     // 窗口操作**********************************
     // 弹框关闭
     handleCloseModal() {
       this.$refs.addSubjects.dialogFormH()
     },
-    // 编辑
-    // 表单详情数据加载
-    // hanldeEditForm(objeditId) {},
-    // handleUpdate(objeditId) {
-    //   this.query()
-    //   var _this = this
-    //   this.text = '编辑'
-    //   this.$refs.editUser.dialogFormV()
-    //   _this.hanldeEditForm(objeditId)
-    // },
-    // 删除
-    removeUser(user) {
-      // this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
-      //   type: 'warning'
-      // })
-      //   .then(() => {
-      //     remove({ id: user })
-      //       .then(response => {
-      //         this.$message.success('成功删除了用户' + '!')
-      //         this.dataList.splice(user, 1)
-      //         this.getList(this.requestParameters)
-      //       })
-      //       .catch(response => {
-      //         this.$message.error('删除失败!')
-      //       })
-      //   })
-      //   .catch(() => {
-      //     this.$message.info('已取消操作!')
-      //   })
+    // 编辑框获取详情
+    async handleUpdate(row) {
+      this.editForm = JSON.parse(JSON.stringify(row))
+      this.editForm.isFrontDisplay = row.isFrontDisplay === 1 ? true : false
+      this.dialogEditVisible = true
+    },
+    // 到学科分类
+    toCatagory(params) {
+      // console.log(111)
+      this.$router.push({
+        path: '/subjects/directorys/',
+        query: {
+          id: params.id,
+          name: params.subjectName
+        }
+      })
+    },
+    // 到学科标签
+    toLabel(params) {
+      // console.log(row)
+
+      this.$router.push({
+        path: '/subjects/tags/',
+        query: {
+          id: params.id,
+          name: params.subjectName
+        }
+      })
+    },
+    // 删除列表
+    removeUser(id) {
+      this.$confirm('此操作将永久删除该学科 ' + ', 是否继续?', '提示', {
+        type: 'warning'
+      })
+        .then(() => {
+          remove({ id: id })
+            .then(response => {
+              this.$message.success('成功删除了该学科')
+              this.dataList.splice(id, 1)
+              this.getSubjectsList()
+            })
+            .catch(response => {
+              this.$message.error('删除失败!')
+            })
+        })
+        .catch(() => {
+          this.$message.info('已取消操作!')
+        })
     }
-  },
-  // 挂载结束
-  mounted: function() {},
-  // 创建完毕状态
-  created() {
-    // 读取数据
-    this.getSubjectsList()
-  },
-  // 组件更新
-  updated: function() {}
+  }
 }
 </script>
