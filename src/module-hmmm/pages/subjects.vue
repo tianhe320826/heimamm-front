@@ -83,7 +83,7 @@
 
         <!-- 编辑弹框 -->
         <el-dialog title="编辑学科" :visible.sync="dialogEditVisible" width="25%">
-          <el-form label-position="left" label-width="120px" style="width: 400px;" :model="editForm" :rules="editFormRules" ref="editFormRef">
+          <el-form label-position="left" label-width="120px" style="width: 400px" :model="editForm" :rules="editFormRules" ref="editFormRef">
             <el-form-item label="学科名称" prop="subjectName">
               <el-input v-model="editForm.subjectName"></el-input>
             </el-form-item>
@@ -213,21 +213,18 @@ export default {
         this.getSubjectsList()
       })
     },
-    // 窗口操作**********************************
     // 弹框关闭
     handleCloseModal() {
       this.$refs.addSubjects.dialogFormH()
     },
     // 编辑框获取详情
     async handleUpdate(row) {
-      console.log(row)
       this.editForm = JSON.parse(JSON.stringify(row))
       this.editForm.isFrontDisplay = row.isFrontDisplay && true
       this.dialogEditVisible = true
     },
     // 到学科分类
     toCatagory(params) {
-      // console.log(111)
       this.$router.push({
         path: '/subjects/directorys/',
         query: {
