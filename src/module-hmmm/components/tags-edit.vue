@@ -1,37 +1,37 @@
 <template>
-  <el-dialog title="修改目录" :visible.sync="EditDialogVisible" width="30%" @close="$emit('close', false)">
-    <el-form :model="editObject" :rules="rules" ref="directoryRef" label-width="100px">
+  <el-dialog title="修改标签" :visible.sync="EditDialogVisible" width="30%" @close="$emit('close', false)">
+    <el-form :model="editObject" :rules="rules" ref="tagRef" label-width="100px">
       <el-form-item :label="$t('table.subjectName')">
         <el-select v-model="editObject.subjectID" placeholder="请选择" clearable>
           <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t('table.directoryName')" prop="tagName">
-        <el-input v-model.trim="editObject.directoryName" placeholder="请输入目录名称"></el-input>
+      <el-form-item :label="$t('table.tagName')" prop="tagName">
+        <el-input v-model.trim="editObject.tagName" placeholder="请输入标签名称" @keyup.enter.native="EditTag"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer">
       <el-button @click="$emit('close', false)">{{ $t('table.cancel') }}</el-button>
-      <el-button type="primary" @click="EditDirectory">{{ $t('table.confirm') }}</el-button>
+      <el-button type="primary" @click="EditTag">{{ $t('table.confirm') }}</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { update } from '@/api/hmmm/directorys'
+import { update } from '@/api/hmmm/tags'
 import { simple } from '@/api/hmmm/subjects'
 
 export default {
-  name: 'TagEdit',
+  name: 'TagEditIndex',
   props: {
-    directoryObj: {
+    tagObj: {
       type: Object,
       required: true
     }
   },
   data() {
     return {
-      editObject: JSON.parse(JSON.stringify(this.directoryObj)),
+      editObject: JSON.parse(JSON.stringify(this.tagObj)),
       // 控制添加弹层的显示与隐藏
       EditDialogVisible: true,
       // 学科列表信息
@@ -58,7 +58,7 @@ export default {
     },
     // 点击确定按钮修改标签
     EditTag() {
-      this.$refs.directoryRef.validate(valid => {
+      this.$refs.tagRef.validate(valid => {
         if (!valid) return false
         update(this.editObject)
           .then(data => {
