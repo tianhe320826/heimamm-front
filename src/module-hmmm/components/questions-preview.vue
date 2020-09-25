@@ -1,37 +1,56 @@
 <template>
   <div class="container">
-    <el-dialog >
       <el-row class="pvw" :gutter="20">
         <el-col :span="6">
-          <span>[题型] :</span>
+          <span>[题型] : {{question.catalog}}</span>
         </el-col>
         <el-col :span="6">
-          <span>[编号] :</span>
+          <span>[编号] : {{question.id}}</span>
         </el-col>
         <el-col :span="6">
-          <span>[难度] :</span>
+          <span>[难度] : {{difficulty}}</span>
         </el-col>
         <el-col :span="6">
-          <span>[标签] :</span>
+          <span>[标签] : {{question.tags}}</span>
         </el-col>
       </el-row>
       <el-row class="pvw" :gutter="20">
         <el-col :span="6">
-          <span>[学科] :</span>
+          <span>[学科] : {{question.subject}}</span>
         </el-col>
         <el-col :span="6">
-          <span>[目录] :</span>
+          <span>[目录] : {{question.catalogID}}</span>
         </el-col>
         <el-col :span="6">
-          <span>[方向] :</span>
+          <span>[方向] : {{question.direction}}</span>
         </el-col>
       </el-row>
       <p class="median"></p>
       <!-- 题干 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <span class="pvw">[题干] :</span>
+          <span class="pvw">[题干] :
+            <i v-html="myData.question"></i>
+          </span>
           <p>选项:<span>( 以下选中的选项为正确答案 )</span></p>
+          <div
+            v-for="(item, index) in myData.options"
+            :key="index"
+          >
+            <!-- 单选 -->
+            <div v-if="question.questionType === '1'">
+              <el-radio
+                :value="item.isRight"
+                label="1"
+              >{{ item.code + '. ' + item.title }}</el-radio>
+            </div>
+            <!-- 多选 -->
+            <div v-if="question.questionType === '2'">
+              <el-checkbox
+                :value="item.isRight ? true : false"
+              >{{ item.code + '. ' + item.title }}</el-checkbox>
+            </div>
+          </div>
         </el-col>
       </el-row>
       <!-- 题干 -->
@@ -39,8 +58,8 @@
       <!-- 参考答案 -->
       <el-row class="pvw" :gutter="20">
         <el-col :span="10">
-          <span class="pvw">[题干] :</span>
-          <el-button size="mini" type="danger">视频答案预览</el-button>
+          <span class="pvw">[参考答案] : </span>
+          <el-button size="mini" type="danger" :src="question.videURL">视频答案预览</el-button>
         </el-col>
       </el-row>
       <!-- 参考答案 -->
@@ -48,7 +67,9 @@
       <!-- 答案解析 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <span class="pvw">[答案解析] :</span>
+          <span class="pvw">[答案解析] :
+            <i v-html="question.answer"></i>
+          </span>
         </el-col>
       </el-row>
       <!-- 答案解析 -->
@@ -56,32 +77,62 @@
       <!-- 题目备注 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <span class="pvw">[题目备注] :</span>
+          <span class="pvw">[题目备注] : {{question.remarks}}</span>
         </el-col>
       </el-row>
       <!-- 题目备注 -->
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      <el-button @click="dialogVisible = false" class="pvButton" size="mini" type="primary">关闭</el-button>
-    </el-dialog>
+      <el-button
+        @click="show"
+        class="pvButton"
+        size="mini"
+        type="primary"
+      >关闭</el-button>
   </div>
 </template>
 
 <script>
+import { detail } from '@/api/hmmm/questions'
+
 export default {
-  name: 'kkkk',
+  created () {
+    this.getList()
+  },
   data() {
     return {
-      dialogVisible: this.dialogShow
+      radio: '',
+      myData: {}
     }
   },
   props: {
-    dialogShow: {
-      type: Boolean,
-      requiest: true
+    question: {
+      type: Object,
+      required: true
     }
   },
-  mounted() {},
-  methods: {}
+  computed: {
+    difficulty: function () {
+      if (this.myData.difficulty === '1') {
+        return '简单'
+      } else if (this.myData.difficulty === '2') {
+        return '一般'
+      } else {
+        return '困难'
+      }
+    }
+  },
+  methods: {
+    // 弹出框的隐藏，传值给父组件进行修改
+    show () {
+      this.$emit('updataButton')
+    },
+    
+    // 请求基础题库详情
+    async getList () {
+      const res = await detail({ id: this.question.id })
+      console.log(res)
+      this.myData = res.data
+    }
+  }
 }
 </script>
 

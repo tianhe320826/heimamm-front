@@ -38,7 +38,6 @@
                  <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
                </el-form-item>
             </el-col>
-
             <el-col :span="6">
               <el-form-item label="试题类型">
                 <el-select v-model="formData.questionType" placeholder="请选择">
@@ -67,7 +66,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-
             <el-col :span="6">
               <el-form-item label="题目备注">
                 <el-input v-model="formData.remarks"></el-input>
@@ -148,7 +146,7 @@
               <template slot-scope="scope">
                 <el-row>
                 <!-- 预览 -->
-                <el-button  @click="dialogVisible = true" plain type="primary" icon="el-icon-view" circle></el-button>
+                <el-button @click="question(scope.row)" plain type="primary" icon="el-icon-view" circle></el-button>
                 <!-- 编辑 -->
                 <el-button @click="$router.push(`new?id=${scope.row.id}`)" plain type="success" icon="el-icon-edit" circle></el-button>
                 <!-- 删除 -->
@@ -176,7 +174,13 @@
       </el-card>
 
       <!-- 预览对话框 -->
-      <questions-preview :dialogShow="dialogVisible = true"></questions-preview>
+      <el-dialog title="题目预览" :visible.sync="dialogVisible">
+        <questions-preview
+          v-if="dialogVisible"
+          :question="questionInfo"
+          @updataButton="isDialogShow"
+        ></questions-preview>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -192,7 +196,7 @@ import { difficulty, questionType, direction } from '@/api/hmmm/constants'
 import { simple as tagsList } from '@/api/hmmm/tags'
 // 录入人列表
 import { simple as userList } from '@/api/base/users'
-// 基础题库 删除题库 添加精品
+// 基础题库列表 删除题库 添加精品
 import { list, remove, choiceAdd } from '@/api/hmmm/questions'
 // 省市联动
 import { provinces, citys } from '@/api/hmmm/citys'
@@ -203,8 +207,11 @@ export default {
   components: {
     QuestionsPreview
   },
-  data () {
+ 
+ data () {
     return {
+      // 试题信息
+      questionInfo: {},
       // 试题类型
       questionType,
       // 难度
@@ -288,9 +295,9 @@ export default {
   methods: {
     // 搜索
     search () {
-      this.formData.page = 1
       this.getList()
     },
+
     // 清除
     clear () {
       for(var key in this.formData){
@@ -341,7 +348,7 @@ export default {
     // 获取列表数据
     async getList () {
       // const params = this.formData
-      const { data: questions } = await list()
+      const { data: questions } = await list( this.formData )
       // console.log(questions)
       this.questionList = questions.items
       this.total = questions.counts
@@ -372,7 +379,19 @@ export default {
         this.catalogs = []
         this.tags = []
       }
-    }
+    },
+  
+    // 预览功能
+    question (e) {
+      this.questionInfo = e
+      this.dialogVisible = true
+    },
+
+    // 关闭对话框
+    isDialogShow () {
+      this.dialogVisible = false
+    },
+  
   }
 }
 </script>
