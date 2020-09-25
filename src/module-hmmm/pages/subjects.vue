@@ -201,7 +201,7 @@ export default {
     },
     // 确认编辑按钮
     createEdit() {
-      this.$refs.editFormRef.validate(async valid => {
+      this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return false
         await update(this.editForm)
         // console.log(data)
@@ -252,12 +252,12 @@ export default {
       })
         .then(() => {
           remove({ id: id })
-            .then(response => {
+            .then((response) => {
               this.$message.success('成功删除了该学科')
               this.dataList.splice(id, 1)
               this.getSubjectsList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败!')
             })
         })

@@ -33,7 +33,7 @@
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
-        <el-table :key="tableKey" :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%">
+        <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
           <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
           <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
           <el-table-column :label="$t('table.directoryName')" prop="directoryName"></el-table-column>
@@ -94,17 +94,28 @@ export default {
   },
   data() {
     return {
+<<<<<<< HEAD
       // isShow: false,
+=======
+      // 点击修改按钮当前行的信息对象
+>>>>>>> 271aa93427de78fe8e0c91be858abd24738fc551
       directoryObj: {},
+      // 控制修改编辑目录弹窗的显示隐藏
       isEditDialogShow: false,
+      // 控制添加目录弹窗的显示隐藏
       isAddDialogShow: false,
-      text: '', // 新增、编辑文本
-      tableKey: 0,
+      // 存储表格数据
       dataList: [],
       total: null,
+      // 表格加载loading
       listLoading: false,
+      // 数据总条数提示文本
       alertText: '',
+<<<<<<< HEAD
       subjectdir: this.$route.query.name,
+=======
+      // 请求参数对象
+>>>>>>> 271aa93427de78fe8e0c91be858abd24738fc551
       requestDirectory: {
         page: 1,
         pagesize: 10,
@@ -133,10 +144,10 @@ export default {
           this.listLoading = false
         })
         .catch(e => {
-          this.$message.e('错了哦，这是一条错误消息')
+          this.$message.e('获取目录列表数据失败')
         })
     },
-    // 数据排序
+    // 日期排序
     changesort(a, b) {
       const oldTime = new Date(a.date).getTime() / 1000
       const newime = new Date(b.date).getTime() / 1000
@@ -180,7 +191,7 @@ export default {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
-    // 编辑
+    // 编辑修改
     handleUpdate(row) {
       this.directoryObj = row
       this.isEditDialogShow = true
@@ -191,21 +202,21 @@ export default {
     },
     // 删除
     handleRemove(row) {
-      this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除目录' + ', 是否继续?', '提示', {
         type: 'warning'
       })
         .then(() => {
           remove({ id: row.id })
             .then(response => {
-              this.$message.success('已成功删除目录！')
+              this.$message.success('已成功删除该目录')
               this.getList()
             })
             .catch(response => {
-              this.$message.error('删除失败！')
+              this.$message.error('删除失败，请稍后重试')
             })
         })
         .catch(() => {
-          this.$message.info('已取消操作!')
+          this.$message.info('已取消该操作')
         })
     }
   }

@@ -31,10 +31,11 @@
             <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
           </el-form-item>
         </el-form>
+        <!-- 数据总量提示 -->
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
-        <el-table :key="tableKey" :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%">
+        <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
           <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
           <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
           <el-table-column :label="$t('table.tagName')" prop="tagName"></el-table-column>
@@ -88,16 +89,24 @@ export default {
   },
   data() {
     return {
-      directoryObj: {},
-      isEditDialogShow: false,
-      isAddDialogShow: false,
-      text: '', // 新增、编辑文本
-      tableKey: 0,
       total: null,
+      // 点击编辑修改的当前行信息
+      directoryObj: {},
+      // 控制编辑弹窗的显示隐藏
+      isEditDialogShow: false,
+      // 控制添加弹窗的显示隐藏
+      isAddDialogShow: false,
+      // 存储表格中信息
       dataList: [],
+      // 表单加载loading
       listLoading: false,
+      // 数据总数提示文本
       alertText: '',
+<<<<<<< HEAD
       subjecttag: this.$route.query.name,
+=======
+      // 请求数据对象
+>>>>>>> 271aa93427de78fe8e0c91be858abd24738fc551
       requestTags: {
         page: 1,
         pagesize: 10,
@@ -121,8 +130,8 @@ export default {
       }
       list(this.requestTags)
         .then(({ data }) => {
-          console.log(data)
           this.dataList = data.items
+          this.total = data.counts
           this.alertText = `共 ${data.counts} 条记录`
           this.listLoading = false
         })
@@ -185,22 +194,22 @@ export default {
     },
     // 删除
     handleRemove(row) {
-      // this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
-      //   type: 'warning'
-      // })
-      //   .then(() => {
-      //     remove({ id: row.id })
-      //       .then(response => {
-      //         this.$message.success('已成功删除目录！')
-      //         this.getList()
-      //       })
-      //       .catch(response => {
-      //         this.$message.error('删除失败！')
-      //       })
-      //   })
-      //   .catch(() => {
-      //     this.$message.info('已取消操作!')
-      //   })
+      this.$confirm('此操作将永久删除标签' + ', 是否继续?', '提示', {
+        type: 'warning'
+      })
+        .then(() => {
+          remove({ id: row.id })
+            .then(response => {
+              this.$message.success('已成功删除该目录')
+              this.getList()
+            })
+            .catch(response => {
+              this.$message.error('删除失败，请稍后重试')
+            })
+        })
+        .catch(() => {
+          this.$message.info('已取消该操作')
+        })
     }
   }
 }
