@@ -60,7 +60,7 @@
           <el-table-column label="操作" align="center" min-width="140">
             <template slot-scope="scope">
               <el-button type="text" @click="toCatagory(scope.row)">学科分类</el-button>
-              <el-button type="text" @click="toLabel(scope.row)">学科标签</el-button>
+              <el-button type="text" @click="toTags(scope.row)">学科标签</el-button>
               <el-button type="text" @click="handleUpdate(scope.row)">修改</el-button>
               <el-button type="text" @click="removeUser(scope.row.id)">删除</el-button>
             </template>
@@ -226,7 +226,7 @@ export default {
     // 到学科分类
     toCatagory(params) {
       this.$router.push({
-        path: '/subjects/directorys/',
+        path: '/directorys/',
         query: {
           id: params.id,
           name: params.subjectName
@@ -234,7 +234,7 @@ export default {
       })
     },
     // 到学科标签
-    toLabel(params) {
+    toTags(params) {
       // console.log(row)
 
       this.$router.push({
