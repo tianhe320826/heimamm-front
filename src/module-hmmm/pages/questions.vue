@@ -34,9 +34,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-               <el-form-item label="关键字">
-                 <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
-               </el-form-item>
+              <el-form-item label="关键字">
+                <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
+              </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="试题类型">
@@ -53,11 +53,11 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-               <el-form-item label="方向">
-                 <el-select v-model="formData.direction" placeholder="请选择">
-                   <el-option v-for="item in directions" :key="item" :label="item" :value="item"></el-option>
-                 </el-select>
-               </el-form-item>
+              <el-form-item label="方向">
+                <el-select v-model="formData.direction" placeholder="请选择">
+                  <el-option v-for="item in directions" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="录入人">
@@ -80,21 +80,11 @@
               <el-form-item class="city" label="城市">
                 <!-- 城市 -->
                 <el-select @change="getProvince" v-model="formData.province" placeholder="请选择">
-                  <el-option
-                    v-for="item in citys.provinces"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  ></el-option>
+                  <el-option v-for="item in citys.provinces" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
                 <!-- 区县 -->
                 <el-select v-model="formData.city" placeholder="请选择">
-                  <el-option
-                    v-for="item in citys.cityData"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  ></el-option>
+                  <el-option v-for="item in citys.cityData" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -108,43 +98,38 @@
         </el-form>
 
         <!-- 数据记录 -->
-        <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`" >
-        </el-alert>
+        <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
 
         <!-- 数据表格 -->
-        <el-table :data="questionList" style="width: 100%" >
-            <el-table-column label="试题编号" prop="number" width="210px">
-            </el-table-column>
-            <el-table-column label="学科" prop="subject">
-            </el-table-column>
-            <el-table-column label="目录" prop="catalog">
-            </el-table-column>
-            <el-table-column label="题型">
-              <template slot-scope="scope">
-                {{ questionType.find(item => item.value === +scope.row.questionType).label }}
-              </template>
-            </el-table-column>
-            <el-table-column label="题干">
-              <template slot-scope="scope">
-                <div v-html="scope.row.question"></div>
-              </template>
-            </el-table-column>
-            <el-table-column label="录入时间">
-              <template slot-scope="scope">
-                {{ scope.row.addDate | parseTimeByString }}
-              </template>
-            </el-table-column>
-            <el-table-column label="难度" prop="difficulty">
-              <template slot-scope="scope">
-                {{ difficulty.find(item => item.value === +scope.row.difficulty).label }}
-              </template>
-            </el-table-column>
-            <el-table-column label="录入人" prop="creator">
-            </el-table-column>
-            <!-- 操作按钮 -->
-            <el-table-column label="操作" width="230">
-              <template slot-scope="scope">
-                <el-row>
+        <el-table :data="questionList" style="width: 100%">
+          <el-table-column label="试题编号" prop="number" width="210px"> </el-table-column>
+          <el-table-column label="学科" prop="subject"> </el-table-column>
+          <el-table-column label="目录" prop="catalog"> </el-table-column>
+          <el-table-column label="题型">
+            <template slot-scope="scope">
+              {{ questionType.find(item => item.value === +scope.row.questionType).label }}
+            </template>
+          </el-table-column>
+          <el-table-column label="题干">
+            <template slot-scope="scope">
+              <div v-html="scope.row.question"></div>
+            </template>
+          </el-table-column>
+          <el-table-column label="录入时间">
+            <template slot-scope="scope">
+              {{ scope.row.addDate | parseTimeByString }}
+            </template>
+          </el-table-column>
+          <el-table-column label="难度" prop="difficulty">
+            <template slot-scope="scope">
+              {{ difficulty.find(item => item.value === +scope.row.difficulty).label }}
+            </template>
+          </el-table-column>
+          <el-table-column label="录入人" prop="creator"> </el-table-column>
+          <!-- 操作按钮 -->
+          <el-table-column label="操作" width="230">
+            <template slot-scope="scope">
+              <el-row>
                 <!-- 预览 -->
                 <el-button @click="question(scope.row)" plain type="primary" icon="el-icon-view" circle></el-button>
                 <!-- 编辑 -->
@@ -154,11 +139,11 @@
                 <!-- 加入精选 -->
                 <el-button @click="addChoice(scope.row)" plain type="warning" icon="el-icon-check" circle></el-button>
               </el-row>
-              </template>
-            </el-table-column>
+            </template>
+          </el-table-column>
         </el-table>
 
-         <!-- 分页 -->
+        <!-- 分页 -->
         <div class="block">
           <el-pagination
             background
@@ -168,7 +153,8 @@
             :page-sizes="[3, 5, 7, 10]"
             :current-page="formData.page"
             @current-change="handlePager"
-            @size-change="handleSizeChange">
+            @size-change="handleSizeChange"
+          >
           </el-pagination>
         </div>
       </el-card>
@@ -277,7 +263,7 @@ export default {
     }
   },
 
-  async created () {
+  async created() {
     // 获取省市联动数据
     this.getProvince()
     // 获取试题数据列表
@@ -299,16 +285,16 @@ export default {
     },
 
     // 清除
-    clear () {
-      for(var key in this.formData){
-        if (key != 'page' && key != 'pagesize') {
+    clear() {
+      for (var key in this.formData) {
+        if (key !== 'page' && key !== 'pagesize') {
           this.formData[key] = null
         }
       }
     },
-    
+
     // 删除试题操作
-    async removeQuestion (question) {
+    async removeQuestion(question) {
       await this.$confirm('此操作永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -324,7 +310,7 @@ export default {
     },
 
     // 加入精选操作
-    async addChoice (question) {
+    async addChoice(question) {
       await this.$confirm('此操作会将该题目加入精选, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -340,13 +326,13 @@ export default {
     },
 
     // 获取到市,下辖的区县
-    getProvince (cityName) {
+    getProvince(cityName) {
       // this.formData.city = ''
       this.citys.cityData = citys(cityName)
     },
 
     // 获取列表数据
-    async getList () {
+    async getList() {
       // const params = this.formData
       const { data: questions } = await list( this.formData )
       // console.log(questions)
@@ -355,19 +341,19 @@ export default {
     },
 
     // 当前页数
-    handlePager (page) {
+    handlePager(page) {
       this.formData.page = page
       this.getList()
     },
 
     // 每页条数
-    handleSizeChange (size) {
+    handleSizeChange(size) {
       this.formData.pagesize = size
       this.getList()
     },
 
     // 二级目录 和 标签
-    async changeSubject (subjectID) {
+    async changeSubject(subjectID) {
       if (subjectID) {
         const { data: directoryrArr } = await catalogList(subjectID)
         this.catalogs = directoryrArr
@@ -396,32 +382,32 @@ export default {
 }
 </script>
 
-<style scoped lang='scss'>
-  .explain {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    .font {
-      font-size: 12px;
-      color: pink
-    }
+<style scoped lang="scss">
+.explain {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  .font {
+    font-size: 12px;
+    color: pink;
   }
-  .el-input {
-    width: 217px;
+}
+.el-input {
+  width: 217px;
+}
+.city .el-select {
+  width: 105px;
+  margin-right: 3px;
+}
+.alert {
+  margin: 20px 0px;
+  span {
+    font-size: 15px;
   }
-  .city .el-select {
-    width: 105px;
-    margin-right: 3px;
-  }
-  .alert {
-    margin: 20px 0px;
-    span {
-      font-size: 15px;
-    }
-  }
-  .block {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-  }
+}
+.block {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
 </style>

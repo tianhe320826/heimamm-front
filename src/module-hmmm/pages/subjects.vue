@@ -6,7 +6,7 @@
         <el-form :model="requestParameters" ref="requestParameters" :inline="true">
           <div class="filter-container">
             <el-form-item label="学科名称">
-              <el-input @keyup.enter="handleFilter" v-model="requestParameters.subjectName"></el-input>
+              <el-input @keyup.enter="handleFilter" v-model="requestParameters.subjectName" clearable></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
@@ -154,7 +154,6 @@ export default {
     async getSubjectsList(params) {
       this.listLoading = true
       const { data } = await list(this.requestParameters)
-      // console.log(data)
       try {
         this.dataList = data.items
         this.total = data.counts
@@ -226,7 +225,7 @@ export default {
     // 到学科分类
     toCatagory(params) {
       this.$router.push({
-        path: '/directorys/',
+        path: '/subjects/directorys',
         query: {
           id: params.id,
           name: params.subjectName
@@ -235,10 +234,8 @@ export default {
     },
     // 到学科标签
     toTags(params) {
-      // console.log(row)
-
       this.$router.push({
-        path: '/subjects/tags/',
+        path: '/subjects/tags',
         query: {
           id: params.id,
           name: params.subjectName
