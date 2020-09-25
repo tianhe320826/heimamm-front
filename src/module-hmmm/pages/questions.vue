@@ -106,9 +106,11 @@
           <el-table-column label="学科" prop="subject"> </el-table-column>
           <el-table-column label="目录" prop="catalog"> </el-table-column>
           <el-table-column label="题型">
-            <template slot-scope="scope">
-              {{ questionType.find(item => item.value === +scope.row.questionType).label }}
-            </template>
+              <template slot-scope="scope">
+                <span v-if="scope.row.questionType === '1'">单选</span>
+                <span v-if="scope.row.questionType === '2'">多选</span>
+                <span v-if="scope.row.questionType === '3'">简答</span>
+              </template>
           </el-table-column>
           <el-table-column label="题干">
             <template slot-scope="scope">
@@ -122,7 +124,9 @@
           </el-table-column>
           <el-table-column label="难度" prop="difficulty">
             <template slot-scope="scope">
-              {{ difficulty.find(item => item.value === +scope.row.difficulty).label }}
+              <span v-if="scope.row.difficulty === '1'">简单</span>
+              <span v-if="scope.row.difficulty === '2'">一般</span>
+              <span v-if="scope.row.difficulty === '3'">困难</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="creator"> </el-table-column>
