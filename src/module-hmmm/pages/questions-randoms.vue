@@ -125,7 +125,7 @@ export default {
     this.getQuestionData()
     this.wsm()
   },
-  methods: {,
+  methods: {
     async getQuestionData() {
       try {
         const { data } = await randoms(this.queryInfo)

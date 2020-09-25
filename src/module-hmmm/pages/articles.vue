@@ -6,11 +6,7 @@
         <el-form :inline="true" :model="requestParameters" ref="requestParameters">
           <div class="filter-container">
             <el-form-item :label="$t('table.keyword')">
-<<<<<<< HEAD
               <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.searchKeyword')" class="filter-item" v-model="requestParameters.keyword"></el-input>
-=======
-              <el-input @keyup.enter="handleFilter" style="width: 200px" :placeholder="$t('table.searchKeyword')" class="filter-item" v-model="requestParameters.keyword"></el-input>
->>>>>>> 0a34075ec7b8a8fb47a7ebe30ed1449d6dcb4231
             </el-form-item>
             <el-form-item :label="$t('table.state')">
               <el-select placeholder="请选择" clearable v-model="requestParameters.state">
@@ -225,14 +221,14 @@ export default {
         this.requestParameters.state = null
       }
       list(params)
-        .then((data) => {
+        .then(data => {
           // console.log(data)
           this.dataList = data.data.items
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch((e) => {
+        .catch(e => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -323,17 +319,12 @@ export default {
       })
         .then(() => {
           remove({ id: user })
-<<<<<<< HEAD
             .then(response => {
               this.$message.success('删除成功')
-=======
-            .then((response) => {
-              this.$message.success('成功删除了用户' + '!')
->>>>>>> 0a34075ec7b8a8fb47a7ebe30ed1449d6dcb4231
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error('删除失败!')
             })
         })
@@ -357,26 +348,26 @@ export default {
         state: row.state ? 0 : 1
       }
       changeState(params)
-        .then((data) => {
+        .then(data => {
           this.$message.success('操作成功')
           row.state = row.state ? 0 : 1
           // console.log(data)
           this.getList()
         })
-        .catch((data) => {
+        .catch(data => {
           this.$message.error('操作失败!')
         })
     }
   },
   // 挂载结束
-  mounted: function () {},
+  mounted: function() {},
   // 创建完毕状态
   created() {
     // 读取数据
     this.getList(this.requestParameters)
     // 键盘enter操作
     var lett = this
-    document.onkeydown = function (e) {
+    document.onkeydown = function(e) {
       var key = window.event.keyCode
       if (key === 13) {
         lett.handleFilter(this.requestParameters)
@@ -384,6 +375,6 @@ export default {
     }
   },
   // 组件更新
-  updated: function () {}
+  updated: function() {}
 }
 </script>

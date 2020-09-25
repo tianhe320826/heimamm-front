@@ -303,13 +303,6 @@ export default {
       // console.log(e)
       this.reqParmas.enterpriseID = e
     },
-<<<<<<< HEAD
-    haneleSuccess(e) {
-      // console.log(e.src)
-    },
-=======
-
->>>>>>> 0a34075ec7b8a8fb47a7ebe30ed1449d6dcb4231
     addOptions() {
       const len = this.questionsOptinos.length
       const e = this.questionsOptinos[len - 1]
@@ -341,11 +334,11 @@ export default {
       })
         .then(async () => {
           await addQuestion(this.reqParmas)
-            .then((response) => {
+            .then(response => {
               this.$message.success('已成功' + status + '!')
               this.getList(this.reqParmas)
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error(status + '失败!')
             })
         })
