@@ -1,221 +1,215 @@
-
-<style scoped lang='less'></style>
+<style scoped lang="less"></style>
 <template>
-  <div class="container">
-    <div class="dashboard-container">
-      <div class="app-container">
-        <el-card shadow="never">
-          <div class="topSearch" style="width: 100%">
-            <el-form :inline="true" ref="form" :model="queryInfo">
-              <div>
-                <el-form-item label="标签名称">
-                  <el-input v-model="queryInfo.tagName" size="mini"></el-input>
-                </el-form-item>
-                <el-form-item label="状态">
-                  <el-select v-model="queryInfo.state" placeholder="请选择">
-                    <el-option label="启用" value="1"></el-option>
-                    <el-option label="禁用" value="0"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item>
-                  <el-button size="mini" type="info">清除</el-button>
-                  <el-button size="mini" type="primary" @click="getTagData">搜索</el-button>
-                </el-form-item>
-              </div>
-            </el-form>
-            <el-button size="mini" icon="el-icon-edit" type="success" @click="tagDialogTableVisible = true">新增学科</el-button>
-          </div>
-
-          <!-- 顶部栏 -->
-
-          <!-- 提示 -->
-          <el-alert :title="`总共${counts}条数据!`" type="info" :closable="false" show-icon></el-alert>
-          <!-- 提示 -->
-
-          <!-- table表格 -->
-          <el-table :data="tagData" style="width: 100%">
-            <el-table-column prop="id" label="序号" width="180"> </el-table-column>
-            <el-table-column prop="subjectName" label="所属学科" width="180"> </el-table-column>
-            <el-table-column prop="tagName" label="标签名称"> </el-table-column>
-            <el-table-column prop="username" label="创建者"> </el-table-column>
-            <el-table-column prop="addDate" label="创建日期"> </el-table-column>
-            <el-table-column prop="state" label="状态">
-              <template slot-scope="scope">
-                <span> {{ scope.row.state == 1 ? '已启用' : '已禁用' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" min-width="150px">
-              <template slot-scope="">
-                <div class="operation">
-                  <span>启用</span>
-                  <span>修改</span>
-                  <span>删除</span>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-          <!-- table表格 -->
-
-          <!-- 分页栏 -->
-          <el-pagination
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="queryInfo.page"
-            :page-size="queryInfo.pagesize"
-            :page-sizes="[10, 20, 30, 50]"
-            :total="counts"
-            layout=" prev, pager, next,total, sizes, jumper"
-          ></el-pagination>
-          <!-- 分页栏 -->
-
-          <!-- 添加弹框 -->
-          <template>
-            <el-dialog title="新增目录" :visible.sync="tagDialogTableVisible">
-              <el-form :model="form">
-                <el-form-item label="活动区域" :label-width="formLabelWidth">
-                  <el-select v-model="form.region" placeholder="请选择活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="活动名称" :label-width="formLabelWidth">
-                  <el-input v-model="form.name" autocomplete="off"></el-input>
-                </el-form-item>
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="tagDialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="tagDialogTableVisible = false">确 定</el-button>
-              </div>
-            </el-dialog>
-          </template>
-
-          <!-- 添加弹框 -->
-        </el-card>
-      </div>
+  <div class="directorys-container">
+    <div class="app-container">
+      <el-card shadow="never">
+        <!-- 搜索 -->
+        <el-form :model="requestTags" :inline="true">
+          <el-form-item :label="$t('table.tagName')" class="tagName">
+            <el-input v-model="requestTags.tagName" clearable @keyup.enter.native="getList"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('table.state')">
+            <el-select v-model="requestTags.state" placeholder="请选择" clearable>
+              <el-option :label="$t('table.enable')" :value="1"></el-option>
+              <el-option :label="$t('table.prohibit')" :value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="defalut" @click="clearForm">{{ $t('table.clear') }}</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
+          </el-form-item>
+          <el-form-item class="fr">
+            <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
+          </el-form-item>
+        </el-form>
+        <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
+        <!-- end -->
+        <!-- 数据 -->
+        <el-table :key="tableKey" :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%">
+          <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
+          <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
+          <el-table-column :label="$t('table.tagName')" prop="tagName"></el-table-column>
+          <el-table-column :label="$t('table.createdBy')" prop="username"></el-table-column>
+          <el-table-column :label="$t('table.creatdate')" :sort-method="changesort" sortable>
+            <template slot-scope="scope">
+              <span>{{ scope.row.addDate | parseTimeByString }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('table.state')">
+            <template slot-scope="scoped">
+              <span>{{ scoped.row.state ? '已启用' : '已禁用' }}</span>
+            </template>
+          </el-table-column>
+          <!-- 操作 -->
+          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
+            <template slot-scope="scoped">
+              <el-link type="primary" :underline="false" @click="handleChange(scoped.row)">{{ scoped.row.state ? '禁用' : '启用' }}</el-link>
+              <el-link :type="scoped.row.state ? 'info' : 'primary'" :underline="false" :disabled="scoped.row.state ? true : false" @click="handleUpdate(scoped.row)">修改</el-link>
+              <el-link :type="scoped.row.state ? 'info' : 'primary'" :underline="false" :disabled="scoped.row.state ? true : false" @click="handleRemove(scoped.row)">删除</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- end -->
+        <!-- 分页 -->
+        <div class="pagination fr">
+          <PageTool :paginationPage="requestTags.page" :paginationPagesize="requestTags.pagesize" :total="total" @pageChange="handleCurrentChange" @pageSizeChange="handleSizeChange"></PageTool>
+        </div>
+        <!-- end -->
+        <!-- 新增标签弹层 -->
+        <tags-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addTags="addTags" />
+        <!-- 编辑标签弹层 -->
+        <tags-edit v-if="isEditDialogShow" :directoryObj="directoryObj" @close="isEditDialogShow = false" @EditDirectory="EditDirectorys" />
+      </el-card>
     </div>
   </div>
 </template>
 
 <script>
-import { list } from '@/api/hmmm/tags.js'
-// import { pluralize } from '@/src/filters/index.js'
+import { list, remove, changeState } from '@/api/hmmm/tags'
+import PageTool from '../components/pageTool'
+import TagsAdd from '../components/tags-add'
+import TagsEdit from '../components/tags-edit'
+
 export default {
+  name: 'TagsIndex',
+  components: {
+    TagsAdd,
+    TagsEdit,
+    PageTool
+  },
   data() {
     return {
-      counts: 0, // 数据总条数
-      // 请求参数
-      queryInfo: {
+      directoryObj: {},
+      isEditDialogShow: false,
+      isAddDialogShow: false,
+      text: '', // 新增、编辑文本
+      tableKey: 0,
+      total: null,
+      dataList: [],
+      listLoading: false,
+      alertText: '',
+      requestTags: {
         page: 1,
         pagesize: 10,
-        subjectID: '', // 学科ID
-        tagName: '',
+        tagName: null,
         state: null
-      },
-      tagData: [],
-      // //--------------
-      gridData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
-      tagDialogTableVisible: false,
-      tagDialogFormVisible: false,
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      formLabelWidth: '120px'
+      }
     }
   },
   created() {
-    this.getTagData()
+    this.getList()
   },
-  mounted() {},
   methods: {
-    async getTagData() {
-      try {
-        const { data } = await list({
-          page: this.queryInfo.page,
-          pagesize: this.queryInfo.pagesize,
-          subjectID: this.queryInfo.ssubjectID,
-          tagName: this.queryInfo.tagName,
-          state: this.queryInfo.state
+    // 获取列表数据
+    getList() {
+      this.listLoading = true
+      if (this.requestTags.state === '' || this.requestTags.tagName === '') {
+        this.requestTags.state = null
+        this.requestTags.tagName = null
+      }
+      list(this.requestTags)
+        .then(({ data }) => {
+          console.log(data)
+          this.dataList = data.items
+          this.alertText = `共 ${data.counts} 条记录`
+          this.listLoading = false
         })
-        this.tagData = data.items
-        this.counts = data.counts
-        // console.log(data)
-      } catch (error) {
-        console.log(error)
+        .catch(e => {
+          this.$message.e('错了哦，这是一条错误消息')
+        })
+    },
+    // 数据排序
+    changesort(a, b) {
+      const oldTime = new Date(a.date).getTime() / 1000
+      const newime = new Date(b.date).getTime() / 1000
+      if (oldTime - newime > 0) {
+        return true
+      } else {
+        return false
       }
     },
-    // 显示页面数
-    handleSizeChange(newSize) {
-      this.queryInfo.pagesize = newSize
-      // console.log(`每页 ${newSize} 条`)
-      this.getTagData()
+    // 清空表单
+    clearForm() {
+      this.requestTags.tagName = ''
+      this.requestTags.state = null
+      this.getList()
     },
-    // 当前页面
-    handleCurrentChange(newPage) {
-      this.queryInfo.page = newPage
-      console.log(`当前页: ${newPage}`)
-      this.getTagData()
+    // 每页显示信息条数
+    handleSizeChange(val) {
+      this.requestTags.pagesize = val
+      this.getList()
     },
-    //  添加 弹框
-    addTagData() {
-      this.$alert('<strong>这是 <i>HTML</i> 片段</strong>', '新增目录', {
-        dangerouslyUseHTMLString: true
+    // 显示的页码
+    handleCurrentChange(val) {
+      this.requestTags.page = val
+      this.getList()
+    },
+    // 监听添加目录事件，刷新列表
+    addTags() {
+      this.getList()
+      this.isAddDialogShow = false
+    },
+    // 状态改变事件
+    handleChange(row) {
+      changeState({
+        id: row.id,
+        state: row.state ? 0 : 1
       })
+        .then(data => {
+          row.state = row.state ? 0 : 1
+        })
+        .catch(e => {
+          this.$message.e('错了哦，这是一条错误消息')
+        })
+    },
+    // 编辑
+    handleUpdate(row) {
+      // this.directoryObj = row
+      // this.isEditDialogShow = true
+    },
+    EditDirectorys() {
+      //   this.getList()
+      //   this.isEditDialogShow = false
+    },
+    // 删除
+    handleRemove(row) {
+      // this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
+      //   type: 'warning'
+      // })
+      //   .then(() => {
+      //     remove({ id: row.id })
+      //       .then(response => {
+      //         this.$message.success('已成功删除目录！')
+      //         this.getList()
+      //       })
+      //       .catch(response => {
+      //         this.$message.error('删除失败！')
+      //       })
+      //   })
+      //   .catch(() => {
+      //     this.$message.info('已取消操作!')
+      //   })
     }
   }
 }
 </script>
 
-<style scoped lang='less'>
-.container {
-  .topSearch {
-    display: flex;
-    justify-content: space-between;
+<style scoped lang="scss">
+.directorys-container {
+  .alert {
+    margin: 10px 0px;
   }
-  .operation {
-    // background: aquamarine;
-    color: rgb(18, 118, 233);
-    font-size: 13px;
-    span {
-      margin: 0 5px;
-    }
+  .pagination {
+    margin: 20px 0;
   }
-  .el-form-item {
-    margin-right: 30px;
+  .el-link {
+    margin-right: 8px;
   }
-  .el-button--success {
-    height: 28px;
-  }
-  .el-alert {
-    margin-bottom: 20px;
+
+  .tagName {
+    margin-right: 60px;
   }
 }
 </style>
