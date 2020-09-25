@@ -43,7 +43,7 @@
             </template>
           </el-table-column>
           <!-- 操作 -->
-          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
+          <el-table-column align="center" :label="$t('table.actions')">
             <template slot-scope="scoped">
               <el-link type="primary" :underline="false" @click="handleChange(scoped.row)">{{ scoped.row.state ? '禁用' : '启用' }}</el-link>
               <el-link :type="scoped.row.state ? 'info' : 'primary'" :underline="false" :disabled="scoped.row.state ? true : false" @click="handleUpdate(scoped.row)">修改</el-link>
@@ -79,7 +79,7 @@ import DirectorysAdd from '../components/directorys-add'
 import DirectorysEdit from '../components/directorys-edit'
 
 export default {
-  name: 'base-permissions',
+  name: 'DirectoryIndex',
   components: {
     DirectorysAdd,
     DirectorysEdit,
@@ -204,23 +204,19 @@ export default {
 
 <style scoped lang="scss">
 .directorys-container {
-  padding: 10px;
+  // 数据条数提示条
   .alert {
     margin: 10px 0px;
   }
+  // 底部分页区域
   .pagination {
     margin: 20px 0;
   }
+  // 右侧点击文字
   .el-link {
-    margin-right: 20px;
+    margin-right: 8px;
   }
-
-  .el-table th {
-    background-color: #fafafa;
-  }
-  .el-table th.is-leaf {
-    border-bottom: 2px solid #e8e8e8;
-  }
+  // 目录名称输入框
   .directoryName {
     margin-right: 60px;
   }
