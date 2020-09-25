@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div class="container">
     <el-dialog>
@@ -106,3 +107,5 @@ export default {
   }
 }
 </style>
+=======
+>>>>>>> 16b3c6bd7b0be215d41238c4911a7d66af6cf067
