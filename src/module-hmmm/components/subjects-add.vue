@@ -1,7 +1,7 @@
 <template>
   <div class="add-form">
-    <el-dialog title="新增学科" :visible.sync="dialogFormVisible" width="25%">
-      <el-form label-position="left" label-width="120px" style="width: 400px;" :model="addForm" :rules="addFormRules" ref="addFormRef">
+    <el-dialog title="新增学科" :visible.sync="dialogFormVisible" width="30%">
+      <el-form label-width="80px" :model="addForm" :rules="addFormRules" ref="addFormRef">
         <el-form-item label="学科名称" prop="subjectName">
           <el-input placeholder="请输入学科名称" v-model="addForm.subjectName"></el-input>
         </el-form-item>
@@ -18,7 +18,6 @@
 </template>
 
 <script>
-// import { remove, update, add } from '@/api/hmmm/subjects'
 import { add } from '@/api/hmmm/subjects'
 export default {
   name: 'subjectssAdd',
@@ -64,18 +63,7 @@ export default {
         this.$emit('updateSubject')
       })
     }
-  },
-  created() {}
+  }
 }
 </script>
-<style lang="scss" scoped>
-.el-form--label-left .el-form-item__label {
-  text-align: right;
-}
-.el-form-item--medium {
-  margin-bottom: 22px;
-}
-.el-dialog__footer {
-  text-align: center;
-}
-</style>
+<style lang="scss" scoped></style>
