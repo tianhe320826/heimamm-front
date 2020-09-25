@@ -3,7 +3,7 @@
     <el-card>
       <el-form :rules="rules">
         <div slot="header" class="clearfix">
-          <span>试题录入</span>
+          <span>试题录入 </span>
         </div>
         <!-- 选择框 -->
         <el-form-item label="学科：" label-width="10%" prop="subject">
@@ -230,7 +230,7 @@ export default {
       this.getDirData(e)
     },
     async getDirData(e) {
-      const { data: resDir } = await dirSimple(e)
+      const { data: resDir } = await dirSimple({ subjectID: e })
       // TODO应展示当前学科的二级目录
       console.log(e, resDir)
       this.dirOptions = resDir
@@ -336,11 +336,11 @@ export default {
       })
         .then(async () => {
           await addQuestion(this.reqParmas)
-            .then(response => {
+            .then((response) => {
               this.$message.success('已成功' + status + '!')
               this.getList(this.reqParmas)
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error(status + '失败!')
             })
         })

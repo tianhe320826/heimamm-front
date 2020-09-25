@@ -6,7 +6,7 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('new')">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
 
         <!-- 表单区域 -->
