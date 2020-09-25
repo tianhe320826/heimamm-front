@@ -154,7 +154,6 @@ export default {
     async getSubjectsList() {
       this.listLoading = true
       const { data } = await list(this.requestParameters)
-      // console.log(data)
       try {
         this.dataList = data.items
         this.total = data.counts

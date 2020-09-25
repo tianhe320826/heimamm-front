@@ -8,7 +8,6 @@
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
           <el-button type="success" icon="el-icon-edit" size="small">新增试题</el-button>
         </div>
-
         <!-- 表单区域 -->
         <el-form ref="formData" label-width="80px">
           <el-row>
@@ -107,15 +106,16 @@
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
-
         <!-- 数据表格 -->
         <el-table :data="questionList" style="width: 100%">
           <el-table-column label="试题编号" prop="number" width="210px"> </el-table-column>
           <el-table-column label="学科" prop="subject"> </el-table-column>
           <el-table-column label="目录" prop="catalog"> </el-table-column>
-          <el-table-column label="题型">
+          <el-table-column label="题型" prop="questionType">
             <template slot-scope="scope">
-              {{ questionType.find((item) => item.value === +scope.row.questionType).label }}
+              <span v-if="scope.row.questionType === 1">单选</span>
+              <span v-if="scope.row.questionType === 1">多选</span>
+              <span v-if="scope.row.questionType === 1">简答</span>
             </template>
           </el-table-column>
           <el-table-column label="题干">
@@ -130,22 +130,28 @@
           </el-table-column>
           <el-table-column label="难度" prop="difficulty">
             <template slot-scope="scope">
-              {{ difficulty.find((item) => item.value === +scope.row.difficulty).label }}
+              <span v-if="scope.row.chkState === 1">简单</span>
+              <span v-if="scope.row.chkState === 2">一般</span>
+              <span v-if="scope.row.chkState === 3">困难</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="creator"> </el-table-column>
           <!-- 审核状态 -->
-          <el-table-column label="审核状态" prop="audit">
+          <el-table-column label="审核状态" prop="chkState">
             <template slot-scope="scope">
-              {{ audit.find((item) => item.value === +scope.row.audit).label }}
+              <span v-if="scope.row.chkState === 1">待发布</span>
+              <span v-if="scope.row.chkState === 2">已发布</span>
+              <span v-if="scope.row.chkState === 3">已下架</span>
             </template>
           </el-table-column>
           <!-- 审核人 -->
-          <el-table-column label="审核人" prop="reviewer"> </el-table-column>
+          <el-table-column label="审核人" prop="chkUser"> </el-table-column>
           <!-- 发布状态 -->
-          <el-table-column label="审核状态" prop="publish">
+          <el-table-column label="发布状态" prop="publishState">
             <template slot-scope="scope">
-              {{ publish.find((item) => item.value === +scope.row.publish).label }}
+              <span v-if="scope.row.chkState === 1">发布</span>
+              <span v-if="scope.row.chkState === 2">已发布</span>
+              <span v-if="scope.row.chkState === 3">已下架</span>
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
@@ -153,13 +159,18 @@
             <template slot-scope="scope">
               <el-row>
                 <!-- 预览 -->
-                <el-button @click="dialogVisible = true" plain type="primary" icon="el-icon-view" circle></el-button>
-                <!-- 编辑 -->
-                <el-button plain type="success" icon="el-icon-edit" circle></el-button>
+                <el-button @click="previewDialogVisible = true" plain type="primary" size="mini">预览</el-button>
+                <!-- 审核 -->
+                <el-button @click="checkDialogVisible = true" plain type="success" size="mini">审核</el-button>
+                <!-- 修改 -->
+                <el-button plain type="info" size="mini">修改</el-button>
+
+                <!-- 上架 -->
+                <el-button v-if="scope.row.publishState === 1" plain type="warning" size="mini" @click="choicePublishState(scope.row)">上架</el-button>
+                <el-button v-else-if="scope.row.publishState === 0" plain type="warning" size="mini" @click="choicePublishState(scope.row)">下架</el-button>
+
                 <!-- 删除 -->
-                <el-button @click="removeQuestion(scope.row)" plain type="danger" icon="el-icon-delete" circle></el-button>
-                <!-- 加入精选 -->
-                <el-button @click="addChoice(scope.row)" plain type="warning" icon="el-icon-check" circle></el-button>
+                <el-button @click="removeQuestion(scope.row)" plain type="danger" size="mini">删除</el-button>
               </el-row>
             </template>
           </el-table-column>
@@ -181,7 +192,22 @@
         </div>
       </el-card>
       <!-- 预览对话框 -->
-      <el-dialog :visible.sync="dialogVisible"></el-dialog>
+      <el-dialog :visible.sync="previewDialogVisible">
+        <questions-preview></questions-preview>
+      </el-dialog>
+      <!-- 审核对话框 -->
+      <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
+        <el-form>
+          <el-radio-group v-model="checkForm.choiceState">
+            <el-radio :label="true">通过</el-radio>
+            <el-radio :label="false">拒绝</el-radio>
+          </el-radio-group>
+          <br />
+          <el-input type="textarea" placeholder="请输入审核意见" required style="width: 300px; margin: 20px 0 20px 0" v-model="checkForm.textarea"> </el-input>
+          <el-button>取消</el-button>
+          <el-button type="primary">确认</el-button>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -197,16 +223,16 @@ import { difficulty, questionType, direction } from '@/api/hmmm/constants'
 import { simple as tagsList } from '@/api/hmmm/tags'
 // 录入人列表
 import { simple as userList } from '@/api/base/users'
-// 基础题库 删除题库 添加精品
-import { list, remove, choiceAdd } from '@/api/hmmm/questions'
+// 基础题库 删除题库 上架下架
+import { choice, remove, choicePublish } from '@/api/hmmm/questions'
 // 省市联动
 import { provinces, citys } from '@/api/hmmm/citys'
 // 导入预览框组件
-// import QuestionsPreview from '../components/questions-preview'
+import QuestionsPreview from '../components/questions-preview'
 
 export default {
   components: {
-    // QuestionsPreview
+    QuestionsPreview
   },
   data() {
     return {
@@ -215,7 +241,9 @@ export default {
       // 难度
       difficulty,
       // 控制预览对话框的显示与否
-      dialogVisible: false,
+      previewDialogVisible: false,
+      // 控制审核对话框显示
+      checkDialogVisible: false,
       // 基础题库数据列表
       formData: {
         // 学科ID
@@ -253,7 +281,7 @@ export default {
       catalogs: [],
       // 标签数据列表
       tags: [],
-      // 试题类型数据列表
+      // 试题类型数据列表 不能引入进来直接使用
       questions: questionType,
       // 难度数据列表
       difficulted: difficulty,
@@ -273,13 +301,18 @@ export default {
       // 试题数据总条数
       total: 0,
       // tab栏默认选择
-      activeName: 'all'
+      activeName: 'all',
+      // 审核表单数据
+      checkForm: {
+        id: 0,
+        choiceState: false,
+        textarea: ''
+      }
     }
   },
   created() {
     this.Init()
   },
-
   methods: {
     async Init() {
       // 获取省市联动数据
@@ -317,50 +350,29 @@ export default {
         this.$message.error('删除失败')
       }
     },
-
-    // 加入精选操作
-    async addChoice(question) {
-      await this.$confirm('此操作会将该题目加入精选, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      })
-      try {
-        await choiceAdd({ id: question.id, choiceState: 1 })
-        this.$message.success('加入精选成功')
-        this.getList()
-      } catch (error) {
-        this.$message.error('加入精选失败')
-      }
-    },
-
     // 获取到市,下辖的区县
     getProvince(cityName) {
       // this.formData.city = ''
       this.citys.cityData = citys(cityName)
     },
-
     // 获取列表数据
     async getList() {
       // const params = this.formData
-      const { data: questions } = await list()
-      // console.log(questions)
-      this.questionList = questions.items
-      this.total = questions.counts
+      const { data: res } = await choice()
+      console.log(res)
+      this.questionList = res.items
+      this.total = res.counts
     },
-
     // 当前页数
     handlePager(page) {
       this.formData.page = page
       this.getList()
     },
-
     // 每页条数
     handleSizeChange(size) {
       this.formData.pagesize = size
       this.getList()
     },
-
     // 二级目录 和 标签
     async changeSubject(subjectID) {
       if (subjectID) {
@@ -376,12 +388,32 @@ export default {
       }
     },
     // tab栏点击切换
-    handleTabsClick() {}
+    handleTabsClick() {},
+    // 上架下架
+
+    async choicePublishState(row) {
+      // 请求接口的参数有问题
+      const params = {}
+      params.id = row.id
+      params.PublishState = row.PublishState
+      await this.$confirm('您确定下架这道题目码?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      try {
+        await choicePublish(params)
+        this.$message.success('上架成功')
+        this.getList()
+      } catch (error) {
+        this.$message.error('上架失败')
+      }
+    }
   }
 }
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .explain {
   display: flex;
   justify-content: space-between;
