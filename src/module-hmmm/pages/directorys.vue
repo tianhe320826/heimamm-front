@@ -94,11 +94,7 @@ export default {
   },
   data() {
     return {
-<<<<<<< HEAD
-      // isShow: false,
-=======
       // 点击修改按钮当前行的信息对象
->>>>>>> 271aa93427de78fe8e0c91be858abd24738fc551
       directoryObj: {},
       // 控制修改编辑目录弹窗的显示隐藏
       isEditDialogShow: false,
@@ -111,11 +107,7 @@ export default {
       listLoading: false,
       // 数据总条数提示文本
       alertText: '',
-<<<<<<< HEAD
       subjectdir: this.$route.query.name,
-=======
-      // 请求参数对象
->>>>>>> 271aa93427de78fe8e0c91be858abd24738fc551
       requestDirectory: {
         page: 1,
         pagesize: 10,

@@ -102,11 +102,7 @@ export default {
       listLoading: false,
       // 数据总数提示文本
       alertText: '',
-<<<<<<< HEAD
       subjecttag: this.$route.query.name,
-=======
-      // 请求数据对象
->>>>>>> 271aa93427de78fe8e0c91be858abd24738fc551
       requestTags: {
         page: 1,
         pagesize: 10,
