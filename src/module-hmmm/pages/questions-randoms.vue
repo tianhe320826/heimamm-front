@@ -9,15 +9,7 @@
               <el-row :gutter="24">
                 <el-col :span="20">
                   关键字：
-                  <el-input
-                    class="Keyword"
-                    clearable
-                    placeholder="请输入内容"
-                    prefix-icon="el-icon-search"
-                    v-model="queryInfo.keyword"
-                    size="small"
-                    @keyup.enter.native="getQuestionData"
-                  ></el-input>
+                  <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
                 </el-col>
                 <el-col :span="4">
                   <div class="grid-content bg-purple">
@@ -28,17 +20,13 @@
               </el-row>
             </div>
           </div>
-
           <!-- 顶部栏 -->
-
           <!-- 提示 -->
           <el-alert :title="`总共${counts}条数据!`" type="info" :closable="false" show-icon></el-alert>
-
           <!-- 提示 -->
-
           <!-- table表格 -->
           <div>
-            <el-table :data="isTableData" style="width: 100%">
+            <el-table class="randomsTable" :data="isTableData" style="width: 100%">
               <el-table-column width="200px" prop="id" label="编号"></el-table-column>
               <el-table-column width="80px" prop="questionType" label="题型">
                 <template slot-scope="scope">
@@ -47,25 +35,18 @@
                   <el-tag type="warning" v-else>简答</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column
-                class="questionSerial"
-                width="200px"
-                prop="questionIDs[0].number"
-                label="题目编号"
-              ></el-table-column>
+              <el-table-column class="questionSerial" width="200px" label="题目编号">
+                <template slot-scope="scope">
+                  <el-link @click="dialogShow = true" type="primary" class="randomsLink" v-for="(item, index) in scope.row.questionIDs" :key="index"> {{ item.number }}</el-link>
+                </template>
+              </el-table-column>
               <el-table-column width="200px" prop="addTime" label="录入时间"></el-table-column>
               <el-table-column prop="totalSeconds" label="答题时间"></el-table-column>
               <el-table-column prop="accuracyRate" label="正确率"></el-table-column>
               <el-table-column prop="userName" label="录入人"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    circle
-                    @click="deleteLIst(scope.row.id)"
-                  ></el-button>
+                  <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteLIst(scope.row.id)"></el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -73,21 +54,26 @@
           <!-- table表格 -->
 
           <!-- 分页栏 -->
-          <!--
-            1.current-page  当前页数
-            2.
-          -->
           <el-pagination
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="queryInfo.page"
             :page-size="queryInfo.pagesize"
-            :page-sizes="[20, 30,50, 100]"
+            :page-sizes="[20, 30, 50, 100]"
             :total="counts"
             layout=" prev, pager, next,total, sizes, jumper"
           ></el-pagination>
           <!-- 分页栏 -->
+          <!-- 弹框 -->
+          <el-dialog title="组件闲情" :visible.sync="dialogShow" width="50%">
+            <questionPreview :dialogShow="dialogShow"> </questionPreview>
+
+            <span slot="footer" class="dialog-footer" width="100%">
+              <el-button class="pvButton" @click="dialogShow = false">关 闭</el-button>
+            </span>
+          </el-dialog>
+          <!-- 弹框 -->
         </el-card>
       </div>
     </div>
@@ -96,6 +82,7 @@
 
 <script>
 import { randoms, removeRandoms } from '@/api/hmmm/questions.js'
+import questionPreview from '../components/questions-preview'
 export default {
   data() {
     return {
@@ -107,21 +94,27 @@ export default {
         page: 1, // 当前页码
         pagesize: 20 // 页大小
       },
-      counts: 0 // 总记录条数
+      counts: 0, // 总记录条数
+      dialogShow: false // 控制弹窗
     }
   },
+  components: {
+    questionPreview
+  },
   // 挂载结束
-
   mounted: function () {},
 
   created() {
     this.getQuestionData()
   },
   methods: {
+    ppppp() {
+      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    },
     async getQuestionData() {
       try {
         const { data } = await randoms(this.queryInfo)
-        // console.log(data)
+        console.log(data)
         this.counts = data.counts
         this.queryInfo.pagesize = data.pagesize - 0
         this.isTableData = data.items
@@ -174,6 +167,7 @@ export default {
           })
         })
     },
+
     // 点击删除按钮时处理isTableData数据
     deleteLIstIndex(id) {
       const deleteData = []
@@ -182,12 +176,12 @@ export default {
           deleteData.push(item)
         }
       })
+      this.counts = this.counts - 1
       this.isTableData = deleteData
-    }
-    // 清除input 输入框
-    // clearInput() {
-    //   this.search = ''
-    // }
+    },
+
+    // 实现弹出框
+    questionShow() {}
   }
 }
 </script>
@@ -200,7 +194,16 @@ export default {
   .Keyword {
     width: 30%;
   }
+  .randomsTable {
+    font-size: 13px;
+    .randomsLink {
+      color: rgb(27, 134, 235);
+      font-size: 13px;
+    }
+  }
+  .pvButton {
+    float: right;
+    margin-top: -25px;
+  }
 }
-// .container {
-// }
 </style>

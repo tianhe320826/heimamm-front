@@ -1,3 +1,4 @@
+<style scoped lang="less"></style>
 <template>
   <div class="directorys-container">
     <div class="app-container">
@@ -204,7 +205,7 @@ export default {
     margin: 20px 0;
   }
   .el-link {
-    margin-right: 10px;
+    margin-right: 8px;
   }
 
   .tagName {
