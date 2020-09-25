@@ -2,6 +2,12 @@
   <div class="directorys-container">
     <div class="app-container">
       <el-card shadow="never">
+        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="subjectdir">
+          <el-breadcrumb-item>学科管理</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ subjectdir }}</el-breadcrumb-item>
+          <el-breadcrumb-item>目录管理</el-breadcrumb-item>
+        </el-breadcrumb>
+        <div class="line" v-if="subjectdir"></div>
         <!-- 搜索 -->
         <el-form :model="requestDirectory" ref="requestDirectoryRef" :inline="true">
           <el-form-item :label="$t('table.directoryName')" class="directoryName">
@@ -20,13 +26,14 @@
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
+            <el-button v-if="subjectdir" type="text" style="margin-left: 10px;" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
             <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addDirectory') }}</el-button>
           </el-form-item>
         </el-form>
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
-        <el-table :key="tableKey" :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%">
+        <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
           <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
           <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
           <el-table-column :label="$t('table.directoryName')" prop="directoryName"></el-table-column>
@@ -43,7 +50,7 @@
             </template>
           </el-table-column>
           <!-- 操作 -->
-          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
+          <el-table-column align="center" :label="$t('table.actions')">
             <template slot-scope="scoped">
               <el-link type="primary" :underline="false" @click="handleChange(scoped.row)">{{ scoped.row.state ? '禁用' : '启用' }}</el-link>
               <el-link :type="scoped.row.state ? 'info' : 'primary'" :underline="false" :disabled="scoped.row.state ? true : false" @click="handleUpdate(scoped.row)">修改</el-link>
@@ -79,7 +86,7 @@ import DirectorysAdd from '../components/directorys-add'
 import DirectorysEdit from '../components/directorys-edit'
 
 export default {
-  name: 'base-permissions',
+  name: 'DirectoryIndex',
   components: {
     DirectorysAdd,
     DirectorysEdit,
@@ -87,19 +94,25 @@ export default {
   },
   data() {
     return {
+      // 点击修改按钮当前行的信息对象
       directoryObj: {},
+      // 控制修改编辑目录弹窗的显示隐藏
       isEditDialogShow: false,
+      // 控制添加目录弹窗的显示隐藏
       isAddDialogShow: false,
-      text: '', // 新增、编辑文本
-      tableKey: 0,
+      // 存储表格数据
       dataList: [],
       total: null,
+      // 表格加载loading
       listLoading: false,
+      // 数据总条数提示文本
       alertText: '',
+      subjectdir: this.$route.query.name,
       requestDirectory: {
         page: 1,
         pagesize: 10,
         directoryName: null,
+        subjectID: this.$route.query.id,
         state: null
       }
     }
@@ -123,10 +136,10 @@ export default {
           this.listLoading = false
         })
         .catch(e => {
-          this.$message.e('错了哦，这是一条错误消息')
+          this.$message.e('获取目录列表数据失败')
         })
     },
-    // 数据排序
+    // 日期排序
     changesort(a, b) {
       const oldTime = new Date(a.date).getTime() / 1000
       const newime = new Date(b.date).getTime() / 1000
@@ -170,7 +183,7 @@ export default {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
-    // 编辑
+    // 编辑修改
     handleUpdate(row) {
       this.directoryObj = row
       this.isEditDialogShow = true
@@ -181,21 +194,21 @@ export default {
     },
     // 删除
     handleRemove(row) {
-      this.$confirm('此操作将永久删除用户 ' + ', 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除目录' + ', 是否继续?', '提示', {
         type: 'warning'
       })
         .then(() => {
           remove({ id: row.id })
             .then(response => {
-              this.$message.success('已成功删除目录！')
+              this.$message.success('已成功删除该目录')
               this.getList()
             })
             .catch(response => {
-              this.$message.error('删除失败！')
+              this.$message.error('删除失败，请稍后重试')
             })
         })
         .catch(() => {
-          this.$message.info('已取消操作!')
+          this.$message.info('已取消该操作')
         })
     }
   }
@@ -204,23 +217,27 @@ export default {
 
 <style scoped lang="scss">
 .directorys-container {
-  padding: 10px;
+  .el-breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .line {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 12px;
+  }
+  // 数据条数提示条
   .alert {
     margin: 10px 0px;
   }
+  // 底部分页区域
   .pagination {
     margin: 20px 0;
   }
+  // 右侧点击文字
   .el-link {
-    margin-right: 20px;
+    margin-right: 8px;
   }
-
-  .el-table th {
-    background-color: #fafafa;
-  }
-  .el-table th.is-leaf {
-    border-bottom: 2px solid #e8e8e8;
-  }
+  // 目录名称输入框
   .directoryName {
     margin-right: 60px;
   }

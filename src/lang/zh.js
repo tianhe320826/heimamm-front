@@ -103,6 +103,8 @@ export default {
     subjectName: '所属学科',
     createdBy: '创建者',
     QuestionsNum: '面试题数量',
-    addSubjects: '新增学科'
+    addSubjects: '新增学科',
+    tagName: '标签名称',
+    addTag: '新增标签'
   }
 }
