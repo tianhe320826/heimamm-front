@@ -6,7 +6,7 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('new')">新增试题</el-button>
         </div>
 
         <!-- 表单区域 -->
@@ -150,7 +150,7 @@
                 <!-- 预览 -->
                 <el-button  @click="dialogVisible = true" plain type="primary" icon="el-icon-view" circle></el-button>
                 <!-- 编辑 -->
-                <el-button plain type="success" icon="el-icon-edit" circle></el-button>
+                <el-button @click="$router.push(`new?id=${scope.row.id}`)" plain type="success" icon="el-icon-edit" circle></el-button>
                 <!-- 删除 -->
                 <el-button @click="removeQuestion(scope.row)" plain type="danger" icon="el-icon-delete" circle></el-button>
                 <!-- 加入精选 -->
@@ -176,7 +176,7 @@
       </el-card>
 
       <!-- 预览对话框 -->
-      <el-dialog :visible.sync="dialogVisible"></el-dialog>
+      <questions-preview :dialogShow="dialogVisible = true"></questions-preview>
     </div>
   </div>
 </template>
@@ -197,11 +197,11 @@ import { list, remove, choiceAdd } from '@/api/hmmm/questions'
 // 省市联动
 import { provinces, citys } from '@/api/hmmm/citys'
 // 导入预览框组件
-// import QuestionsPreview from '../components/questions-preview'
+import QuestionsPreview from '../components/questions-preview'
 
 export default {
   components: {
-    // QuestionsPreview
+    QuestionsPreview
   },
   data () {
     return {
@@ -214,29 +214,29 @@ export default {
       // 基础题库数据列表
       formData: {
         // 学科ID
-        subjectID: [],
+        subjectID: null,
         // 关键字
         keyword: '',
         // 试题类型
-        questionType: [],
+        questionType: null,
         // 标签
-        tagList: [],
+        tagList: null,
         // 难度
-        difficulty: [],
+        difficulty: null,
         // 方向
         direction: '',
         // 录入人ID
-        creatorID: [],
+        creatorID: null,
         // 目录ID
-        catalogID: [],
+        catalogID: null,
         // 题目备注
         remarks: '',
         // 企业简称
         shortName: '',
         // 城市
-        province: [],
+        province: null,
         // 区县
-        city: [],
+        city: null,
         // 每页大小
         pagesize: 10,
         // 页数
@@ -292,7 +292,14 @@ export default {
       this.getList()
     },
     // 清除
-    clear () {},
+    clear () {
+      for(var key in this.formData){
+        if (key != 'page' && key != 'pagesize') {
+          this.formData[key] = null
+        }
+      }
+    },
+    
     // 删除试题操作
     async removeQuestion (question) {
       await this.$confirm('此操作永久删除该文件, 是否继续?', '提示', {

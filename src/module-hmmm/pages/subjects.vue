@@ -1,7 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="container">学科管理</div>
-=======
   <div class="dashboard-container">
     <div class="app-container">
       <el-card>
@@ -102,7 +99,6 @@
       </el-card>
     </div>
   </div>
->>>>>>> 330e02c544e0340e27d2523571bf4d0189cb88c5
 </template>
 
 <style lang="scss" scoped>
@@ -136,11 +132,7 @@
 </style>
 
 <script>
-<<<<<<< HEAD
-
-=======
 // import { simple } from '@/api/base/permissions'
->>>>>>> 330e02c544e0340e27d2523571bf4d0189cb88c5
 import { list, remove, update } from '@/api/hmmm/subjects'
 import PageTool from '@/module-dashboard/components/pageTool'
 import SubjectsAdd from './../components/subjects-add'
