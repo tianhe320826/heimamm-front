@@ -76,14 +76,12 @@ export default [
         path: 'directorys',
         component: _import('hmmm/pages/directorys'),
         name: 'subjects-directorys',
-        meta: { title: '目录', noCache: true, icon: 'component' },
-        prop: true
+        meta: { title: '目录', noCache: true, icon: 'component' }
       },
       {
         path: 'tags',
         component: _import('hmmm/pages/tags'),
         name: 'subjects-tags',
-        prop: true,
         meta: { title: '标签', noCache: true, icon: 'component' }
       }
     ]

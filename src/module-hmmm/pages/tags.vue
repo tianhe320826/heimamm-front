@@ -135,7 +135,7 @@ export default {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
-    // 数据排序
+    // 日期排序
     changesort(a, b) {
       const oldTime = new Date(a.date).getTime() / 1000
       const newime = new Date(b.date).getTime() / 1000
