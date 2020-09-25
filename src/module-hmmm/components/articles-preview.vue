@@ -1,6 +1,6 @@
 <template>
   <div class="add-form">
-    <el-dialog :title="text + pageTitle" :visible.sync="dialogFormVisible">
+    <el-dialog :title="text + pageTitle" :visible.sync="dialogFormVisible" width="60%">
       <!-- <el-form label-position="left" label-width="120px" style="width: 400px; margin-left:120px;">
         <el-form-item :label="$t('table.username')" prop="username">
           <el-input v-model="formBase.username"></el-input>
@@ -21,7 +21,7 @@
 <script>
 import { detail, update, add } from '@/api/hmmm/articles'
 export default {
-  name: 'usersAdd',
+  name: 'articlesPreview',
   // props: ['text', 'pageTitle', 'PermissionGroupsList', 'formBase', 'ruleInline'],
   props: ['text', 'pageTitle', 'articleInfo'],
   data() {

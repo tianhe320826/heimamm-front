@@ -58,6 +58,8 @@ export default {
     reads: '阅读数',
     creator: '录入人',
     inputtime: '录入时间',
+    articleBody: '文章内容',
+    videoURL: '视频地址',
     preview: '预览',
     use: '启用',
     unused: '禁用',

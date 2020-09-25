@@ -9,15 +9,7 @@
               <el-row :gutter="24">
                 <el-col :span="20">
                   关键字：
-                  <el-input
-                    class="Keyword"
-                    clearable
-                    placeholder="请输入内容"
-                    prefix-icon="el-icon-search"
-                    v-model="queryInfo.keyword"
-                    size="small"
-                    @keyup.enter.native="getQuestionData"
-                  ></el-input>
+                  <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
                 </el-col>
                 <el-col :span="4">
                   <div class="grid-content bg-purple">
@@ -47,25 +39,14 @@
                   <el-tag type="warning" v-else>简答</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column
-                class="questionSerial"
-                width="200px"
-                prop="questionIDs[0].number"
-                label="题目编号"
-              ></el-table-column>
+              <el-table-column class="questionSerial" width="200px" prop="questionIDs[0].number" label="题目编号"></el-table-column>
               <el-table-column width="200px" prop="addTime" label="录入时间"></el-table-column>
               <el-table-column prop="totalSeconds" label="答题时间"></el-table-column>
               <el-table-column prop="accuracyRate" label="正确率"></el-table-column>
               <el-table-column prop="userName" label="录入人"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    circle
-                    @click="deleteLIst(scope.row.id)"
-                  ></el-button>
+                  <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteLIst(scope.row.id)"></el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -83,7 +64,7 @@
             @current-change="handleCurrentChange"
             :current-page="queryInfo.page"
             :page-size="queryInfo.pagesize"
-            :page-sizes="[20, 30,50, 100]"
+            :page-sizes="[20, 30, 50, 100]"
             :total="counts"
             layout=" prev, pager, next,total, sizes, jumper"
           ></el-pagination>
@@ -112,7 +93,7 @@ export default {
   },
   // 挂载结束
 
-  mounted: function () {},
+  mounted: function() {},
 
   created() {
     this.getQuestionData()
@@ -131,7 +112,7 @@ export default {
           type: 'info',
           message: '获取组题列表失败'
         })
-        console.log(error)
+        // console.log(error)
       }
     },
     // 显示页面数
@@ -166,7 +147,7 @@ export default {
             message: '删除成功!111'
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.dir(err)
           this.$message({
             type: 'info',
@@ -177,7 +158,7 @@ export default {
     // 点击删除按钮时处理isTableData数据
     deleteLIstIndex(id) {
       const deleteData = []
-      this.isTableData.filter((item) => {
+      this.isTableData.filter(item => {
         if (item.id !== id) {
           deleteData.push(item)
         }
@@ -192,7 +173,7 @@ export default {
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .container {
   .el-alert {
     margin: 20px 0;

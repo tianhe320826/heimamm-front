@@ -206,7 +206,7 @@ export default {
       const { data: subRes } = await subSimple()
       this.subjectOptions = subRes
 
-      console.log(subRes) // 数组里有对象 对象有value
+      // console.log(subRes) // 数组里有对象 对象有value
     },
     handelSubject(e) {
       // e是当前学科的id item.value
@@ -217,7 +217,7 @@ export default {
     async getDirData(subID) {
       const { data: resDir } = await dirSimple(subID)
       // TODO应展示当前学科的二级目录
-      console.log(resDir)
+      // console.log(resDir)
       this.dirOptions = resDir
     },
     handelDir(e) {
@@ -231,12 +231,12 @@ export default {
     },
     async getCompanys() {
       const { data: companys } = await companysList()
-      console.log(companys)
+      // console.log(companys)
       companys.items.forEach((item, index) => {
-        console.log(item.shortName)
+        // console.log(item.shortName)
         this.companyOptions.push({ label: item.shortName, value: item.id })
       })
-      console.log(this.companyOptions)
+      // console.log(this.companyOptions)
     },
     // 获取省
     getCityData() {
@@ -245,14 +245,14 @@ export default {
     // 选省获取到市
     handleProvince(e) {
       this.citySelect.cityDate = citys(e)
-      console.log(this.reqParmas)
+      // console.log(this.reqParmas)
     },
     handleCity(e) {
       this.reqParmas.city = e
     },
     handelSingle(e) {
       this.reqParmas.questionType = e
-      console.log(e)
+      // console.log(e)
       // 单选 显示四个选项 按钮禁用
       // 多选
       // 简答  隐藏这个模块
@@ -272,22 +272,22 @@ export default {
     },
     handleTitle(index, e) {
       this.reqParmas.options[index].title = e
-      console.log(e)
+      // console.log(e)
     },
     // 图片
     handleRemove(file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
     },
     handlePictureCardPreview(file) {
       this.reqParmas.img = file.url
       this.dialogVisible = true
     },
     handleEnterpriseID(e) {
-      console.log(e)
+      // console.log(e)
       this.reqParmas.enterpriseID = e
     },
     haneleSuccess(e) {
-      console.log(e.src)
+      // console.log(e.src)
     },
     addOptions() {
       const len = this.questionsOptinos.length
