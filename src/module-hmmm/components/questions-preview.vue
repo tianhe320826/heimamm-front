@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-dialog >
+    <el-dialog>
       <el-row class="pvw" :gutter="20">
         <el-col :span="6">
           <span>[题型] :</span>
@@ -68,7 +68,7 @@
 
 <script>
 export default {
-  name: 'kkkk',
+  name: 'QuestionsPreview',
   data() {
     return {
       dialogVisible: this.dialogShow
@@ -85,7 +85,7 @@ export default {
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .container {
   margin-bottom: 40px;
   /deep/.el-row.pvw,

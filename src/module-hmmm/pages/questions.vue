@@ -109,7 +109,7 @@
           <el-table-column label="目录" prop="catalog"> </el-table-column>
           <el-table-column label="题型">
             <template slot-scope="scope">
-              {{ questionType.find((item) => item.value === +scope.row.questionType).label }}
+              {{ questionType.find(item => item.value === +scope.row.questionType).label }}
             </template>
           </el-table-column>
           <el-table-column label="题干">
@@ -124,7 +124,7 @@
           </el-table-column>
           <el-table-column label="难度" prop="difficulty">
             <template slot-scope="scope">
-              {{ difficulty.find((item) => item.value === +scope.row.difficulty).label }}
+              {{ difficulty.find(item => item.value === +scope.row.difficulty).label }}
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="creator"> </el-table-column>
@@ -363,7 +363,7 @@ export default {
 }
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .explain {
   display: flex;
   justify-content: space-between;
