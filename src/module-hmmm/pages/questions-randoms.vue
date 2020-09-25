@@ -5,7 +5,21 @@
         <el-card shadow="never">
           <!-- 顶部栏 -->
           <div>
-            <el-row :gutter="24">
+            <div class="please-list-input-suffix">
+              <el-row :gutter="24">
+                <el-col :span="20">
+                  关键字：
+                  <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
+                </el-col>
+                <el-col :span="4">
+                  <div class="grid-content bg-purple">
+                    <el-button size="mini" type="info" @click="queryInfo.keyword = ''">清除</el-button>
+                    <el-button size="mini" type="primary" @click="getQuestionData">搜索</el-button>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+            <!-- <el-row :gutter="24">
               <el-col :span="20">
                 关键字：
                 <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
@@ -16,7 +30,7 @@
                   <el-button size="mini" type="primary" @click="getQuestionData">搜索</el-button>
                 </div>
               </el-col>
-            </el-row>
+            </el-row> -->
           </div>
           <!-- 顶部栏 -->
           <!-- 提示 -->
@@ -33,11 +47,12 @@
                   <el-tag type="warning" v-else>简答</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column width="200px" label="题目编号">
+              <el-table-column class="questionSerial" width="200px" prop="questionIDs[0].number" label="题目编号"></el-table-column>
+              <!-- <el-table-column width="200px" label="题目编号">
                 <template slot-scope="scope">
                   <el-link @click="parameters(item.id)" type="primary" class="randomsLink" v-for="(item, index) in scope.row.questionIDs" :key="index">{{ item.number }} </el-link>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column width="200px" prop="addTime" label="录入时间"></el-table-column>
               <el-table-column prop="totalSeconds" label="答题时间"></el-table-column>
               <el-table-column prop="accuracyRate" label="正确率"></el-table-column>
@@ -103,20 +118,14 @@ export default {
     questionsDetails
   },
   // 挂载结束
-  mounted: function () {},
+
+  mounted: function() {},
 
   created() {
     this.getQuestionData()
     this.wsm()
   },
   methods: {
-    wsm() {
-      setTimeout(() => {
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        console.log('哈,是王淑敏最好看呀!')
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-      }, 1000)
-    },
     async getQuestionData() {
       try {
         const { data } = await randoms(this.queryInfo)
@@ -165,7 +174,7 @@ export default {
             message: '删除成功!111'
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.dir(err)
           this.$message({
             type: 'info',
@@ -177,7 +186,7 @@ export default {
     // 点击删除按钮时处理isTableData数据
     deleteLIstIndex(id) {
       const deleteData = []
-      this.isTableData.filter((item) => {
+      this.isTableData.filter(item => {
         if (item.id !== id) {
           deleteData.push(item)
         }
@@ -194,7 +203,7 @@ export default {
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .container {
   .el-alert {
     margin: 20px 0;

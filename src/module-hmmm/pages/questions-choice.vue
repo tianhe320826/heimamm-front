@@ -6,7 +6,7 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
         <el-form ref="formData">
@@ -113,9 +113,9 @@
           <el-table-column label="目录" prop="catalog"></el-table-column>
           <el-table-column label="题型" prop="questionType">
             <template slot-scope="scope">
-              <span v-if="scope.row.questionType === 1">单选</span>
-              <span v-if="scope.row.questionType === 1">多选</span>
-              <span v-if="scope.row.questionType === 1">简答</span>
+              <span v-if="scope.row.questionType === '1'">单选</span>
+              <span v-if="scope.row.questionType === '2'">多选</span>
+              <span v-if="scope.row.questionType === '3'">简答</span>
             </template>
           </el-table-column>
           <el-table-column label="题干">
