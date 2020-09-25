@@ -1,7 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="container">学科管理</div>
-=======
   <div class="dashboard-container">
     <div class="app-container">
       <el-card>
@@ -9,13 +6,13 @@
         <el-form :model="requestParameters" ref="requestParameters" :inline="true">
           <div class="filter-container">
             <el-form-item label="学科名称">
-              <el-input @keyup.enter="handleFilter" style="width: 200px;" class="filter-item" v-model="requestParameters.subjectName"></el-input>
+              <el-input @keyup.enter="handleFilter" style="width: 200px" class="filter-item" v-model="requestParameters.subjectName"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button class="filter-item" size="small" type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
               <el-button class="filter-item" size="small" type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
             </el-form-item>
-            <el-button class="filter-item fr" size="small" style="margin-left: 10px;" @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
+            <el-button class="filter-item fr" size="small" style="margin-left: 10px" @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
           </div>
         </el-form>
         <!-- 记录总条数的弹框 -->
@@ -86,7 +83,7 @@
 
         <!-- 编辑弹框 -->
         <el-dialog title="编辑学科" :visible.sync="dialogEditVisible" width="25%">
-          <el-form label-position="left" label-width="120px" style="width: 400px;" :model="editForm" :rules="editFormRules" ref="editFormRef">
+          <el-form label-position="left" label-width="120px" style="width: 400px" :model="editForm" :rules="editFormRules" ref="editFormRef">
             <el-form-item label="学科名称" prop="subjectName">
               <el-input v-model="editForm.subjectName"></el-input>
             </el-form-item>
@@ -102,7 +99,6 @@
       </el-card>
     </div>
   </div>
->>>>>>> 046f12f156bd1105863ce343a3a17a0476e74450
 </template>
 
 <style lang="scss" scoped>
@@ -136,15 +132,8 @@
 </style>
 
 <script>
-<<<<<<< HEAD
-<<<<<<< HEAD
-export default {}
-=======
 // import { simple } from '@/api/base/permissions'
-import { list } from '@/api/hmmm/subjects'
-=======
 import { list, remove, update } from '@/api/hmmm/subjects'
->>>>>>> c4136d9eba48a431e31ab27d8dc21d9479048b71
 import PageTool from '@/module-dashboard/components/pageTool'
 import SubjectsAdd from './../components/subjects-add'
 
@@ -233,7 +222,7 @@ export default {
     },
     // 确认编辑按钮
     createEdit() {
-      this.$refs.editFormRef.validate(async valid => {
+      this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return false
         await update(this.editForm)
         // console.log(data)
@@ -253,7 +242,7 @@ export default {
     // 编辑框获取详情
     async handleUpdate(row) {
       this.editForm = JSON.parse(JSON.stringify(row))
-      this.editForm.isFrontDisplay = row.isFrontDisplay === 1 ? true : false
+      this.editForm.isFrontDisplay = row.isFrontDisplay === 1
       this.dialogEditVisible = true
     },
     // 到学科分类
@@ -286,12 +275,12 @@ export default {
       })
         .then(() => {
           remove({ id: id })
-            .then(response => {
+            .then((response) => {
               this.$message.success('成功删除了该学科')
               this.dataList.splice(id, 1)
               this.getSubjectsList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败!')
             })
         })
@@ -301,5 +290,4 @@ export default {
     }
   }
 }
->>>>>>> 046f12f156bd1105863ce343a3a17a0476e74450
 </script>
