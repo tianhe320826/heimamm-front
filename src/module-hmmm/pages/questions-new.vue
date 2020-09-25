@@ -1,66 +1,66 @@
 <template>
   <div class="questions-new-container">
     <el-card>
-      <el-form>
+      <el-form :rules="rules">
         <div slot="header" class="clearfix">
-          <span>试题录入</span>
+          <span>试题录入 </span>
         </div>
         <!-- 选择框 -->
-        <el-form-item label="学科：" label-width="10%">
-          <el-select v-model="reqParmas.subjectID" @change="handelSubject" clearable placeholder="请选择">
+        <el-form-item label="学科：" label-width="10%" prop="subject">
+          <el-select v-model="reqParmas.subjectID" @change="handelSubject" clearable placeholder="请选择" style="width: 30%">
             <el-option v-for="item in subjectOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="目录：" label-width="10%">
-          <el-select v-model="reqParmas.catalogID" @change="handelDir" clearable placeholder="请选择">
+        <el-form-item label="目录：" label-width="10%" prop="directory">
+          <el-select v-model="reqParmas.catalogID" @change="handelDir" clearable placeholder="请选择" style="width: 30%">
             <el-option v-for="item in dirOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item label="企业：" label-width="10%">
-          <el-select v-model="reqParmas.enterpriseID" @change="handleEnterpriseID" clearable placeholder="请选择">
+        <el-form-item label="企业：" label-width="10%" prop="companys">
+          <el-select v-model="reqParmas.enterpriseID" @change="handleEnterpriseID" clearable placeholder="请选择" style="width: 30%">
             <el-option v-for="item in companyOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <!-- prop="province" -->
-        <el-form-item label="省：" label-width="10%">
+
+        <el-form-item label="省：" label-width="10%" prop="province">
           <el-select class="filter-item" style="width: 120px" v-model="reqParmas.province" @keyup.enter="handleFilter" @change="handleProvince" filterable>
             <el-option v-for="item in citySelect.province" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <!-- prop="city" -->
-        <el-form-item label="市：" label-width="10%">
+        <!--  -->
+        <el-form-item label="市：" label-width="10%" prop="city">
           <el-select class="filter-item" style="width: 120px" v-model="reqParmas.city" @keyup.enter="handleFilter" @change="handleCity" filterable>
             <el-option v-for="item in citySelect.cityDate" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="方向：" label-width="10%">
-          <el-select v-model="reqParmas.direction" clearable placeholder="请选择" @change="reqParmas.direction = $event">
+        <el-form-item label="方向：" label-width="10%" prop="direction">
+          <el-select v-model="reqParmas.direction" clearable placeholder="请选择" @change="reqParmas.direction = $event" style="width: 30%">
             <el-option v-for="(item, index) in direction" :key="index" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <!-- 选择按钮 -->
-        <el-form-item label="题型：" label-width="10%">
+        <el-form-item label="题型：" label-width="10%" prop="questionType">
           <el-radio-group v-model="reqParmas.questionType" @change="handelSingle">
             <el-radio v-for="(item, index) in questionType" :key="index" :label="item.label" border></el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="难度：" label-width="10%">
+        <el-form-item label="难度：" label-width="10%" prop="difficulity">
           <el-radio-group v-model="reqParmas.difficulty">
             <el-radio v-for="(item, index) in difficulty" :key="index" :label="item.label" @change="reqParmas.difficulty = $event" border></el-radio>
           </el-radio-group>
         </el-form-item>
         <!-- 富文本编辑器 -->
-        <el-form-item label="题干：" label-width="10%">
+        <el-form-item label="题干：" label-width="10%" prop="question">
           <quill-editor v-model="reqParmas.question" style="width: 90%"></quill-editor>
         </el-form-item>
         <!-- 选项 -->
         <el-form-item v-show="isOpeionsShow" label="选项：" label-width="10%">
           <div class="option_item" v-for="(item, index) in questionsOptinos" :key="index">
-            <el-radio v-model="isChecked" @change="handelcheckChange(index)" :label="String.fromCharCode(item)" border></el-radio>
+            <el-radio v-show="isRadioShow" v-model="isRadioed" @change="handelradioChange(index)" :label="String.fromCharCode(item)" border></el-radio>
+            <el-checkbox v-show="isCheckBoxShow" v-model="isCheckList" @change="handelcheckChange(index)" :label="String.fromCharCode(item)" border></el-checkbox>
             <el-input style="width: 30%" placeholder="请输入内容" :value="reqParmas.options[index].title" @input="handleTitle(index, $event)" clearable> </el-input>
-            <el-upload action="https://jsonplaceholder.typicode.com/posts/" :on-success="haneleSuccess" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
+            <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+              <span class="uploadimg">上传图片</span>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="reqParmas.img" alt="" />
@@ -75,19 +75,19 @@
         </question-select> -->
         <!-- 视频解析地址 -->
         <el-form-item label="解析视频地址" label-width="10%">
-          <el-input placeholder="请输入解析视频地址" v-model="reqParmas.videoURL" clearable style="width: 50%"> </el-input>
+          <el-input placeholder="请输入解析视频地址" v-model="reqParmas.videoURL" clearable style="width: 30%"> </el-input>
         </el-form-item>
         <!-- 答案解析 -->
-        <el-form-item label="答案解析：" label-width="10%">
-          <quill-editor v-model="reqParmas.answer" style="width: 90%"></quill-editor>
+        <el-form-item label="答案解析：" label-width="10%" prop="answer">
+          <quill-editor v-model="reqParmas.answer"></quill-editor>
         </el-form-item>
         <!-- 题目备注 -->
         <el-form-item label="题目备注：" label-width="10%">
-          <el-input type="textarea" v-model="reqParmas.remarks" style="width: 50%"></el-input>
+          <el-input style="width: 30%" type="textarea" v-model="reqParmas.remarks"></el-input>
         </el-form-item>
         <!-- 试题标签 -->
         <el-form-item label="试题标签" label-width="10%">
-          <el-select v-model="reqParmas.tags" @change="reqParmas.tags = $event" placeholder="请选择">
+          <el-select style="width: 30%" v-model="reqParmas.tags" multiple filterable allow-create default-first-option @change="reqParmas.tags = $event" placeholder="请选择">
             <el-option v-for="(item, index) in tagsOptinos" :key="index" :label="item.label" :value="item.label"> </el-option>
           </el-select>
         </el-form-item>
@@ -128,8 +128,11 @@ export default {
       },
       isOpeionsShow: true,
       isBtnDisable: true,
-      isChecked: false,
+      isRadioed: false,
+      isCheckList: [],
       isBtnShow: true,
+      isRadioShow: true,
+      isCheckBoxShow: false,
       // 请求参数
       reqParmas: {
         // number: 0, // 试题编号 后台生成
@@ -177,6 +180,18 @@ export default {
         remarks: '',
         tags: '',
         isPrefect: false
+      },
+      rules: {
+        subject: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        directory: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        companys: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        province: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        city: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        direction: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        questionType: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        difficulity: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        question: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        answer: [{ required: true, message: '不能为空', trigger: 'blur' }]
       }
     }
   },
@@ -214,10 +229,9 @@ export default {
       // 获取学科对应的目录
       this.getDirData(e)
     },
-    async getDirData(subID) {
-      const { data: resDir } = await dirSimple(subID)
+    async getDirData(e) {
+      const { data: resDir } = await dirSimple({ subjectID: e })
       // TODO应展示当前学科的二级目录
-      // console.log(resDir)
       this.dirOptions = resDir
     },
     handelDir(e) {
@@ -225,9 +239,10 @@ export default {
       // 获取目录对应的标签 传递学科id
       this.getTagsData(e)
     },
-    async getTagsData() {
-      const { data: resTags } = await simpleTags()
+    async getTagsData(e) {
+      const { data: resTags } = await simpleTags(e)
       this.tagsOptinos = resTags
+      console.log(resTags)
     },
     async getCompanys() {
       const { data: companys } = await companysList()
@@ -264,6 +279,8 @@ export default {
         this.isBtnShow = true
         this.isOpeionsShow = true
         this.isBtnDisable = false
+        this.isCheckBoxShow = true
+        this.isRadioShow = false
       } else {
         this.isBtnShow = true
         this.isOpeionsShow = true
@@ -286,9 +303,13 @@ export default {
       // console.log(e)
       this.reqParmas.enterpriseID = e
     },
+<<<<<<< HEAD
     haneleSuccess(e) {
       // console.log(e.src)
     },
+=======
+
+>>>>>>> 0a34075ec7b8a8fb47a7ebe30ed1449d6dcb4231
     addOptions() {
       const len = this.questionsOptinos.length
       const e = this.questionsOptinos[len - 1]
@@ -301,7 +322,13 @@ export default {
         isRight: false
       })
     },
-    handelcheckChange(index) {
+    handelradioChange(index) {
+      // 如果当前被选中
+      this.reqParmas.options[index].isRight = true
+      // code是啥
+      this.reqParmas.options[index].code = ''
+    },
+    handlecheckChange(index) {
       // 如果当前被选中
       this.reqParmas.options[index].isRight = true
       // code是啥
@@ -314,11 +341,11 @@ export default {
       })
         .then(async () => {
           await addQuestion(this.reqParmas)
-            .then(response => {
+            .then((response) => {
               this.$message.success('已成功' + status + '!')
               this.getList(this.reqParmas)
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error(status + '失败!')
             })
         })
@@ -330,12 +357,25 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .questions-new-container {
   .option_item {
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+  /deep/ .ql-editor {
+    min-height: 200px;
+  }
+  /deep/ .el-upload {
+    width: 100px;
+    height: 80px;
+    margin-left: 15px;
+    /deep/ .uploadimg {
+      display: block;
+      height: 80px;
+      line-height: 80px;
+    }
   }
 }
 </style>

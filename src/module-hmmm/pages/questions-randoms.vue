@@ -19,18 +19,26 @@
                 </el-col>
               </el-row>
             </div>
+            <!-- <el-row :gutter="24">
+              <el-col :span="20">
+                关键字：
+                <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
+              </el-col>
+              <el-col :span="4">
+                <div class="grid-content bg-purple">
+                  <el-button size="mini" type="info" @click="queryInfo.keyword = ''">清除</el-button>
+                  <el-button size="mini" type="primary" @click="getQuestionData">搜索</el-button>
+                </div>
+              </el-col>
+            </el-row> -->
           </div>
-
           <!-- 顶部栏 -->
-
           <!-- 提示 -->
           <el-alert :title="`总共${counts}条数据!`" type="info" :closable="false" show-icon></el-alert>
-
           <!-- 提示 -->
-
           <!-- table表格 -->
           <div>
-            <el-table :data="isTableData" style="width: 100%">
+            <el-table class="randomsTable" :data="isTableData" style="width: 100%">
               <el-table-column width="200px" prop="id" label="编号"></el-table-column>
               <el-table-column width="80px" prop="questionType" label="题型">
                 <template slot-scope="scope">
@@ -40,6 +48,11 @@
                 </template>
               </el-table-column>
               <el-table-column class="questionSerial" width="200px" prop="questionIDs[0].number" label="题目编号"></el-table-column>
+              <!-- <el-table-column width="200px" label="题目编号">
+                <template slot-scope="scope">
+                  <el-link @click="parameters(item.id)" type="primary" class="randomsLink" v-for="(item, index) in scope.row.questionIDs" :key="index">{{ item.number }} </el-link>
+                </template>
+              </el-table-column> -->
               <el-table-column width="200px" prop="addTime" label="录入时间"></el-table-column>
               <el-table-column prop="totalSeconds" label="答题时间"></el-table-column>
               <el-table-column prop="accuracyRate" label="正确率"></el-table-column>
@@ -54,10 +67,6 @@
           <!-- table表格 -->
 
           <!-- 分页栏 -->
-          <!--
-            1.current-page  当前页数
-            2.
-          -->
           <el-pagination
             background
             @size-change="handleSizeChange"
@@ -69,6 +78,16 @@
             layout=" prev, pager, next,total, sizes, jumper"
           ></el-pagination>
           <!-- 分页栏 -->
+          <!-- 弹框 -->
+          <el-dialog title="组件详情" :visible.sync="dialogShow" width="65%">
+            <!-- 子组件 -->
+            <questions-details :dialogID="dialogID"> </questions-details>
+            <!-- 子组件 -->
+            <span slot="footer" class="dialog-footer" width="100%">
+              <el-button class="pvButton" @click="dialogShow = false">关 闭</el-button>
+            </span>
+          </el-dialog>
+          <!-- 弹框 -->
         </el-card>
       </div>
     </div>
@@ -77,6 +96,8 @@
 
 <script>
 import { randoms, removeRandoms } from '@/api/hmmm/questions.js'
+import questionsDetails from '../components/questions-details.vue'
+
 export default {
   data() {
     return {
@@ -88,8 +109,13 @@ export default {
         page: 1, // 当前页码
         pagesize: 20 // 页大小
       },
-      counts: 0 // 总记录条数
+      counts: 0, // 总记录条数
+      dialogShow: false, // 控制弹窗
+      dialogID: null // 传值
     }
+  },
+  components: {
+    questionsDetails
   },
   // 挂载结束
 
@@ -97,8 +123,9 @@ export default {
 
   created() {
     this.getQuestionData()
+    this.wsm()
   },
-  methods: {
+  methods: {,
     async getQuestionData() {
       try {
         const { data } = await randoms(this.queryInfo)
@@ -136,7 +163,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          console.log(id)
+          // console.log(id)
           // 删除接口函数
           await removeRandoms({
             id: id
@@ -155,6 +182,7 @@ export default {
           })
         })
     },
+
     // 点击删除按钮时处理isTableData数据
     deleteLIstIndex(id) {
       const deleteData = []
@@ -163,12 +191,14 @@ export default {
           deleteData.push(item)
         }
       })
+      this.counts = this.counts - 1
       this.isTableData = deleteData
+    },
+    // //
+    parameters(id) {
+      this.dialogShow = true
+      this.dialogID = id
     }
-    // 清除input 输入框
-    // clearInput() {
-    //   this.search = ''
-    // }
   }
 }
 </script>
@@ -181,7 +211,16 @@ export default {
   .Keyword {
     width: 30%;
   }
+  .randomsTable {
+    font-size: 13px;
+    .randomsLink {
+      color: rgb(27, 134, 235);
+      font-size: 13px;
+    }
+  }
+  .pvButton {
+    float: right;
+    margin-top: -25px;
+  }
 }
-// .container {
-// }
 </style>
