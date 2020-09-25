@@ -2,6 +2,12 @@
   <div class="directorys-container">
     <div class="app-container">
       <el-card shadow="never">
+        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="subjectdir">
+          <el-breadcrumb-item>学科管理</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ subjectdir }}</el-breadcrumb-item>
+          <el-breadcrumb-item>目录管理</el-breadcrumb-item>
+        </el-breadcrumb>
+        <div class="line" v-if="subjectdir"></div>
         <!-- 搜索 -->
         <el-form :model="requestDirectory" ref="requestDirectoryRef" :inline="true">
           <el-form-item :label="$t('table.directoryName')" class="directoryName">
@@ -20,6 +26,7 @@
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
+            <el-button v-if="subjectdir" type="text" style="margin-left: 10px;" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
             <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addDirectory') }}</el-button>
           </el-form-item>
         </el-form>
@@ -100,11 +107,12 @@ export default {
       listLoading: false,
       // 数据总条数提示文本
       alertText: '',
-      // 请求参数对象
+      subjectdir: this.$route.query.name,
       requestDirectory: {
         page: 1,
         pagesize: 10,
         directoryName: null,
+        subjectID: this.$route.query.id,
         state: null
       }
     }
@@ -209,6 +217,14 @@ export default {
 
 <style scoped lang="scss">
 .directorys-container {
+  .el-breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .line {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 12px;
+  }
   // 数据条数提示条
   .alert {
     margin: 10px 0px;

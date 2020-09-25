@@ -3,6 +3,12 @@
   <div class="directorys-container">
     <div class="app-container">
       <el-card shadow="never">
+        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="subjecttag">
+          <el-breadcrumb-item>学科管理</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ subjecttag }}</el-breadcrumb-item>
+          <el-breadcrumb-item>标签管理</el-breadcrumb-item>
+        </el-breadcrumb>
+        <div class="line" v-if="subjecttag"></div>
         <!-- 搜索 -->
         <el-form :model="requestTags" :inline="true">
           <el-form-item :label="$t('table.tagName')" class="tagName">
@@ -21,6 +27,7 @@
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
+            <el-button v-if="subjecttag" type="text" style="margin-left: 10px;" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
             <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
           </el-form-item>
         </el-form>
@@ -95,12 +102,14 @@ export default {
       listLoading: false,
       // 数据总数提示文本
       alertText: '',
-      // 请求数据对象
+      subjecttag: this.$route.query.name,
       requestTags: {
         page: 1,
         pagesize: 10,
         tagName: null,
-        state: null
+        state: null,
+        // 添加搜索ID
+        subjectID: this.$route.query.id
       }
     }
   },
@@ -126,7 +135,7 @@ export default {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
-    // 数据排序
+    // 日期排序
     changesort(a, b) {
       const oldTime = new Date(a.date).getTime() / 1000
       const newime = new Date(b.date).getTime() / 1000
@@ -203,6 +212,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.el-breadcrumb {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.line {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 12px;
+}
 .directorys-container {
   .alert {
     margin: 10px 0px;

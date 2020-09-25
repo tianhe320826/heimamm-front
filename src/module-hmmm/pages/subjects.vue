@@ -6,7 +6,7 @@
         <el-form :model="requestParameters" ref="requestParameters" :inline="true">
           <div class="filter-container">
             <el-form-item label="学科名称">
-              <el-input @keyup.enter="handleFilter" v-model="requestParameters.subjectName"></el-input>
+              <el-input @keyup.enter="handleFilter" v-model="requestParameters.subjectName" clearable></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
@@ -201,7 +201,7 @@ export default {
     },
     // 确认编辑按钮
     createEdit() {
-      this.$refs.editFormRef.validate(async (valid) => {
+      this.$refs.editFormRef.validate(async valid => {
         if (!valid) return false
         await update(this.editForm)
         // console.log(data)
@@ -226,7 +226,7 @@ export default {
     // 到学科分类
     toCatagory(params) {
       this.$router.push({
-        path: '/directorys/',
+        path: '/subjects/directorys',
         query: {
           id: params.id,
           name: params.subjectName
@@ -235,10 +235,8 @@ export default {
     },
     // 到学科标签
     toTags(params) {
-      // console.log(row)
-
       this.$router.push({
-        path: '/subjects/tags/',
+        path: '/subjects/tags',
         query: {
           id: params.id,
           name: params.subjectName
@@ -252,12 +250,12 @@ export default {
       })
         .then(() => {
           remove({ id: id })
-            .then((response) => {
+            .then(response => {
               this.$message.success('成功删除了该学科')
               this.dataList.splice(id, 1)
               this.getSubjectsList()
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error('删除失败!')
             })
         })

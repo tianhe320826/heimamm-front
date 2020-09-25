@@ -5,20 +5,18 @@
         <el-card shadow="never">
           <!-- 顶部栏 -->
           <div>
-            <div class="please-list-input-suffix">
-              <el-row :gutter="24">
-                <el-col :span="20">
-                  关键字：
-                  <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
-                </el-col>
-                <el-col :span="4">
-                  <div class="grid-content bg-purple">
-                    <el-button size="mini" type="info" @click="queryInfo.keyword = ''">清除</el-button>
-                    <el-button size="mini" type="primary" @click="getQuestionData">搜索</el-button>
-                  </div>
-                </el-col>
-              </el-row>
-            </div>
+            <el-row :gutter="24">
+              <el-col :span="20">
+                关键字：
+                <el-input class="Keyword" clearable placeholder="请输入内容" prefix-icon="el-icon-search" v-model="queryInfo.keyword" size="small" @keyup.enter.native="getQuestionData"></el-input>
+              </el-col>
+              <el-col :span="4">
+                <div class="grid-content bg-purple">
+                  <el-button size="mini" type="info" @click="queryInfo.keyword = ''">清除</el-button>
+                  <el-button size="mini" type="primary" @click="getQuestionData">搜索</el-button>
+                </div>
+              </el-col>
+            </el-row>
           </div>
           <!-- 顶部栏 -->
           <!-- 提示 -->
@@ -35,9 +33,9 @@
                   <el-tag type="warning" v-else>简答</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column class="questionSerial" width="200px" label="题目编号">
+              <el-table-column width="200px" label="题目编号">
                 <template slot-scope="scope">
-                  <el-link @click="dialogShow = true" type="primary" class="randomsLink" v-for="(item, index) in scope.row.questionIDs" :key="index"> {{ item.number }}</el-link>
+                  <el-link @click="parameters(item.id)" type="primary" class="randomsLink" v-for="(item, index) in scope.row.questionIDs" :key="index">{{ item.number }} </el-link>
                 </template>
               </el-table-column>
               <el-table-column width="200px" prop="addTime" label="录入时间"></el-table-column>
@@ -66,9 +64,10 @@
           ></el-pagination>
           <!-- 分页栏 -->
           <!-- 弹框 -->
-          <el-dialog title="组件闲情" :visible.sync="dialogShow" width="50%">
-            <questionPreview :dialogShow="dialogShow"> </questionPreview>
-
+          <el-dialog title="组件详情" :visible.sync="dialogShow" width="65%">
+            <!-- 子组件 -->
+            <questions-details :dialogID="dialogID"> </questions-details>
+            <!-- 子组件 -->
             <span slot="footer" class="dialog-footer" width="100%">
               <el-button class="pvButton" @click="dialogShow = false">关 闭</el-button>
             </span>
@@ -82,7 +81,8 @@
 
 <script>
 import { randoms, removeRandoms } from '@/api/hmmm/questions.js'
-import questionPreview from '../components/questions-preview'
+import questionsDetails from '../components/questions-details.vue'
+
 export default {
   data() {
     return {
@@ -95,26 +95,32 @@ export default {
         pagesize: 20 // 页大小
       },
       counts: 0, // 总记录条数
-      dialogShow: false // 控制弹窗
+      dialogShow: false, // 控制弹窗
+      dialogID: null // 传值
     }
   },
   components: {
-    questionPreview
+    questionsDetails
   },
   // 挂载结束
   mounted: function () {},
 
   created() {
     this.getQuestionData()
+    this.wsm()
   },
   methods: {
-    ppppp() {
-      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    wsm() {
+      setTimeout(() => {
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        console.log('哈,是王淑敏最好看呀!')
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+      }, 1000)
     },
     async getQuestionData() {
       try {
         const { data } = await randoms(this.queryInfo)
-        console.log(data)
+        // console.log(data)
         this.counts = data.counts
         this.queryInfo.pagesize = data.pagesize - 0
         this.isTableData = data.items
@@ -124,7 +130,7 @@ export default {
           type: 'info',
           message: '获取组题列表失败'
         })
-        console.log(error)
+        // console.log(error)
       }
     },
     // 显示页面数
@@ -148,7 +154,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          console.log(id)
+          // console.log(id)
           // 删除接口函数
           await removeRandoms({
             id: id
@@ -179,9 +185,11 @@ export default {
       this.counts = this.counts - 1
       this.isTableData = deleteData
     },
-
-    // 实现弹出框
-    questionShow() {}
+    // //
+    parameters(id) {
+      this.dialogShow = true
+      this.dialogID = id
+    }
   }
 }
 </script>
