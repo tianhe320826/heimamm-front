@@ -6,7 +6,7 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('new')">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
 
         <!-- 表单区域 -->
@@ -107,7 +107,9 @@
           <el-table-column label="目录" prop="catalog"> </el-table-column>
           <el-table-column label="题型">
             <template slot-scope="scope">
-              {{ questionType.find(item => item.value === +scope.row.questionType).label }}
+              <span v-if="scope.row.questionType === '1'">单选</span>
+              <span v-if="scope.row.questionType === '2'">多选</span>
+              <span v-if="scope.row.questionType === '3'">简答</span>
             </template>
           </el-table-column>
           <el-table-column label="题干">
@@ -122,7 +124,9 @@
           </el-table-column>
           <el-table-column label="难度" prop="difficulty">
             <template slot-scope="scope">
-              {{ difficulty.find(item => item.value === +scope.row.difficulty).label }}
+              <span v-if="scope.row.difficulty === '1'">简单</span>
+              <span v-if="scope.row.difficulty === '2'">一般</span>
+              <span v-if="scope.row.difficulty === '3'">困难</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="creator"> </el-table-column>
@@ -161,11 +165,7 @@
 
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="dialogVisible">
-        <questions-preview
-          v-if="dialogVisible"
-          :question="questionInfo"
-          @updataButton="isDialogShow"
-        ></questions-preview>
+        <questions-preview v-if="dialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
       </el-dialog>
     </div>
   </div>
@@ -193,8 +193,8 @@ export default {
   components: {
     QuestionsPreview
   },
- 
- data () {
+
+  data() {
     return {
       // 试题信息
       questionInfo: {},
@@ -280,7 +280,7 @@ export default {
 
   methods: {
     // 搜索
-    search () {
+    search() {
       this.getList()
     },
 
@@ -334,10 +334,17 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-      const { data: questions } = await list( this.formData )
+<<<<<<< HEAD
+      const { data: questions } = await list(this.formData)
       // console.log(questions)
       this.questionList = questions.items
       this.total = questions.counts
+=======
+      const { data: res } = await list( this.formData )
+      // console.log(res)
+      this.questionList = res.items
+      this.total = res.counts
+>>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
     },
 
     // 当前页数
@@ -366,18 +373,17 @@ export default {
         this.tags = []
       }
     },
-  
+
     // 预览功能
-    question (e) {
+    question(e) {
       this.questionInfo = e
       this.dialogVisible = true
     },
 
     // 关闭对话框
-    isDialogShow () {
+    isDialogShow() {
       this.dialogVisible = false
-    },
-  
+    }
   }
 }
 </script>
