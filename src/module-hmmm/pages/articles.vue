@@ -217,7 +217,6 @@ export default {
       }
     }
   },
-  computed: {},
   methods: {
     // 获取列表数据
     getList(params) {
@@ -227,7 +226,6 @@ export default {
       }
       list(params)
         .then(data => {
-          // console.log(data)
           this.dataList = data.data.items
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
@@ -310,7 +308,6 @@ export default {
     handleUpdate(objeditId) {
       this.query()
       this.text = '编辑'
-      // console.log(id, this.articleId)
       this.$refs.addSkill.dialogFormV()
       this.hanldeEditForm(objeditId)
     },
@@ -350,7 +347,6 @@ export default {
         .then(data => {
           this.$message.success('操作成功')
           row.state = row.state ? 0 : 1
-          // console.log(data)
           this.getList()
         })
         .catch(data => {
@@ -362,14 +358,6 @@ export default {
   created() {
     // 读取数据
     this.getList(this.requestParameters)
-    // 键盘enter操作
-    var lett = this
-    document.onkeydown = function(e) {
-      var key = window.event.keyCode
-      if (key === 13) {
-        lett.handleFilter(this.requestParameters)
-      }
-    }
   }
 }
 </script>

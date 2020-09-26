@@ -242,7 +242,7 @@ export default {
     async getTagsData(e) {
       const { data: resTags } = await simpleTags(e)
       this.tagsOptinos = resTags
-      console.log(resTags)
+      // console.log(resTags)
     },
     async getCompanys() {
       const { data: companys } = await companysList()
@@ -328,7 +328,7 @@ export default {
       this.reqParmas.options[index].code = ''
     },
     Submit() {
-      console.log(this.reqParmas)
+      // console.log(this.reqParmas)
       this.$confirm('即将提交，请检查题目信息 ' + ', 是否继续?', '提示', {
         type: 'warning'
       })
