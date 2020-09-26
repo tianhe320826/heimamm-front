@@ -99,10 +99,10 @@
         </el-form>
         <!-- Tab栏切换 -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
-          <el-tab-pane label="用户管理" name="all">全部</el-tab-pane>
-          <el-tab-pane label="配置管理" name="toAudit">待审核</el-tab-pane>
-          <el-tab-pane label="角色管理" name="approved">已审核</el-tab-pane>
-          <el-tab-pane label="定时任务补偿" name="refused">已拒绝</el-tab-pane>
+          <el-tab-pane label="全部" name="all">全部</el-tab-pane>
+          <el-tab-pane label="待审核" name="toCheck">待审核</el-tab-pane>
+          <el-tab-pane label="已审核" name="checked">已审核</el-tab-pane>
+          <el-tab-pane label="已拒绝" name="refused">已拒绝</el-tab-pane>
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
@@ -155,7 +155,7 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230">
+          <el-table-column label="操作" fixed="right" width="230px">
             <template slot-scope="scope">
               <el-row>
                 <!-- 预览 -->
@@ -388,7 +388,14 @@ export default {
       }
     },
     // tab栏点击切换
-    handleTabsClick() {},
+    handleTabsClick(e) {
+      console.log(e.name)
+      if (e.name === 'all') {
+      } else if (e.name === 'toCheck') {
+      } else if (e.name === 'checked') {
+      } else if (e.name === 'refused') {
+      }
+    },
     // 上架下架
 
     async choicePublishState(row) {
