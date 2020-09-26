@@ -99,17 +99,10 @@
         </el-form>
         <!-- Tab栏切换 -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
-<<<<<<< HEAD
-          <el-tab-pane label="全部" name="all">全部</el-tab-pane>
-          <el-tab-pane label="待审核" name="toCheck">待审核</el-tab-pane>
-          <el-tab-pane label="已审核" name="checked">已审核</el-tab-pane>
-          <el-tab-pane label="已拒绝" name="refused">已拒绝</el-tab-pane>
-=======
           <el-tab-pane label="全部" name="all"></el-tab-pane>
           <el-tab-pane label="待审核" name="toAudit"></el-tab-pane>
           <el-tab-pane label="已审核" name="approved"></el-tab-pane>
           <el-tab-pane label="已拒绝" name="refused"></el-tab-pane>
->>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
@@ -164,20 +157,20 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230px">
+          <el-table-column label="操作" fixed="right" width="230px" class="operation-btn">
             <template slot-scope="scope">
               <el-row>
                 <!-- 预览 -->
-                <el-button @click="previewDialogVisible = true" plain type="primary" size="mini">预览</el-button>
+                <el-link @click="previewDialogVisible = true" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
-                <el-button @click="checkDialogVisible = true" plain type="success" size="mini">审核</el-button>
+                <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-button plain type="info" size="mini">修改</el-button>
+                <el-link type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
-                <el-button v-if="scope.row.publishState === 1" plain type="warning" size="mini" @click="choicePublishState(scope.row)">上架</el-button>
-                <el-button v-else-if="scope.row.publishState === 0" plain type="warning" size="mini" @click="choicePublishState(scope.row)">下架</el-button>
+                <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
+                <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
                 <!-- 删除 -->
-                <el-button @click="removeQuestion(scope.row)" plain type="danger" size="mini">删除</el-button>
+                <el-link @click="removeQuestion(scope.row)" :underline="false" type="primary">删除</el-link>
               </el-row>
             </template>
           </el-table-column>
@@ -453,5 +446,8 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.el-link {
+  padding: 5px;
 }
 </style>
