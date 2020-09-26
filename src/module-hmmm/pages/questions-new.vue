@@ -232,10 +232,6 @@ export default {
     async getDirData(e) {
       const { data: resDir } = await dirSimple({ subjectID: e })
       // TODO应展示当前学科的二级目录
-<<<<<<< HEAD
-      // console.log(e, resDir)
-=======
->>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
       this.dirOptions = resDir
     },
     handelDir(e) {

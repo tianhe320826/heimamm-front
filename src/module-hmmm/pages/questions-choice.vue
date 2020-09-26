@@ -99,17 +99,10 @@
         </el-form>
         <!-- Tab栏切换 -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
-<<<<<<< HEAD
-          <el-tab-pane label="全部" name="all">全部</el-tab-pane>
-          <el-tab-pane label="待审核" name="toCheck">待审核</el-tab-pane>
-          <el-tab-pane label="已审核" name="checked">已审核</el-tab-pane>
-          <el-tab-pane label="已拒绝" name="refused">已拒绝</el-tab-pane>
-=======
           <el-tab-pane label="全部" name="all"></el-tab-pane>
           <el-tab-pane label="待审核" name="toAudit"></el-tab-pane>
           <el-tab-pane label="已审核" name="approved"></el-tab-pane>
           <el-tab-pane label="已拒绝" name="refused"></el-tab-pane>
->>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
