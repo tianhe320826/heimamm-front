@@ -151,9 +151,9 @@
           <!-- 发布状态 -->
           <el-table-column label="发布状态" prop="publishState" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 1">发布</span>
-              <span v-if="scope.row.chkState === 2">已发布</span>
-              <span v-if="scope.row.chkState === 3">已下架</span>
+              <span v-if="scope.row.publishState === 1">发布</span>
+              <span v-if="scope.row.publishState === 2">已发布</span>
+              <span v-if="scope.row.publishState === 3">已下架</span>
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
@@ -163,7 +163,7 @@
                 <!-- 预览 -->
                 <el-link @click="question(scope.row)" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
-                <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
+                <el-link @click="checkDialog(scope.row.id)" :disabled="scope.row.chkState === 0 ? false : true" :underline="false" :type="scope.row.chkState === 0 ? 'primary' : 'info'">审核</el-link>
                 <!-- 修改 -->
                 <el-link @click="$router.push(`/questions/new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
@@ -195,18 +195,7 @@
         <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible = false"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
-      <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
-        <el-form>
-          <el-radio-group v-model="checkForm.choiceState">
-            <el-radio :label="true">通过</el-radio>
-            <el-radio :label="false">拒绝</el-radio>
-          </el-radio-group>
-          <br />
-          <el-input type="textarea" placeholder="请输入审核意见" required style="width: 300px; margin: 20px 0 20px 0" v-model="checkForm.textarea"></el-input>
-          <el-button>取消</el-button>
-          <el-button type="primary">确认</el-button>
-        </el-form>
-      </el-dialog>
+      <questions-check :chkId="chkId" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
     </div>
   </div>
 </template>
@@ -228,23 +217,21 @@ import { choice, remove, choicePublish } from '@/api/hmmm/questions'
 import { provinces, citys } from '@/api/hmmm/citys'
 // 导入预览框组件
 import QuestionsPreview from '../components/questions-preview'
-
+import QuestionsCheck from '../components/questions-check'
 export default {
   components: {
-    QuestionsPreview
+    QuestionsPreview,
+    QuestionsCheck
   },
   data() {
     return {
-      // 试题信息
-      questionInfo: {},
+      chkId: null,
       // 试题类型
       questionType,
       // 难度
       difficulty,
       // 控制预览对话框的显示与否
       previewDialogVisible: false,
-      // 控制审核对话框显示
-      checkDialogVisible: false,
       // 基础题库数据列表
       formData: {
         // 学科ID
@@ -302,13 +289,7 @@ export default {
       // 试题数据总条数
       total: 0,
       // tab栏默认选择
-      activeName: 'all',
-      // 审核表单数据
-      checkForm: {
-        id: 0,
-        choiceState: false,
-        textarea: ''
-      }
+      activeName: 'all'
     }
   },
   created() {
@@ -408,7 +389,15 @@ export default {
     handleTabsClick() {
       this.getList()
     },
-    // 上架下架
+    // 审核
+    checkDialog(id) {
+      this.$refs.quesCheck.dialogFormV()
+      this.chkId = id
+    },
+    // 弹框关闭
+    handleCloseModal() {
+      this.$refs.quesCheck.dialogFormH()
+    },
     async choicePublishState(row) {
       // 请求接口的参数有问题
       const params = {}
