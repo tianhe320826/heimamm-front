@@ -192,7 +192,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
-        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible = false"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
@@ -202,7 +202,7 @@
             <el-radio :label="false">拒绝</el-radio>
           </el-radio-group>
           <br />
-          <el-input type="textarea" placeholder="请输入审核意见" required style="width: 300px; margin: 20px 0 20px 0" v-model="checkForm.textarea"> </el-input>
+          <el-input type="textarea" placeholder="请输入审核意见" required style="width: 300px; margin: 20px 0 20px 0" v-model="checkForm.textarea"></el-input>
           <el-button>取消</el-button>
           <el-button type="primary">确认</el-button>
         </el-form>
@@ -314,8 +314,6 @@ export default {
   created() {
     // 请求省市联动数据
     this.Init()
-    // 请求试题列表数据
-    this.getList()
   },
   methods: {
     // 省市联动
@@ -396,10 +394,6 @@ export default {
     question(e) {
       this.questionInfo = e
       this.previewDialogVisible = true
-    },
-    // 关闭预览对话框
-    isDialogShow() {
-      this.previewDialogVisible = false
     },
     // 清除
     clear() {
