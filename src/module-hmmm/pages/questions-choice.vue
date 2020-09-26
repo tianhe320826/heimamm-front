@@ -165,7 +165,7 @@
                 <!-- 审核 -->
                 <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-link @click="$router.push(`/questions/new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
+                <el-link @click="$router.push({ path: 'new', query: { id: scope.row.id } })" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
                 <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
                 <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
@@ -235,6 +235,7 @@ export default {
   },
   data() {
     return {
+      isSubmit: true,
       // 试题信息
       questionInfo: {},
       // 试题类型
@@ -314,8 +315,6 @@ export default {
   created() {
     // 请求省市联动数据
     this.Init()
-    // 请求试题列表数据
-    this.getList()
   },
   methods: {
     // 省市联动
