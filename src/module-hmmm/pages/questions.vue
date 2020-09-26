@@ -10,7 +10,7 @@
         </div>
 
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="80px">
+        <el-form class="from" ref="formData" label-width="80px" size="small">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -334,17 +334,10 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-<<<<<<< HEAD
-      const { data: questions } = await list(this.formData)
-      // console.log(questions)
-      this.questionList = questions.items
-      this.total = questions.counts
-=======
       const { data: res } = await list( this.formData )
       // console.log(res)
       this.questionList = res.items
       this.total = res.counts
->>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
     },
 
     // 当前页数
@@ -380,7 +373,7 @@ export default {
       this.dialogVisible = true
     },
 
-    // 关闭对话框
+    // 关闭预览对话框
     isDialogShow() {
       this.dialogVisible = false
     }
