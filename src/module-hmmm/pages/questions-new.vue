@@ -235,13 +235,15 @@ export default {
   watch: {},
   created() {
     this.Loading()
-    this.editQuestions()
+    if (this.$route.query.id) {
+      this.editQuestions()
+    }
   },
   mounted() {},
   methods: {
     async editQuestions() {
       const { data: resq } = await detailQuestion({ id: this.$route.query.id })
-      resq.tags = resq.tags.split(',')
+      this.tagstemp = resq.tags.split(',').join()
       resq.options = resq.options.map((item) => {
         item.isRight = item.isRight === 0 && true
         return item
@@ -388,6 +390,7 @@ export default {
       }
     },
     async Update() {
+      this.reqParmas.tags = this.tagstemp
       await this.$confirm('确认修改?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
