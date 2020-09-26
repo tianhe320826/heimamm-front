@@ -6,7 +6,7 @@
         <el-form :model="requestParameters" ref="requestParameters" :inline="true">
           <div class="filter-container">
             <el-form-item label="学科名称">
-              <el-input @keyup.enter="handleFilter" v-model="requestParameters.subjectName" clearable></el-input>
+              <el-input @keyup.enter.native="handleFilter" v-model="requestParameters.subjectName" clearable></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
@@ -82,8 +82,8 @@
         <subjects-add ref="addSubjects" @newDataes="handleLoadDataList" @handleCloseModal="handleCloseModal" @updateSubject="updateSubject"></subjects-add>
 
         <!-- 编辑弹框 -->
-        <el-dialog title="编辑学科" :visible.sync="dialogEditVisible" width="25%">
-          <el-form label-position="left" label-width="120px" style="width: 400px" :model="editForm" :rules="editFormRules" ref="editFormRef">
+        <el-dialog title="编辑学科" :visible.sync="dialogEditVisible" width="30%">
+          <el-form label-position="left" label-width="80px" :model="editForm" :rules="editFormRules" ref="editFormRef">
             <el-form-item label="学科名称" prop="subjectName">
               <el-input v-model="editForm.subjectName"></el-input>
             </el-form-item>
@@ -151,10 +151,9 @@ export default {
   },
   methods: {
     // 获取列表数据
-    async getSubjectsList(params) {
+    async getSubjectsList() {
       this.listLoading = true
       const { data } = await list(this.requestParameters)
-      // console.log(data)
       try {
         this.dataList = data.items
         this.total = data.counts
@@ -201,7 +200,7 @@ export default {
     },
     // 确认编辑按钮
     createEdit() {
-      this.$refs.editFormRef.validate(async (valid) => {
+      this.$refs.editFormRef.validate(async valid => {
         if (!valid) return false
         await update(this.editForm)
         // console.log(data)
@@ -235,8 +234,6 @@ export default {
     },
     // 到学科标签
     toTags(params) {
-      // console.log(row)
-
       this.$router.push({
         path: '/subjects/tags',
         query: {
@@ -252,12 +249,12 @@ export default {
       })
         .then(() => {
           remove({ id: id })
-            .then((response) => {
+            .then(response => {
               this.$message.success('成功删除了该学科')
               this.dataList.splice(id, 1)
               this.getSubjectsList()
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error('删除失败!')
             })
         })

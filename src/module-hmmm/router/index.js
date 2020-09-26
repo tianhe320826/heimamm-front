@@ -34,13 +34,15 @@ export default [
         path: 'list',
         component: _import('hmmm/pages/questions'),
         name: 'questions-list',
-        meta: { title: '基础题库', noCache: true, icon: 'component' }
+        meta: { title: '基础题库', noCache: true, icon: 'component' },
+        props: true
       },
       {
         path: 'choice',
         component: _import('hmmm/pages/questions-choice'),
         name: 'questions-choice',
-        meta: { title: '精选题库', noCache: true, icon: 'component' }
+        meta: { title: '精选题库', noCache: true, icon: 'component' },
+        props: true
       },
       {
         path: 'new',
@@ -76,14 +78,12 @@ export default [
         path: 'directorys',
         component: _import('hmmm/pages/directorys'),
         name: 'subjects-directorys',
-        meta: { title: '目录', noCache: true, icon: 'component' },
-        prop: true
+        meta: { title: '目录', noCache: true, icon: 'component' }
       },
       {
         path: 'tags',
         component: _import('hmmm/pages/tags'),
         name: 'subjects-tags',
-        prop: true,
         meta: { title: '标签', noCache: true, icon: 'component' }
       }
     ]

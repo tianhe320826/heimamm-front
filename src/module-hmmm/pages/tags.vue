@@ -68,7 +68,7 @@
         <!-- 新增标签弹层 -->
         <tags-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addTags="addTags" />
         <!-- 编辑标签弹层 -->
-        <tags-edit v-if="isEditDialogShow" :directoryObj="directoryObj" @close="isEditDialogShow = false" @EditDirectory="EditDirectorys" />
+        <tags-edit v-if="isEditDialogShow" :tagObj="tagObj" @close="isEditDialogShow = false" @EditTag="tagEdit" />
       </el-card>
     </div>
   </div>
@@ -91,7 +91,7 @@ export default {
     return {
       total: null,
       // 点击编辑修改的当前行信息
-      directoryObj: {},
+      tagObj: {},
       // 控制编辑弹窗的显示隐藏
       isEditDialogShow: false,
       // 控制添加弹窗的显示隐藏
@@ -135,7 +135,7 @@ export default {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
-    // 数据排序
+    // 日期排序
     changesort(a, b) {
       const oldTime = new Date(a.date).getTime() / 1000
       const newime = new Date(b.date).getTime() / 1000
@@ -181,12 +181,12 @@ export default {
     },
     // 编辑
     handleUpdate(row) {
-      // this.directoryObj = row
-      // this.isEditDialogShow = true
+      this.tagObj = row
+      this.isEditDialogShow = true
     },
-    EditDirectorys() {
-      //   this.getList()
-      //   this.isEditDialogShow = false
+    tagEdit() {
+      this.getList()
+      this.isEditDialogShow = false
     },
     // 删除
     handleRemove(row) {

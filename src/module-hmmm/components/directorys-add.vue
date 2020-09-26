@@ -7,7 +7,7 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('table.directoryName')" prop="directoryName">
-        <el-input v-model.trim="directory.directoryName" placeholder="请输入目录名称"></el-input>
+        <el-input v-model.trim="directory.directoryName" placeholder="请输入目录名称" @keyup.enter.native="addDirectory"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer">

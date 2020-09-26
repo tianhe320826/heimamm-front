@@ -6,11 +6,11 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('new')">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
 
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="80px">
+        <el-form class="from" ref="formData" label-width="80px" size="small">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -38,7 +38,6 @@
                 <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
               </el-form-item>
             </el-col>
-
             <el-col :span="6">
               <el-form-item label="试题类型">
                 <el-select v-model="formData.questionType" placeholder="请选择">
@@ -67,7 +66,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-
             <el-col :span="6">
               <el-form-item label="题目备注">
                 <el-input v-model="formData.remarks"></el-input>
@@ -109,7 +107,9 @@
           <el-table-column label="目录" prop="catalog"> </el-table-column>
           <el-table-column label="题型">
             <template slot-scope="scope">
-              {{ questionType.find((item) => item.value === +scope.row.questionType).label }}
+              <span v-if="scope.row.questionType === '1'">单选</span>
+              <span v-if="scope.row.questionType === '2'">多选</span>
+              <span v-if="scope.row.questionType === '3'">简答</span>
             </template>
           </el-table-column>
           <el-table-column label="题干">
@@ -124,7 +124,9 @@
           </el-table-column>
           <el-table-column label="难度" prop="difficulty">
             <template slot-scope="scope">
-              {{ difficulty.find((item) => item.value === +scope.row.difficulty).label }}
+              <span v-if="scope.row.difficulty === '1'">简单</span>
+              <span v-if="scope.row.difficulty === '2'">一般</span>
+              <span v-if="scope.row.difficulty === '3'">困难</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="creator"> </el-table-column>
@@ -133,7 +135,7 @@
             <template slot-scope="scope">
               <el-row>
                 <!-- 预览 -->
-                <el-button @click="dialogVisible = true" plain type="primary" icon="el-icon-view" circle></el-button>
+                <el-button @click="question(scope.row)" plain type="primary" icon="el-icon-view" circle></el-button>
                 <!-- 编辑 -->
                 <el-button @click="$router.push(`new?id=${scope.row.id}`)" plain type="success" icon="el-icon-edit" circle></el-button>
                 <!-- 删除 -->
@@ -162,7 +164,9 @@
       </el-card>
 
       <!-- 预览对话框 -->
-      <questions-preview :dialogShow="(dialogVisible = true)"></questions-preview>
+      <el-dialog title="题目预览" :visible.sync="dialogVisible">
+        <questions-preview v-if="dialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -178,7 +182,7 @@ import { difficulty, questionType, direction } from '@/api/hmmm/constants'
 import { simple as tagsList } from '@/api/hmmm/tags'
 // 录入人列表
 import { simple as userList } from '@/api/base/users'
-// 基础题库 删除题库 添加精品
+// 基础题库列表 删除题库 添加精品
 import { list, remove, choiceAdd } from '@/api/hmmm/questions'
 // 省市联动
 import { provinces, citys } from '@/api/hmmm/citys'
@@ -189,8 +193,11 @@ export default {
   components: {
     QuestionsPreview
   },
+
   data() {
     return {
+      // 试题信息
+      questionInfo: {},
       // 试题类型
       questionType,
       // 难度
@@ -274,9 +281,9 @@ export default {
   methods: {
     // 搜索
     search() {
-      this.formData.page = 1
       this.getList()
     },
+
     // 清除
     clear() {
       for (var key in this.formData) {
@@ -327,10 +334,10 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-      const { data: questions } = await list()
-      // console.log(questions)
-      this.questionList = questions.items
-      this.total = questions.counts
+      const { data: res } = await list(this.formData)
+      // console.log(res)
+      this.questionList = res.items
+      this.total = res.counts
     },
 
     // 当前页数
@@ -358,12 +365,23 @@ export default {
         this.catalogs = []
         this.tags = []
       }
+    },
+
+    // 预览功能
+    question(e) {
+      this.questionInfo = e
+      this.dialogVisible = true
+    },
+
+    // 关闭预览对话框
+    isDialogShow() {
+      this.dialogVisible = false
     }
   }
 }
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .explain {
   display: flex;
   justify-content: space-between;
