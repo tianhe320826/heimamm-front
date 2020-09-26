@@ -34,13 +34,15 @@ export default [
         path: 'list',
         component: _import('hmmm/pages/questions'),
         name: 'questions-list',
-        meta: { title: '基础题库', noCache: true, icon: 'component' }
+        meta: { title: '基础题库', noCache: true, icon: 'component' },
+        props: true
       },
       {
         path: 'choice',
         component: _import('hmmm/pages/questions-choice'),
         name: 'questions-choice',
-        meta: { title: '精选题库', noCache: true, icon: 'component' }
+        meta: { title: '精选题库', noCache: true, icon: 'component' },
+        props: true
       },
       {
         path: 'new',
