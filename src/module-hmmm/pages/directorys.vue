@@ -2,12 +2,12 @@
   <div class="directorys-container">
     <div class="app-container">
       <el-card shadow="never">
-        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="subjectdir">
+        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="requestDirectory.subjectdir">
           <el-breadcrumb-item>学科管理</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ subjectdir }}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ requestDirectory.subjectdir }}</el-breadcrumb-item>
           <el-breadcrumb-item>目录管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <div class="line" v-if="subjectdir"></div>
+        <div class="line" v-if="requestDirectory.subjectdir"></div>
         <!-- 搜索 -->
         <el-form :model="requestDirectory" ref="requestDirectoryRef" :inline="true">
           <el-form-item :label="$t('table.directoryName')" class="directoryName">
@@ -26,8 +26,8 @@
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
-            <el-button v-if="subjectdir" type="text" style="margin-left: 10px;" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
-            <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addDirectory') }}</el-button>
+            <el-button v-if="requestDirectory.subjectdir" type="text" style="margin-left: 10px" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
+            <el-button size="small" round style="margin-left: 10px" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addDirectory') }}</el-button>
           </el-form-item>
         </el-form>
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
@@ -71,9 +71,9 @@
         </div>
         <!-- end -->
         <!-- 新增目录弹层 -->
-        <directorys-add v-if="isAddDialogShow" :subjectdir="subjectdir" :subjectID="requestDirectory.subjectID" @close="isAddDialogShow = false" @addDirectory="addDirectorys" />
+        <directorys-add v-if="isAddDialogShow" :subjectAdd="requestDirectory" @close="isAddDialogShow = false" @addDirectory="addDirectorys" />
         <!-- 编辑目录弹层 -->
-        <directorys-edit v-if="isEditDialogShow" :directoryObj="directoryObj" @close="isEditDialogShow = false" @EditDirectory="EditDirectorys" />
+        <directorys-edit v-if="isEditDialogShow" :directoryObj="directoryObj" :subjectEdit="requestDirectory" @close="isEditDialogShow = false" @EditDirectory="EditDirectorys" />
       </el-card>
     </div>
   </div>
@@ -107,12 +107,12 @@ export default {
       listLoading: false,
       // 数据总条数提示文本
       alertText: '',
-      subjectdir: this.$route.query.name,
       requestDirectory: {
         page: 1,
         pagesize: 10,
         directoryName: null,
         subjectID: this.$route.query.id,
+        subjectdir: this.$route.query.name,
         state: null
       }
     }
@@ -135,7 +135,7 @@ export default {
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('获取目录列表数据失败')
         })
     },
@@ -176,10 +176,10 @@ export default {
         id: row.id,
         state: row.state ? 0 : 1
       })
-        .then(data => {
+        .then((data) => {
           row.state = row.state ? 0 : 1
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -199,11 +199,11 @@ export default {
       })
         .then(() => {
           remove({ id: row.id })
-            .then(response => {
+            .then((response) => {
               this.$message.success('已成功删除该目录')
               this.getList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败，请稍后重试')
             })
         })
