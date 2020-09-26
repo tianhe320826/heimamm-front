@@ -22,17 +22,11 @@ import { choiceCheck } from '@/api/hmmm/questions'
 export default {
   data() {
     return {
-      // 审核表单数据
-      checkForm: {
-        id: this.chkId,
-        chkState: 1,
-        chkRemarks: ''
-      },
       // 控制审核对话框显示
       checkDialogVisible: false
     }
   },
-  props: ['chkId'],
+  props: ['checkForm'],
   methods: {
     // 弹层显示
     dialogFormV() {
@@ -45,6 +39,7 @@ export default {
     // 退出
     handleClose() {
       this.$emit('handleCloseModal')
+      this.checkForm.chkRemarks = ''
     },
     async handleChoiceCheck() {
       if (!this.checkForm.chkRemarks.trim()) {
@@ -53,12 +48,12 @@ export default {
       try {
         await choiceCheck(this.checkForm)
         this.checkForm.chkRemarks = ''
-        this.$emit('handleCloseModal')
-        this.getList()
+        this.$emit('newDataes')
         this.$message.success('审核成功')
       } catch (e) {
         this.$message.error('审核失败')
       }
+      this.dialogFormH()
     }
   }
 }
