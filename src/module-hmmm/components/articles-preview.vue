@@ -1,11 +1,6 @@
 <template>
   <div class="add-form">
     <el-dialog :title="text + pageTitle" :visible.sync="dialogFormVisible" width="60%">
-      <!-- <el-form label-position="left" label-width="120px" style="width: 400px; margin-left:120px;">
-        <el-form-item :label="$t('table.username')" prop="username">
-          <el-input v-model="formBase.username"></el-input>
-        </el-form-item>
-      </el-form> -->
       <h2 v-html="articleInfo.title"></h2>
       <div class="art-text">
         <span>{{ articleInfo.createTime | parseTimeByString() }}</span>
@@ -21,13 +16,10 @@
 <script>
 export default {
   name: 'articlesPreview',
-  // props: ['text', 'pageTitle', 'PermissionGroupsList', 'formBase', 'ruleInline'],
   props: ['text', 'pageTitle', 'articleInfo'],
   data() {
     return {
       dialogFormVisible: false
-      // fileList: [],
-      // importFileUrl: 'https://jsonplaceholder.typicode.com/posts/',
     }
   },
   computed: {},
@@ -35,9 +27,9 @@ export default {
     // 弹层显示
     dialogFormV() {
       this.dialogFormVisible = true
-      // this.getArticleInfo()
       console.log(this.articleInfo)
     }
+<<<<<<< HEAD
     // 弹层隐藏
     // dialogFormH() {
     //   this.dialogFormVisible = false
@@ -76,18 +68,12 @@ export default {
   created() {},
   // 组件更新
   updated: function () {}
+=======
+  }
+>>>>>>> 8a84d5b61c63c27b7c0b4d365094ed0e5f72e91a
 }
 </script>
 <style lang="scss">
-.el-form--label-left .el-form-item__label {
-  text-align: right;
-}
-.el-form-item--medium {
-  margin-bottom: 22px;
-}
-.el-dialog__footer {
-  text-align: center;
-}
 .art-text {
   padding: 0 15px 15px;
   span {
