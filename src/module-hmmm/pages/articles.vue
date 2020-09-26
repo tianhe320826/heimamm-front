@@ -180,7 +180,6 @@ export default {
   data() {
     var validateUrl = (rule, value, callback) => {
       if (!validateURL(value)) {
-        console.log(validateURL(value))
         callback(new Error('请输入正确的视频地址'))
       } else {
         callback()
