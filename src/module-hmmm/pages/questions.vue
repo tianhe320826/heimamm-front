@@ -334,7 +334,7 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-      const { data: res } = await list( this.formData )
+      const { data: res } = await list(this.formData)
       // console.log(res)
       this.questionList = res.items
       this.total = res.counts

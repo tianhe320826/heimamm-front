@@ -157,20 +157,20 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230px">
+          <el-table-column label="操作" fixed="right" width="230px" class="operation-btn">
             <template slot-scope="scope">
               <el-row>
                 <!-- 预览 -->
-                <el-button @click="previewDialogVisible = true" plain type="primary" size="mini">预览</el-button>
+                <el-link @click="question(scope.row)" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
-                <el-button @click="checkDialogVisible = true" plain type="success" size="mini">审核</el-button>
+                <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-button plain type="info" size="mini">修改</el-button>
+                <el-link @click="$router.push(`new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
-                <el-button v-if="scope.row.publishState === 1" plain type="warning" size="mini" @click="choicePublishState(scope.row)">上架</el-button>
-                <el-button v-else-if="scope.row.publishState === 0" plain type="warning" size="mini" @click="choicePublishState(scope.row)">下架</el-button>
+                <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
+                <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
                 <!-- 删除 -->
-                <el-button @click="removeQuestion(scope.row)" plain type="danger" size="mini">删除</el-button>
+                <el-link @click="removeQuestion(scope.row)" :underline="false" type="primary">删除</el-link>
               </el-row>
             </template>
           </el-table-column>
@@ -482,5 +482,8 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.el-link {
+  padding: 5px;
 }
 </style>

@@ -56,8 +56,8 @@
         <!-- 选项 -->
         <el-form-item v-show="isOpeionsShow" label="选项：" label-width="10%">
           <div class="option_item" v-for="(item, index) in questionsOptinos" :key="index">
-            <el-radio v-show="isRadioShow" v-model="isRadioed" @change="handelradioChange(index)" :label="String.fromCharCode(item)" border></el-radio>
-            <el-checkbox v-show="isCheckBoxShow" v-model="isCheckList" @change="handelcheckChange(index)" :label="String.fromCharCode(item)" border></el-checkbox>
+            <el-radio v-show="isRadioShow" v-model="isRadioed" @change="handelradioChange(index, $event)" :label="String.fromCharCode(item)" border></el-radio>
+            <el-checkbox v-show="isCheckBoxShow" v-model="isCheckList" @change="handelcheckChange(index, $event)" :label="String.fromCharCode(item)" border></el-checkbox>
             <el-input style="width: 30%" placeholder="请输入内容" :value="reqParmas.options[index].title" @input="handleTitle(index, $event)" clearable> </el-input>
             <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
               <span class="uploadimg">上传图片</span>
@@ -87,7 +87,7 @@
         </el-form-item>
         <!-- 试题标签 -->
         <el-form-item label="试题标签" label-width="10%">
-          <el-select style="width: 30%" v-model="reqParmas.tags" multiple filterable allow-create default-first-option @change="reqParmas.tags = $event" placeholder="请选择">
+          <el-select style="width: 30%" v-model="reqParmas.tags" multiple filterable allow-create default-first-option @change="handelTagsChange" placeholder="请选择">
             <el-option v-for="(item, index) in tagsOptinos" :key="index" :label="item.label" :value="item.label"> </el-option>
           </el-select>
         </el-form-item>
@@ -225,7 +225,7 @@ export default {
     },
     handelSubject(e) {
       // e是当前学科的id item.value
-      this.reqParmas.subjectID = e
+      this.reqParmas.subjectID = e - 0
       // 获取学科对应的目录
       this.getDirData(e)
     },
@@ -235,14 +235,18 @@ export default {
       this.dirOptions = resDir
     },
     handelDir(e) {
-      this.reqParmas.catalogID = e
+      this.reqParmas.catalogID = e - 0
       // 获取目录对应的标签 传递学科id
       this.getTagsData(e)
     },
     async getTagsData(e) {
       const { data: resTags } = await simpleTags(e)
       this.tagsOptinos = resTags
-      // console.log(resTags)
+    },
+    handelTagsChange(e) {
+      const q = e.join()
+      this.reqParmas.tags = q
+      // console.log(q)
     },
     async getCompanys() {
       const { data: companys } = await companysList()
@@ -315,17 +319,17 @@ export default {
         isRight: false
       })
     },
-    handelradioChange(index) {
+    handelradioChange(index, e) {
       // 如果当前被选中
       this.reqParmas.options[index].isRight = true
       // code是啥
-      this.reqParmas.options[index].code = ''
+      this.reqParmas.options[index].code = e
     },
-    handlecheckChange(index) {
+    handelcheckChange(index, e) {
       // 如果当前被选中
       this.reqParmas.options[index].isRight = true
       // code是啥
-      this.reqParmas.options[index].code = ''
+      this.reqParmas.options[index].code = e
     },
     Submit() {
       // console.log(this.reqParmas)
@@ -334,11 +338,11 @@ export default {
       })
         .then(async () => {
           await addQuestion(this.reqParmas)
-            .then(response => {
+            .then((response) => {
               this.$message.success('已成功' + status + '!')
               this.getList(this.reqParmas)
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error(status + '失败!')
             })
         })
@@ -357,9 +361,11 @@ export default {
     flex-direction: row;
     align-items: center;
   }
+
   /deep/ .ql-editor {
-    min-height: 200px;
+    min-height: 100px;
   }
+
   /deep/ .el-upload {
     width: 100px;
     height: 80px;
