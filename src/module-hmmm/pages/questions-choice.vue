@@ -13,7 +13,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
-                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择" clearable>
+                <el-select @change="changeSubject(formData.subjectID, $event)" v-model="formData.subjectID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in subjects" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -369,9 +369,9 @@ export default {
       this.getList()
     },
     // 二级目录 和 标签
-    async changeSubject(subjectID) {
+    async changeSubject(subjectID, e) {
       if (subjectID) {
-        const { data: directoryrArr } = await catalogList(subjectID)
+        const { data: directoryrArr } = await catalogList({ subjectID: e })
         this.catalogs = directoryrArr
         const { data: tagArr } = await tagsList(subjectID)
         this.tags = tagArr
