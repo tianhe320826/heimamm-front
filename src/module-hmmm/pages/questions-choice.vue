@@ -34,7 +34,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="关键字">
-                <el-input v-model="formData.keyword" placeholder="根据题干搜索" clearable></el-input>
+                <el-input @keyup.enter="search" v-model="formData.keyword" placeholder="根据题干搜索" clearable></el-input>
               </el-form-item>
             </el-col>
 
@@ -195,7 +195,7 @@
         <questions-preview
           v-if="previewDialogVisible"
           :question="questionInfo"
-          @updataButton="previewDialogVisible"
+          @updataButton="isDialogShow"
         ></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
@@ -359,6 +359,8 @@ export default {
       const { data: res } = await choice({
         subjectID: this.formData.subjectID,
         keyword: this.formData.keyword,
+        page: this.formData.page,
+        pagesize: this.formData.pagesize,
         chkState: this.activeName === 'all' ? null : this.activeName - 0
       })
       if (this.activeName === 'all') {
@@ -398,6 +400,10 @@ export default {
     question(e) {
       this.questionInfo = e
       this.previewDialogVisible = true
+    },
+    // 关闭预览对话框
+    isDialogShow() {
+      this.previewDialogVisible = false
     },
     // 搜索
     search() {
