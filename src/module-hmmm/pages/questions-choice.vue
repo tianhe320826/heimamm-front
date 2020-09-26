@@ -13,7 +13,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
-                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择" clearable>
+                <el-select @change="changeSubject(formData.subjectID, $event)" v-model="formData.subjectID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in subjects" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -151,9 +151,7 @@
           <!-- 发布状态 -->
           <el-table-column label="发布状态" prop="publishState" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.publishState === 1">发布</span>
-              <span v-if="scope.row.publishState === 2">已发布</span>
-              <span v-if="scope.row.publishState === 3">已下架</span>
+              <span>{{ scope.row.publishState ? '已上架' : '已下架' }}</span>
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
@@ -165,10 +163,16 @@
                 <!-- 审核 -->
                 <el-link @click="checkDialog(scope.row.id)" :disabled="scope.row.chkState === 0 ? false : true" :underline="false" :type="scope.row.chkState === 0 ? 'primary' : 'info'">审核</el-link>
                 <!-- 修改 -->
-                <el-link @click="$router.push(`/questions/new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
+                <el-link
+                  @click="$router.push(`/questions/new?id=${scope.row.id}`)"
+                  :disabled="scope.row.publishState ? true : false"
+                  :type="scope.row.publishState ? 'info' : 'primary'"
+                  :underline="false"
+                  >修改</el-link
+                >
                 <!-- 上架 -->
-                <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
-                <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
+                <el-link v-if="scope.row.publishState === 0" :underline="false" type="primary" @click="choicePublishState(scope.row, 0)">上架</el-link>
+                <el-link v-else-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row, 1)">下架</el-link>
                 <!-- 删除 -->
                 <el-link @click="removeQuestion(scope.row)" :underline="false" type="primary">删除</el-link>
               </el-row>
@@ -195,7 +199,7 @@
         <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible = false"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
-      <questions-check :chkId="chkId" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
+      <questions-check v-on:newDataes="handleLoadDataList" :checkForm="checkForm" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
     </div>
   </div>
 </template>
@@ -225,7 +229,12 @@ export default {
   },
   data() {
     return {
-      chkId: null,
+      // 审核表单数据
+      checkForm: {
+        id: null,
+        chkState: 1,
+        chkRemarks: ''
+      },
       // 试题类型
       questionType,
       // 难度
@@ -360,9 +369,9 @@ export default {
       this.getList()
     },
     // 二级目录 和 标签
-    async changeSubject(subjectID) {
+    async changeSubject(subjectID, e) {
       if (subjectID) {
-        const { data: directoryrArr } = await catalogList(subjectID)
+        const { data: directoryrArr } = await catalogList({ subjectID: e })
         this.catalogs = directoryrArr
         const { data: tagArr } = await tagsList(subjectID)
         this.tags = tagArr
@@ -391,29 +400,35 @@ export default {
     },
     // 审核
     checkDialog(id) {
+      this.checkForm.id = id
       this.$refs.quesCheck.dialogFormV()
-      this.chkId = id
+    },
+    // 审核完成刷新列表
+    handleLoadDataList() {
+      this.getList()
     },
     // 弹框关闭
     handleCloseModal() {
       this.$refs.quesCheck.dialogFormH()
     },
-    async choicePublishState(row) {
+    async choicePublishState(row, state) {
       // 请求接口的参数有问题
-      const params = {}
-      params.id = row.id
-      params.PublishState = row.PublishState
-      await this.$confirm('您确定下架这道题目码?', '提示', {
+      const params = {
+        id: row.id,
+        publishState: state ? 0 : 1
+      }
+      const pubText = state ? '下架' : '上架'
+      await this.$confirm(`您确定${pubText}这道题目吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
       try {
         await choicePublish(params)
-        this.$message.success('上架成功')
+        this.$message.success(`${pubText}成功`)
         this.getList()
       } catch (error) {
-        this.$message.error('上架失败')
+        this.$message.error(`${pubText}失败`)
       }
     }
   }

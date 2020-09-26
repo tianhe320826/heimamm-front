@@ -45,7 +45,7 @@ export default [
         props: true
       },
       {
-        path: 'new:subjectID',
+        path: 'new',
         component: _import('hmmm/pages/questions-new'),
         name: 'questions-new',
         meta: { title: '试题录入', noCache: true, icon: 'component' },
