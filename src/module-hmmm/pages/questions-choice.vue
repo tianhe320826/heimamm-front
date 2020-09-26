@@ -34,7 +34,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="关键字">
-                <el-input v-model="formData.keyword" placeholder="根据题干搜索" clearable></el-input>
+                <el-input v-model="formData.keyword" placeholder="根据题干搜索" clearable @keyup.enter.native="getList"></el-input>
               </el-form-item>
             </el-col>
 
@@ -92,7 +92,7 @@
             <el-col :span="6">
               <el-form-item>
                 <el-button @click="clear">清除</el-button>
-                <el-button type="primary" @keyup.enter="search" @click="search">搜索</el-button>
+                <el-button type="primary" @click="getList">搜索</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -108,10 +108,10 @@
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
         <!-- 数据表格 -->
         <el-table :data="questionList">
-          <el-table-column label="试题编号" prop="number"></el-table-column>
-          <el-table-column label="学科" prop="subject"></el-table-column>
-          <el-table-column label="目录" prop="catalog"></el-table-column>
-          <el-table-column label="题型" prop="questionType">
+          <el-table-column label="试题编号" prop="number" min-width="200"></el-table-column>
+          <el-table-column label="学科" prop="subject" min-width="100"></el-table-column>
+          <el-table-column label="目录" prop="catalog" min-width="100"></el-table-column>
+          <el-table-column label="题型" prop="questionType" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.questionType === '1'">单选</span>
               <span v-if="scope.row.questionType === '2'">多选</span>
@@ -128,16 +128,16 @@
               {{ scope.row.addDate | parseTimeByString }}
             </template>
           </el-table-column>
-          <el-table-column label="难度" prop="difficulty">
+          <el-table-column label="难度" prop="difficulty" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.chkState === 1">简单</span>
               <span v-if="scope.row.chkState === 2">一般</span>
               <span v-if="scope.row.chkState === 3">困难</span>
             </template>
           </el-table-column>
-          <el-table-column label="录入人" prop="creator"></el-table-column>
+          <el-table-column label="录入人" prop="creator" min-width="100"></el-table-column>
           <!-- 审核状态 -->
-          <el-table-column label="审核状态" prop="chkState">
+          <el-table-column label="审核状态" prop="chkState" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.chkState === 0">待审核</span>
               <span v-if="scope.row.chkState === 1">已审核</span>
@@ -145,11 +145,11 @@
             </template>
           </el-table-column>
           <!-- 审核意见 -->
-          <el-table-column label="审核意见" prop="chkRemarks"></el-table-column>
+          <el-table-column label="审核意见" prop="chkRemarks" min-width="200"></el-table-column>
           <!-- 审核人 -->
-          <el-table-column label="审核人" prop="chkUser"></el-table-column>
+          <el-table-column label="审核人" prop="chkUser" min-width="100"></el-table-column>
           <!-- 发布状态 -->
-          <el-table-column label="发布状态" prop="publishState">
+          <el-table-column label="发布状态" prop="publishState" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.chkState === 1">发布</span>
               <span v-if="scope.row.chkState === 2">已发布</span>
@@ -157,7 +157,7 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230px" class="operation-btn">
+          <el-table-column label="操作" fixed="right" width="230px">
             <template slot-scope="scope">
               <el-row type="flex" justify="space-around">
                 <!-- 预览 -->
@@ -192,11 +192,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
-        <questions-preview
-          v-if="previewDialogVisible"
-          :question="questionInfo"
-          @updataButton="previewDialogVisible"
-        ></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
@@ -399,10 +395,6 @@ export default {
       this.questionInfo = e
       this.previewDialogVisible = true
     },
-    // 搜索
-    search() {
-      this.getList()
-    },
     // 清除
     clear() {
       for (var key in this.formData) {
@@ -410,9 +402,10 @@ export default {
           this.formData[key] = null
         }
       }
+      this.getList()
     },
     // tab栏点击切换
-    handleTabsClick(tab) {
+    handleTabsClick() {
       this.getList()
     },
     // 上架下架
