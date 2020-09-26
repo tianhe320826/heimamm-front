@@ -35,14 +35,9 @@ export default {
             ['blockquote', 'code-block'], // 引用  代码块
             [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
             ['link', 'image'] // 链接、图片
-<<<<<<< HEAD
           ] // 工具菜单栏配置
-        }
-=======
-          ] //工具菜单栏配置
         },
-        placeholder: '请输入文章内容' //提示
->>>>>>> 8a84d5b61c63c27b7c0b4d365094ed0e5f72e91a
+        placeholder: '请输入文章内容' // 提示
       }
     }
   },
@@ -90,18 +85,7 @@ export default {
         }
       })
     }
-<<<<<<< HEAD
-  },
-  // 挂载结束
-
-  mounted: function () {},
-  // 创建完毕状态
-  created() {},
-  // 组件更新
-  updated: function () {}
-=======
   }
->>>>>>> 8a84d5b61c63c27b7c0b4d365094ed0e5f72e91a
 }
 </script>
 <style>
