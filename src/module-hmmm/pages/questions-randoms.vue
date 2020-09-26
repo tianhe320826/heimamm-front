@@ -63,6 +63,7 @@
             layout=" prev, pager, next,total, sizes, jumper"
           ></el-pagination>
           <!-- 分页栏 -->
+
           <!-- 弹框 -->
           <el-dialog v-if="dialogShow" title="组件详情" :visible.sync="dialogShow" width="65%">
             <!-- 子组件 -->
@@ -86,7 +87,6 @@ import questionsDetails from '../components/questions-details.vue'
 export default {
   data() {
     return {
-      // search: '',
       isTableData: [],
       // 查询参数对象
       queryInfo: {
@@ -104,46 +104,32 @@ export default {
   },
   // 挂载结束
   mounted: function () {},
-
   created() {
     this.getQuestionData()
     this.wsm()
   },
   methods: {
-    wsm() {
-      setTimeout(() => {
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        console.log('咦,是王淑敏最好看呀!')
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-      }, 1000)
-      // console.log('旺旺旺,淑敏')
-    },
     async getQuestionData() {
       try {
         const { data } = await randoms(this.queryInfo)
-        // console.log(data)
         this.counts = data.counts
         this.queryInfo.pagesize = data.pagesize - 0
         this.isTableData = data.items
-        // console.log(this.isTableData)
       } catch (error) {
         this.$message({
           type: 'info',
           message: '获取组题列表失败'
         })
-        // console.log(error)
       }
     },
-    // 显示页面数
+    // 每页显示条数
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
-      // console.log(`每页 ${newSize} 条`)
       this.getQuestionData()
     },
-    // 当前页面
+    // 操作当前页面序号
     handleCurrentChange(newPage) {
       this.queryInfo.page = newPage
-      // console.log(`当前页: ${newPage}`)
       this.getQuestionData()
     },
 
@@ -155,7 +141,6 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          // console.log(id)
           // 删除接口函数
           await removeRandoms({
             id: id

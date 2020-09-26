@@ -77,11 +77,10 @@
 <script>
 import { detail } from '@/api/hmmm/questions.js'
 export default {
-  name: 'kkkk',
   data() {
     return {
       detailsList: {},
-      ppp: false // 视屏控制键
+      ppp: false // 视频控制键
     }
   },
   computed: {
@@ -120,9 +119,10 @@ export default {
           id: this.dialogID
         })
         this.detailsList = data
-        console.log(data)
       } catch (error) {
-        console.log(error)
+        this.$alert(error, '错误提示', {
+          confirmButtonText: '确定'
+        })
       }
     }
   }
