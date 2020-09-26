@@ -106,7 +106,6 @@ export default {
   mounted: function () {},
   created() {
     this.getQuestionData()
-    this.wsm()
   },
   methods: {
     async getQuestionData() {

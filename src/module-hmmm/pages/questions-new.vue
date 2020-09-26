@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item label="难度：" label-width="10%" prop="difficulity">
           <el-radio-group v-model="reqParmas.difficulty">
-            <el-radio v-for="(item, index) in difficulty" :key="index" :label="item.label" @change="reqParmas.difficulty = $event" border></el-radio>
+            <el-radio v-for="(item, index) in difficulty" :key="index" :label="item.label" @change="handleDiff" border></el-radio>
           </el-radio-group>
         </el-form-item>
         <!-- 富文本编辑器 -->
@@ -158,6 +158,8 @@ export default {
       isRadioShow: true,
       isCheckBoxShow: false,
       tagstemp: '',
+      questionTypeTemp: '',
+      diffTemp: '',
       // 请求参数
       reqParmas: {
         // number: 0, // 试题编号 后台生成
@@ -313,26 +315,39 @@ export default {
     },
     handelSingle(e) {
       this.reqParmas.questionType = e
-      // console.log(e)
+      console.log(e)
       // 单选 显示四个选项 按钮禁用
       // 多选
       // 简答  隐藏这个模块
       if (e === '简答') {
+        this.questionTypeTemp = '3'
         this.isOpeionsShow = false
         this.isBtnShow = false
       } else if (e === '多选') {
         // 框变成方的 按钮
+        this.questionTypeTemp = '2'
         this.isBtnShow = true
         this.isOpeionsShow = true
         this.isBtnDisable = false
         this.isCheckBoxShow = true
         this.isRadioShow = false
       } else if (e === '单选') {
+        this.questionTypeTemp = '1'
         this.isBtnShow = true
         this.isOpeionsShow = true
         this.isBtnDisable = true
         this.isCheckBoxShow = false
         this.isRadioShow = true
+      }
+    },
+    handleDiff(e) {
+      this.reqParmas.difficulty = e
+      if (e === '简单') {
+        this.diffTemp = '1'
+      } else if (e === '一般') {
+        this.diffTemp = '2'
+      } else if (e === '困难') {
+        this.diffTemp = '3'
       }
     },
     handleTitle(index, e) {
@@ -386,12 +401,17 @@ export default {
       try {
         await addQuestion(this.reqParmas)
         this.$message.success('已成功' + status + '!')
+        this.$router.push('/questions/list')
       } catch (error) {
         this.$message.error('失败')
       }
     },
     async Update() {
       this.reqParmas.tags = this.tagstemp
+      this.reqParmas.questionType = this.questionTypeTemp
+      this.reqParmas.difficulty = this.diffTemp
+      // this.reqParmas.difficulty =
+      console.log(this.reqParmas)
       await this.$confirm('确认修改?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
