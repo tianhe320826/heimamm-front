@@ -334,17 +334,10 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-<<<<<<< HEAD
-      const { data: questions } = await list(this.formData)
-      // console.log(questions)
-      this.questionList = questions.items
-      this.total = questions.counts
-=======
-      const { data: res } = await list( this.formData )
+      const { data: res } = await list(this.formData)
       // console.log(res)
       this.questionList = res.items
       this.total = res.counts
->>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
     },
 
     // 当前页数

@@ -45,7 +45,7 @@ export default {
             // [{ align: [] }], // 对齐方式
             // ['clean'], // 清除文本格式
             ['link', 'image'] // 链接、图片
-          ] //工具菜单栏配置
+          ] // 工具菜单栏配置
         }
       }
     }
@@ -74,7 +74,7 @@ export default {
     },
     // 表单提交
     createData() {
-      this.$refs.dataForm.validate(valid => {
+      this.$refs.dataForm.validate((valid) => {
         if (valid) {
           this.$emit('handleCloseModal')
           const data = {
@@ -99,11 +99,11 @@ export default {
   },
   // 挂载结束
 
-  mounted: function() {},
+  mounted: function () {},
   // 创建完毕状态
   created() {},
   // 组件更新
-  updated: function() {}
+  updated: function () {}
 }
 </script>
 <style>

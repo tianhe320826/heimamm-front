@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { detail, update, add } from '@/api/hmmm/articles'
 export default {
   name: 'articlesPreview',
   // props: ['text', 'pageTitle', 'PermissionGroupsList', 'formBase', 'ruleInline'],
@@ -72,11 +71,11 @@ export default {
   },
   // 挂载结束
 
-  mounted: function() {},
+  mounted: function () {},
   // 创建完毕状态
   created() {},
   // 组件更新
-  updated: function() {}
+  updated: function () {}
 }
 </script>
 <style lang="scss">
