@@ -6,11 +6,11 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('/questions/new')">新增试题</el-button>
         </div>
 
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="80px">
+        <el-form class="from" ref="formData" label-width="80px" size="small">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -137,7 +137,7 @@
                 <!-- 预览 -->
                 <el-button @click="question(scope.row)" plain type="primary" icon="el-icon-view" circle></el-button>
                 <!-- 编辑 -->
-                <el-button @click="$router.push(`new?id=${scope.row.id}`)" plain type="success" icon="el-icon-edit" circle></el-button>
+                <el-button @click="$router.push(`/questions/new?id=${scope.row.id}`)" plain type="success" icon="el-icon-edit" circle></el-button>
                 <!-- 删除 -->
                 <el-button @click="removeQuestion(scope.row)" plain type="danger" icon="el-icon-delete" circle></el-button>
                 <!-- 加入精选 -->
@@ -373,7 +373,7 @@ export default {
       this.dialogVisible = true
     },
 
-    // 关闭对话框
+    // 关闭预览对话框
     isDialogShow() {
       this.dialogVisible = false
     }

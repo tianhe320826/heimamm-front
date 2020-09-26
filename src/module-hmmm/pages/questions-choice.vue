@@ -6,62 +6,62 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('/questions/new')">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
-        <el-form ref="formData">
+        <el-form ref="formData" label-width="80px">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
-                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择">
+                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in subjects" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="二级目录">
-                <el-select v-model="formData.catalogID" placeholder="请选择">
+                <el-select v-model="formData.catalogID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in catalogs" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="标签">
-                <el-select v-model="formData.tagList" placeholder="请选择">
+                <el-select v-model="formData.tagList" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in tags" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="关键字">
-                <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
+                <el-input v-model="formData.keyword" placeholder="根据题干搜索" clearable @keyup.enter.native="getList"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="6">
               <el-form-item label="试题类型">
-                <el-select v-model="formData.questionType" placeholder="请选择">
+                <el-select v-model="formData.questionType" placeholder="请选择" clearable>
                   <el-option v-for="item in questions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="难度">
-                <el-select v-model="formData.difficuly" placeholder="请选择">
+                <el-select v-model="formData.difficuly" placeholder="请选择" clearable>
                   <el-option v-for="item in difficulted" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="方向">
-                <el-select v-model="formData.direction" placeholder="请选择">
+                <el-select v-model="formData.direction" placeholder="请选择" clearable>
                   <el-option v-for="item in directions" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="录入人">
-                <el-select v-model="formData.creatorID" placeholder="请选择">
+                <el-select v-model="formData.creatorID" placeholder="请选择" clearable>
                   <el-option v-for="item in users" :key="item.id" :label="item.username" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -69,30 +69,30 @@
 
             <el-col :span="6">
               <el-form-item label="题目备注">
-                <el-input v-model="formData.remarks"></el-input>
+                <el-input v-model="formData.remarks" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="企业简称">
-                <el-input v-model="formData.shortName"></el-input>
+                <el-input v-model="formData.shortName" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item class="city" label="城市">
                 <!-- 城市 -->
-                <el-select @change="getProvince" v-model="formData.province" placeholder="请选择">
+                <el-select @change="getProvince" v-model="formData.province" placeholder="请选择" clearable>
                   <el-option v-for="item in citys.provinces" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
                 <!-- 区县 -->
-                <el-select v-model="formData.city" placeholder="请选择">
+                <el-select v-model="formData.city" placeholder="请选择" clearable>
                   <el-option v-for="item in citys.cityData" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item>
-                <el-button @keyup.enter="search" @click="search()">搜索</el-button>
-                <el-button @click="clear()" type="primary">清除</el-button>
+                <el-button @click="clear">清除</el-button>
+                <el-button type="primary" @click="getList">搜索</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -100,56 +100,56 @@
         <!-- Tab栏切换 -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
           <el-tab-pane label="全部" name="all"></el-tab-pane>
-          <el-tab-pane label="待审核" name="toAudit"></el-tab-pane>
-          <el-tab-pane label="已审核" name="approved"></el-tab-pane>
-          <el-tab-pane label="已拒绝" name="refused"></el-tab-pane>
+          <el-tab-pane label="待审核" name="0"></el-tab-pane>
+          <el-tab-pane label="已审核" name="1"></el-tab-pane>
+          <el-tab-pane label="已拒绝" name="2"></el-tab-pane>
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
         <!-- 数据表格 -->
-        <el-table :data="questionList" style="width: 100%">
-          <el-table-column label="试题编号" prop="number"></el-table-column>
-          <el-table-column label="学科" prop="subject"></el-table-column>
-          <el-table-column label="目录" prop="catalog"></el-table-column>
-          <el-table-column label="题型" prop="questionType">
+        <el-table :data="questionList">
+          <el-table-column label="试题编号" prop="number" min-width="200"></el-table-column>
+          <el-table-column label="学科" prop="subject" min-width="100"></el-table-column>
+          <el-table-column label="目录" prop="catalog" min-width="100"></el-table-column>
+          <el-table-column label="题型" prop="questionType" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.questionType === '1'">单选</span>
               <span v-if="scope.row.questionType === '2'">多选</span>
               <span v-if="scope.row.questionType === '3'">简答</span>
             </template>
           </el-table-column>
-          <el-table-column label="题干">
+          <el-table-column label="题干" min-width="200">
             <template slot-scope="scope">
               <div v-html="scope.row.question"></div>
             </template>
           </el-table-column>
-          <el-table-column label="录入时间">
+          <el-table-column label="录入时间" min-width="200">
             <template slot-scope="scope">
               {{ scope.row.addDate | parseTimeByString }}
             </template>
           </el-table-column>
-          <el-table-column label="难度" prop="difficulty">
+          <el-table-column label="难度" prop="difficulty" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.chkState === 1">简单</span>
               <span v-if="scope.row.chkState === 2">一般</span>
               <span v-if="scope.row.chkState === 3">困难</span>
             </template>
           </el-table-column>
-          <el-table-column label="录入人" prop="creator"></el-table-column>
+          <el-table-column label="录入人" prop="creator" min-width="100"></el-table-column>
           <!-- 审核状态 -->
-          <el-table-column label="审核状态" prop="chkState">
+          <el-table-column label="审核状态" prop="chkState" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 0">未审核</span>
+              <span v-if="scope.row.chkState === 0">待审核</span>
               <span v-if="scope.row.chkState === 1">已审核</span>
               <span v-if="scope.row.chkState === 2">已拒绝</span>
             </template>
           </el-table-column>
           <!-- 审核意见 -->
-          <el-table-column label="审核意见" prop="chkRemarks"></el-table-column>
+          <el-table-column label="审核意见" prop="chkRemarks" min-width="200"></el-table-column>
           <!-- 审核人 -->
-          <el-table-column label="审核人" prop="chkUser"></el-table-column>
+          <el-table-column label="审核人" prop="chkUser" min-width="100"></el-table-column>
           <!-- 发布状态 -->
-          <el-table-column label="发布状态" prop="publishState">
+          <el-table-column label="发布状态" prop="publishState" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.publishState === 1">发布</span>
               <span v-if="scope.row.publishState === 2">已发布</span>
@@ -157,15 +157,15 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230px" class="operation-btn">
+          <el-table-column label="操作" fixed="right" width="230px">
             <template slot-scope="scope">
-              <el-row>
+              <el-row type="flex" justify="space-around">
                 <!-- 预览 -->
-                <el-link @click="previewDialogVisible = true" :underline="false" type="primary">预览</el-link>
+                <el-link @click="question(scope.row)" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
                 <el-link @click="checkDialog(scope.row.id)" :disabled="scope.row.chkState === 0 ? false : true" :underline="false" :type="scope.row.chkState === 0 ? 'primary' : 'info'">审核</el-link>
                 <!-- 修改 -->
-                <el-link type="primary" :underline="false">修改</el-link>
+                <el-link @click="$router.push(`/questions/new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
                 <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
                 <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
@@ -191,8 +191,8 @@
         </div>
       </el-card>
       <!-- 预览对话框 -->
-      <el-dialog :visible.sync="previewDialogVisible">
-        <questions-preview></questions-preview>
+      <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <questions-check :chkId="chkId" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
@@ -235,29 +235,29 @@ export default {
       // 基础题库数据列表
       formData: {
         // 学科ID
-        subjectID: [],
+        subjectID: null,
         // 关键字
         keyword: '',
         // 试题类型
-        questionType: [],
+        questionType: null,
         // 标签
-        tagList: [],
+        tagList: null,
         // 难度
-        difficulty: [],
+        difficulty: null,
         // 方向
         direction: '',
         // 录入人ID
-        creatorID: [],
+        creatorID: null,
         // 目录ID
-        catalogID: [],
+        catalogID: null,
         // 题目备注
         remarks: '',
         // 企业简称
         shortName: '',
         // 城市
-        province: [],
+        province: null,
         // 区县
-        city: [],
+        city: null,
         // 每页大小
         pagesize: 10,
         // 页数
@@ -293,9 +293,13 @@ export default {
     }
   },
   created() {
+    // 请求省市联动数据
     this.Init()
+    // 请求试题列表数据
+    this.getList()
   },
   methods: {
+    // 省市联动
     async Init() {
       // 获取省市联动数据
       this.getProvince()
@@ -303,20 +307,11 @@ export default {
       this.getList()
       // 学科的数据列表
       const { data: subjectArr } = await subjectList()
-      // console.log(subjectArr)
       this.subjects = subjectArr
       // 录入人的数据列表
       const { data: userArr } = await userList()
-      // console.log(userArr)
       this.users = userArr
     },
-    // 搜索
-    search() {
-      this.formData.page = 1
-      this.getList()
-    },
-    // 清除
-    clear() {},
     // 删除试题操作
     async removeQuestion(question) {
       await this.$confirm('此操作永久删除该文件, 是否继续?', '提示', {
@@ -334,15 +329,26 @@ export default {
     },
     // 获取到市,下辖的区县
     getProvince(cityName) {
-      // this.formData.city = ''
       this.citys.cityData = citys(cityName)
     },
     // 获取列表数据
     async getList() {
-      // const params = this.formData
-      const { data: res } = await choice()
-      console.log(res)
-      this.questionList = res.items
+      const { data: res } = await choice({
+        subjectID: this.formData.subjectID,
+        keyword: this.formData.keyword,
+        page: this.formData.page,
+        pagesize: this.formData.pagesize,
+        chkState: this.activeName === 'all' ? null : this.activeName - 0
+      })
+      if (this.activeName === 'all') {
+        this.questionList = res.items
+      } else if (this.activeName === '0') {
+        this.questionList = res.items
+      } else if (this.activeName === '1') {
+        this.questionList = res.items
+      } else {
+        this.questionList = res.items
+      }
       this.total = res.counts
     },
     // 当前页数
@@ -360,23 +366,34 @@ export default {
       if (subjectID) {
         const { data: directoryrArr } = await catalogList(subjectID)
         this.catalogs = directoryrArr
-        // console.log(this.catalogs)
         const { data: tagArr } = await tagsList(subjectID)
         this.tags = tagArr
-        // console.log(this.tags)
       } else {
         this.catalogs = []
         this.tags = []
       }
     },
-    // tab栏点击切换
-    handleTabsClick(e) {
-      console.log(e.name)
-      if (e.name === 'all') {
-      } else if (e.name === 'toCheck') {
-      } else if (e.name === 'checked') {
-      } else if (e.name === 'refused') {
+    // 预览功能
+    question(e) {
+      this.questionInfo = e
+      this.previewDialogVisible = true
+    },
+    // 关闭预览对话框
+    isDialogShow() {
+      this.previewDialogVisible = false
+    },
+    // 清除
+    clear() {
+      for (var key in this.formData) {
+        if (key !== 'page' && key !== 'pagesize') {
+          this.formData[key] = null
+        }
       }
+      this.getList()
+    },
+    // tab栏点击切换
+    handleTabsClick() {
+      this.getList()
     },
     // 审核
     checkDialog(id) {

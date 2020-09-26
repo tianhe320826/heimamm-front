@@ -35,9 +35,9 @@ export default {
             ['blockquote', 'code-block'], // 引用  代码块
             [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
             ['link', 'image'] // 链接、图片
-          ] //工具菜单栏配置
+          ] // 工具菜单栏配置
         },
-        placeholder: '请输入文章内容' //提示
+        placeholder: '请输入文章内容' // 提示
       }
     }
   },
@@ -63,7 +63,7 @@ export default {
     },
     // 表单提交
     createData() {
-      this.$refs.dataForm.validate(valid => {
+      this.$refs.dataForm.validate((valid) => {
         if (valid) {
           this.$emit('handleCloseModal')
           const data = {
