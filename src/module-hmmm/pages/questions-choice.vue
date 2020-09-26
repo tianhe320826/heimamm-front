@@ -225,13 +225,9 @@ export default {
   },
   data() {
     return {
-<<<<<<< HEAD
-      isSubmit: true,
       // 试题信息
       questionInfo: {},
-=======
       chkId: null,
->>>>>>> a5416f21f3272618f5b170be71d21ca5807a0bcd
       // 试题类型
       questionType,
       // 难度

@@ -138,6 +138,7 @@ export default {
         },
         placeholder: '请输入内容' // 提示
       },
+      isSubmit: true,
       subjectOptions: [],
       dirOptions: [],
       companyOptions: [],
@@ -241,7 +242,7 @@ export default {
     async editQuestions() {
       const { data: resq } = await detailQuestion({ id: this.$route.query.id })
       resq.tags = resq.tags.split(',')
-      resq.options = resq.options.map(item => {
+      resq.options = resq.options.map((item) => {
         item.isRight = item.isRight === 0 && true
         return item
       })
