@@ -196,7 +196,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
-        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible = false"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <questions-check v-on:newDataes="handleLoadDataList" :checkForm="checkForm" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
@@ -304,8 +304,6 @@ export default {
   created() {
     // 请求省市联动数据
     this.Init()
-    // 请求试题列表数据
-    this.getList()
   },
   methods: {
     // 省市联动
@@ -386,10 +384,6 @@ export default {
     question(e) {
       this.questionInfo = e
       this.previewDialogVisible = true
-    },
-    // 关闭预览对话框
-    isDialogShow() {
-      this.previewDialogVisible = false
     },
     // 清除
     clear() {

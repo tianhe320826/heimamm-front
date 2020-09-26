@@ -92,8 +92,12 @@
           </el-select>
         </el-form-item>
         <!-- 确认提交 -->
-        <el-form-item label-width="10%">
+        <el-form-item v-if="isSubmit" label-width="10%">
           <el-button type="primary" @click="Submit">确认提交</el-button>
+        </el-form-item>
+        <!-- 确认修改 -->
+        <el-form-item v-else label-width="10%">
+          <el-button type="success" @click="Update">确认修改</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -107,7 +111,7 @@ import { simple as simpleTags } from '@/api/hmmm/tags'
 import { provinces, citys } from '@/api/hmmm/citys.js'
 import { difficulty, questionType, direction } from '@/api/hmmm/constants'
 import { list as companysList } from '@/api/hmmm/companys'
-import { add as addQuestion } from '@/api/hmmm/questions'
+import { add as addQuestion, detail as detailQuestion, update as updateQuestion } from '@/api/hmmm/questions'
 import { validateURL } from '@/utils/validate'
 // 导入选择框静态数据
 export default {
@@ -134,6 +138,7 @@ export default {
         },
         placeholder: '请输入内容' // 提示
       },
+      isSubmit: true,
       subjectOptions: [],
       dirOptions: [],
       companyOptions: [],
@@ -230,15 +235,31 @@ export default {
   watch: {},
   created() {
     this.Loading()
+    if (this.$route.query.id) {
+      this.editQuestions()
+    }
   },
   mounted() {},
   methods: {
+    async editQuestions() {
+      const { data: resq } = await detailQuestion({ id: this.$route.query.id })
+      this.tagstemp = resq.tags.split(',').join()
+      resq.options = resq.options.map((item) => {
+        item.isRight = item.isRight === 0 && true
+        return item
+      })
+
+      console.log(resq)
+      this.reqParmas = resq
+      this.isSubmit = false
+    },
     async Loading() {
+      // 把学科id改成
       this.getSubData()
       this.getCityData()
       this.getCompanys()
     },
-    async getSubData() {
+    async getSubData(id) {
       const { data: subRes } = await subSimple()
       this.subjectOptions = subRes
 
@@ -364,6 +385,20 @@ export default {
       try {
         await addQuestion(this.reqParmas)
         this.$message.success('已成功' + status + '!')
+      } catch (error) {
+        this.$message.error('失败')
+      }
+    },
+    async Update() {
+      this.reqParmas.tags = this.tagstemp
+      await this.$confirm('确认修改?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      try {
+        await updateQuestion(this.reqParmas)
+        this.$message.success('已修改' + status + '!')
       } catch (error) {
         this.$message.error('失败')
       }
