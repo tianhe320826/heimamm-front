@@ -10,7 +10,7 @@
         </div>
 
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="80px">
+        <el-form class="from" ref="formData" label-width="80px" size="small">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -106,11 +106,11 @@
           <el-table-column label="学科" prop="subject"> </el-table-column>
           <el-table-column label="目录" prop="catalog"> </el-table-column>
           <el-table-column label="题型">
-              <template slot-scope="scope">
-                <span v-if="scope.row.questionType === '1'">单选</span>
-                <span v-if="scope.row.questionType === '2'">多选</span>
-                <span v-if="scope.row.questionType === '3'">简答</span>
-              </template>
+            <template slot-scope="scope">
+              <span v-if="scope.row.questionType === '1'">单选</span>
+              <span v-if="scope.row.questionType === '2'">多选</span>
+              <span v-if="scope.row.questionType === '3'">简答</span>
+            </template>
           </el-table-column>
           <el-table-column label="题干">
             <template slot-scope="scope">
@@ -165,11 +165,7 @@
 
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="dialogVisible">
-        <questions-preview
-          v-if="dialogVisible"
-          :question="questionInfo"
-          @updataButton="isDialogShow"
-        ></questions-preview>
+        <questions-preview v-if="dialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
       </el-dialog>
     </div>
   </div>
@@ -197,8 +193,8 @@ export default {
   components: {
     QuestionsPreview
   },
- 
- data () {
+
+  data() {
     return {
       // 试题信息
       questionInfo: {},
@@ -284,7 +280,7 @@ export default {
 
   methods: {
     // 搜索
-    search () {
+    search() {
       this.getList()
     },
 
@@ -338,10 +334,10 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-      const { data: questions } = await list( this.formData )
-      // console.log(questions)
-      this.questionList = questions.items
-      this.total = questions.counts
+      const { data: res } = await list(this.formData)
+      // console.log(res)
+      this.questionList = res.items
+      this.total = res.counts
     },
 
     // 当前页数
@@ -370,18 +366,17 @@ export default {
         this.tags = []
       }
     },
-  
+
     // 预览功能
-    question (e) {
+    question(e) {
       this.questionInfo = e
       this.dialogVisible = true
     },
 
-    // 关闭对话框
-    isDialogShow () {
+    // 关闭预览对话框
+    isDialogShow() {
       this.dialogVisible = false
-    },
-  
+    }
   }
 }
 </script>

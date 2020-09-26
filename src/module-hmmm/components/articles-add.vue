@@ -8,7 +8,7 @@
         <el-form-item :label="$t('table.articleBody')" prop="articleBody" class="articleBody">
           <quill-editor v-model="formBase.articleBody" :options="editorOption"></quill-editor>
         </el-form-item>
-        <el-form-item :label="$t('table.videoURL')">
+        <el-form-item :label="$t('table.videoURL')" prop="videoURL">
           <el-input v-model="formBase.videoURL"></el-input>
         </el-form-item>
       </el-form>
@@ -33,25 +33,14 @@ export default {
           toolbar: [
             ['bold', 'italic', 'underline', 'strike'], // 加粗 斜体 下划线 删除线
             ['blockquote', 'code-block'], // 引用  代码块
-            // [{ header: 1 }, { header: 2 }], // 1、2 级标题
             [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
-            // [{ script: 'sub' }, { script: 'super' }], // 上标/下标
-            // [{ indent: '-1' }, { indent: '+1' }], // 缩进
-            // [{'direction': 'rtl'}],                         // 文本方向
-            // [{ size: ['small', false, 'large', 'huge'] }], // 字体大小
-            // [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
-            // [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-            // [{ font: [] }], // 字体种类
-            // [{ align: [] }], // 对齐方式
-            // ['clean'], // 清除文本格式
             ['link', 'image'] // 链接、图片
           ] //工具菜单栏配置
-        }
+        },
+        placeholder: '请输入文章内容' //提示
       }
     }
   },
-  components: {},
-  computed: {},
   methods: {
     // 弹层显示
     dialogFormV() {
@@ -74,7 +63,7 @@ export default {
     },
     // 表单提交
     createData() {
-      this.$refs.dataForm.validate(valid => {
+      this.$refs.dataForm.validate((valid) => {
         if (valid) {
           this.$emit('handleCloseModal')
           const data = {
@@ -96,26 +85,10 @@ export default {
         }
       })
     }
-  },
-  // 挂载结束
-
-  mounted: function() {},
-  // 创建完毕状态
-  created() {},
-  // 组件更新
-  updated: function() {}
+  }
 }
 </script>
 <style>
-.el-form--label-left .el-form-item__label {
-  text-align: right;
-}
-.el-form-item--medium {
-  margin-bottom: 22px;
-}
-.el-dialog__footer {
-  text-align: center;
-}
 .quill-editor {
   height: 250px;
   margin-bottom: 50px;

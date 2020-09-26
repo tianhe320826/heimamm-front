@@ -9,59 +9,59 @@
           <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
-        <el-form ref="formData">
+        <el-form ref="formData" label-width="80px">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
-                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择">
+                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in subjects" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="二级目录">
-                <el-select v-model="formData.catalogID" placeholder="请选择">
+                <el-select v-model="formData.catalogID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in catalogs" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="标签">
-                <el-select v-model="formData.tagList" placeholder="请选择">
+                <el-select v-model="formData.tagList" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in tags" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="关键字">
-                <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
+                <el-input v-model="formData.keyword" placeholder="根据题干搜索" clearable></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="6">
               <el-form-item label="试题类型">
-                <el-select v-model="formData.questionType" placeholder="请选择">
+                <el-select v-model="formData.questionType" placeholder="请选择" clearable>
                   <el-option v-for="item in questions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="难度">
-                <el-select v-model="formData.difficuly" placeholder="请选择">
+                <el-select v-model="formData.difficuly" placeholder="请选择" clearable>
                   <el-option v-for="item in difficulted" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="方向">
-                <el-select v-model="formData.direction" placeholder="请选择">
+                <el-select v-model="formData.direction" placeholder="请选择" clearable>
                   <el-option v-for="item in directions" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="录入人">
-                <el-select v-model="formData.creatorID" placeholder="请选择">
+                <el-select v-model="formData.creatorID" placeholder="请选择" clearable>
                   <el-option v-for="item in users" :key="item.id" :label="item.username" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -69,22 +69,22 @@
 
             <el-col :span="6">
               <el-form-item label="题目备注">
-                <el-input v-model="formData.remarks"></el-input>
+                <el-input v-model="formData.remarks" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="企业简称">
-                <el-input v-model="formData.shortName"></el-input>
+                <el-input v-model="formData.shortName" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item class="city" label="城市">
                 <!-- 城市 -->
-                <el-select @change="getProvince" v-model="formData.province" placeholder="请选择">
+                <el-select @change="getProvince" v-model="formData.province" placeholder="请选择" clearable>
                   <el-option v-for="item in citys.provinces" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
                 <!-- 区县 -->
-                <el-select v-model="formData.city" placeholder="请选择">
+                <el-select v-model="formData.city" placeholder="请选择" clearable>
                   <el-option v-for="item in citys.cityData" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
@@ -107,7 +107,7 @@
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
         <!-- 数据表格 -->
-        <el-table :data="questionList" style="width: 100%">
+        <el-table :data="questionList">
           <el-table-column label="试题编号" prop="number"></el-table-column>
           <el-table-column label="学科" prop="subject"></el-table-column>
           <el-table-column label="目录" prop="catalog"></el-table-column>
@@ -118,12 +118,12 @@
               <span v-if="scope.row.questionType === '3'">简答</span>
             </template>
           </el-table-column>
-          <el-table-column label="题干">
+          <el-table-column label="题干" min-width="200">
             <template slot-scope="scope">
               <div v-html="scope.row.question"></div>
             </template>
           </el-table-column>
-          <el-table-column label="录入时间">
+          <el-table-column label="录入时间" min-width="200">
             <template slot-scope="scope">
               {{ scope.row.addDate | parseTimeByString }}
             </template>
@@ -157,20 +157,20 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230">
+          <el-table-column label="操作" fixed="right" width="230px" class="operation-btn">
             <template slot-scope="scope">
-              <el-row>
+              <el-row type="flex" justify="space-around">
                 <!-- 预览 -->
-                <el-button @click="previewDialogVisible = true" plain type="primary" size="mini">预览</el-button>
+                <el-link @click="question(scope.row)" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
-                <el-button @click="checkDialogVisible = true" plain type="success" size="mini">审核</el-button>
+                <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-button plain type="info" size="mini">修改</el-button>
+                <el-link @click="$router.push(`new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
-                <el-button v-if="scope.row.publishState === 1" plain type="warning" size="mini" @click="choicePublishState(scope.row)">上架</el-button>
-                <el-button v-else-if="scope.row.publishState === 0" plain type="warning" size="mini" @click="choicePublishState(scope.row)">下架</el-button>
+                <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
+                <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
                 <!-- 删除 -->
-                <el-button @click="removeQuestion(scope.row)" plain type="danger" size="mini">删除</el-button>
+                <el-link @click="removeQuestion(scope.row)" :underline="false" type="primary">删除</el-link>
               </el-row>
             </template>
           </el-table-column>
@@ -192,7 +192,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog :visible.sync="previewDialogVisible">
-        <questions-preview></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
@@ -235,6 +235,8 @@ export default {
   },
   data() {
     return {
+      // 试题信息
+      questionInfo: {},
       // 试题类型
       questionType,
       // 难度
@@ -246,29 +248,29 @@ export default {
       // 基础题库数据列表
       formData: {
         // 学科ID
-        subjectID: [],
+        subjectID: null,
         // 关键字
         keyword: '',
         // 试题类型
-        questionType: [],
+        questionType: null,
         // 标签
-        tagList: [],
+        tagList: null,
         // 难度
-        difficulty: [],
+        difficulty: null,
         // 方向
         direction: '',
         // 录入人ID
-        creatorID: [],
+        creatorID: null,
         // 目录ID
-        catalogID: [],
+        catalogID: null,
         // 题目备注
         remarks: '',
         // 企业简称
         shortName: '',
         // 城市
-        province: [],
+        province: null,
         // 区县
-        city: [],
+        city: null,
         // 每页大小
         pagesize: 10,
         // 页数
@@ -310,9 +312,13 @@ export default {
     }
   },
   created() {
+    // 请求省市联动数据
     this.Init()
+    // 请求试题列表数据
+    this.getList()
   },
   methods: {
+    // 省市联动
     async Init() {
       // 获取省市联动数据
       this.getProvince()
@@ -325,13 +331,6 @@ export default {
       const { data: userArr } = await userList()
       this.users = userArr
     },
-    // 搜索
-    search() {
-      this.formData.page = 1
-      this.getList()
-    },
-    // 清除
-    clear() {},
     // 删除试题操作
     async removeQuestion(question) {
       await this.$confirm('此操作永久删除该文件, 是否继续?', '提示', {
@@ -354,6 +353,8 @@ export default {
     // 获取列表数据
     async getList() {
       const { data: res } = await choice({
+        subjectID: this.formData.subjectID,
+        keyword: this.formData.keyword,
         chkState: this.activeName === 'all' ? null : this.activeName - 0
       })
       if (this.activeName === 'all') {
@@ -387,6 +388,18 @@ export default {
       } else {
         this.catalogs = []
         this.tags = []
+      }
+    },
+    // 搜索
+    search() {
+      this.getList()
+    },
+    // 清除
+    clear() {
+      for (var key in this.formData) {
+        if (key !== 'page' && key !== 'pagesize') {
+          this.formData[key] = null
+        }
       }
     },
     // tab栏点击切换
@@ -443,5 +456,8 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.el-link {
+  padding: 5px;
 }
 </style>

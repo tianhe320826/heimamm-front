@@ -28,31 +28,25 @@ export const update = data => createAPI(`/questions/${data.id}`, 'put', data)
 export const remove = data => createAPI(`/questions/${data.id}`, 'delete', data)
 
 // 精选题库加入取消
-export const choiceAdd = data =>
-  createAPI(`/questions/choice/${data.id}/${data.choiceState}`, 'patch', data)
+export const choiceAdd = data => createAPI(`/questions/choice/${data.id}/${data.choiceState}`, 'patch', data)
 
 // 精选题库列表
 export const choice = data => createAPI('/questions/choice', 'get', data)
 
 // 精选题库上下架
-export const choicePublish = data =>
-  createAPI(`/questions/choice/${data.id}/${data.publishState}`, 'post', data)
+export const choicePublish = data => createAPI(`/questions/choice/${data.id}/${data.publishState}`, 'post', data)
 
 // 试题审核
-export const choiceCheck = data =>
-  createAPI(`/questions/check/${data.id}`, 'post', data)
+export const choiceCheck = data => createAPI(`/questions/check/${data.id}`, 'post', data)
 
 // 试题审核意见列表
-export const auditOpinions = data =>
-  createAPI(`/questions/${data.id}/auditOpinions`, 'get', data)
+export const auditOpinions = data => createAPI(`/questions/${data.id}/auditOpinions`, 'get', data)
 
 // 出题记录
-export const setRecords = data =>
-  createAPI(`/questions/${data.id}/setRecords`, 'get', data)
+export const setRecords = data => createAPI(`/questions/${data.id}/setRecords`, 'get', data)
 
 // 组题列表
 export const randoms = data => createAPI('/questions/randoms', 'get', data)
 
 // 组题列表删除
-export const removeRandoms = data =>
-  createAPI(`/questions/randoms/${data.id}`, 'delete', data)
+export const removeRandoms = data => createAPI(`/questions/randoms/${data.id}`, 'delete', data)
