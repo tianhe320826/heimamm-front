@@ -63,7 +63,7 @@ export default {
     },
     // 表单提交
     createData() {
-      this.$refs.dataForm.validate(valid => {
+      this.$refs.dataForm.validate((valid) => {
         if (valid) {
           this.$emit('handleCloseModal')
           const data = {

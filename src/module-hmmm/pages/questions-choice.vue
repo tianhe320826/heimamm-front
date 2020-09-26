@@ -9,7 +9,7 @@
           <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="100px">
+        <el-form ref="formData" label-width="80px">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -157,20 +157,20 @@
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
-          <el-table-column label="操作" fixed="right" width="230px">
+          <el-table-column label="操作" fixed="right" width="230px" class="operation-btn">
             <template slot-scope="scope">
               <el-row type="flex" justify="space-around">
                 <!-- 预览 -->
-                <el-link :underline="false" type="primary" @click="previewDialogVisible = true" plain size="mini">预览</el-link>
+                <el-link @click="question(scope.row)" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
-                <el-link :underline="false" type="primary" @click="checkDialogVisible = true" plain size="mini">审核</el-link>
+                <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-link :underline="false" type="primary" plain size="mini">修改</el-link>
+                <el-link @click="$router.push(`new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
-                <el-link :underline="false" type="primary" v-if="scope.row.publishState === 1" plain size="mini" @click="choicePublishState(scope.row)">上架</el-link>
-                <el-link :underline="false" type="primary" v-else-if="scope.row.publishState === 0" plain size="mini" @click="choicePublishState(scope.row)">下架</el-link>
+                <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
+                <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
                 <!-- 删除 -->
-                <el-link type="primary" @click="removeQuestion(scope.row)" plain size="mini">删除</el-link>
+                <el-link @click="removeQuestion(scope.row)" :underline="false" type="primary">删除</el-link>
               </el-row>
             </template>
           </el-table-column>
@@ -192,7 +192,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog :visible.sync="previewDialogVisible">
-        <questions-preview></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
@@ -235,6 +235,8 @@ export default {
   },
   data() {
     return {
+      // 试题信息
+      questionInfo: {},
       // 试题类型
       questionType,
       // 难度
@@ -246,29 +248,29 @@ export default {
       // 基础题库数据列表
       formData: {
         // 学科ID
-        subjectID: [],
+        subjectID: null,
         // 关键字
         keyword: '',
         // 试题类型
-        questionType: [],
+        questionType: null,
         // 标签
-        tagList: [],
+        tagList: null,
         // 难度
-        difficulty: [],
+        difficulty: null,
         // 方向
         direction: '',
         // 录入人ID
-        creatorID: [],
+        creatorID: null,
         // 目录ID
-        catalogID: [],
+        catalogID: null,
         // 题目备注
         remarks: '',
         // 企业简称
         shortName: '',
         // 城市
-        province: [],
+        province: null,
         // 区县
-        city: [],
+        city: null,
         // 每页大小
         pagesize: 10,
         // 页数
@@ -310,9 +312,24 @@ export default {
     }
   },
   created() {
+    // 请求省市联动数据
     this.Init()
+    // 请求试题列表数据
+    this.getList()
   },
   methods: {
+    // 获取到市,下辖的区县
+    getProvince(cityName) {
+      this.citys.cityData = citys(cityName)
+    },
+    // 获取列表数据
+    async getList() {
+      const params = this.formData
+      const { data: res } = await choice(params)
+      this.questionList = res.items
+      this.total = res.counts
+    },
+    // 省市联动
     async Init() {
       // 获取省市联动数据
       this.getProvince()
@@ -320,70 +337,33 @@ export default {
       this.getList()
       // 学科的数据列表
       const { data: subjectArr } = await subjectList()
-      // console.log(subjectArr)
       this.subjects = subjectArr
       // 录入人的数据列表
       const { data: userArr } = await userList()
-      // console.log(userArr)
       this.users = userArr
-    },
-    // 搜索
-    search() {
-      this.formData.page = 1
-      this.getList()
-    },
-    // 清除
-    clear() {},
-    // 删除试题操作
-    async removeQuestion(question) {
-      await this.$confirm('此操作永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-      try {
-        await remove(question)
-        this.$message.success('删除完成')
-        this.getList()
-      } catch (error) {
-        this.$message.error('删除失败')
-      }
-    },
-    // 获取到市,下辖的区县
-    getProvince(cityName) {
-      // this.formData.city = ''
-      this.citys.cityData = citys(cityName)
-    },
-    // 获取列表数据
-    async getList() {
-      // const params = this.formData
-      const { data: res } = await choice()
-      console.log(res)
-      this.questionList = res.items
-      this.total = res.counts
-    },
-    // 当前页数
-    handlePager(page) {
-      this.formData.page = page
-      this.getList()
-    },
-    // 每页条数
-    handleSizeChange(size) {
-      this.formData.pagesize = size
-      this.getList()
     },
     // 二级目录 和 标签
     async changeSubject(subjectID) {
       if (subjectID) {
         const { data: directoryrArr } = await catalogList(subjectID)
         this.catalogs = directoryrArr
-        // console.log(this.catalogs)
         const { data: tagArr } = await tagsList(subjectID)
         this.tags = tagArr
-        // console.log(this.tags)
       } else {
         this.catalogs = []
         this.tags = []
+      }
+    },
+    // 搜索
+    search() {
+      this.getList()
+    },
+    // 清除
+    clear() {
+      for (var key in this.formData) {
+        if (key !== 'page' && key !== 'pagesize') {
+          this.formData[key] = null
+        }
       }
     },
     // tab栏点击切换
@@ -395,8 +375,18 @@ export default {
       } else if (e.name === 'refused') {
       }
     },
-    // 上架下架
+    // 预览功能
+    question(e) {
+      this.questionInfo = e
+      this.previewDialogVisible = true
+    },
 
+    // 关闭预览对话框
+    isDialogShow() {
+      this.dialogVisible = false
+    },
+
+    // 上架下架
     async choicePublishState(row) {
       // 请求接口的参数有问题
       const params = {}
@@ -414,6 +404,31 @@ export default {
       } catch (error) {
         this.$message.error('上架失败')
       }
+    },
+    // 删除试题操作
+    async removeQuestion(question) {
+      await this.$confirm('此操作永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      try {
+        await remove(question)
+        this.$message.success('删除完成')
+        this.getList()
+      } catch (error) {
+        this.$message.error('删除失败')
+      }
+    },
+    // 当前页数
+    handlePager(page) {
+      this.formData.page = page
+      this.getList()
+    },
+    // 每页条数
+    handleSizeChange(size) {
+      this.formData.pagesize = size
+      this.getList()
     }
   }
 }
@@ -446,5 +461,8 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.el-link {
+  padding: 5px;
 }
 </style>

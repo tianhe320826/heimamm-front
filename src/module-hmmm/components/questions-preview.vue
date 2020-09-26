@@ -129,7 +129,7 @@ export default {
     // 请求基础题库详情
     async getList () {
       const res = await detail({ id: this.question.id })
-      // console.log(res)
+      console.log(res)
       this.myData = res.data
     }
   }
