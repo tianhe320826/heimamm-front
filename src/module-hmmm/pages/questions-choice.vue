@@ -6,7 +6,7 @@
         <!-- 新增按钮与说明 -->
         <div class="explain">
           <span class="font">说明：目前支持学科和关键字条件筛选</span>
-          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
+          <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push('/questions/new')">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
         <el-form ref="formData" label-width="80px">
@@ -165,7 +165,7 @@
                 <!-- 审核 -->
                 <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-link @click="$router.push(`new/subjectID=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
+                <el-link @click="$router.push(`/questions/new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
                 <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
                 <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
