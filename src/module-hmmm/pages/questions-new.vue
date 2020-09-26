@@ -243,7 +243,8 @@ export default {
   methods: {
     async editQuestions() {
       const { data: resq } = await detailQuestion({ id: this.$route.query.id })
-      this.tagstemp = resq.tags.split(',').join()
+      this.tagstemp = resq.tags
+      resq.tags = resq.tags.split(',')
       resq.options = resq.options.map((item) => {
         item.isRight = item.isRight === 0 && true
         return item
@@ -398,6 +399,7 @@ export default {
       })
       try {
         await updateQuestion(this.reqParmas)
+        this.$router.push('/questions/list')
         this.$message.success('已修改' + status + '!')
       } catch (error) {
         this.$message.error('失败')
