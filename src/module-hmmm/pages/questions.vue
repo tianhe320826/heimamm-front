@@ -338,10 +338,10 @@ export default {
     // 获取列表数据
     async getList() {
       // const params = this.formData
-      const { data: questions } = await list( this.formData )
-      // console.log(questions)
-      this.questionList = questions.items
-      this.total = questions.counts
+      const { data: res } = await list( this.formData )
+      // console.log(res)
+      this.questionList = res.items
+      this.total = res.counts
     },
 
     // 当前页数

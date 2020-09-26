@@ -41,7 +41,7 @@
             <div v-if="question.questionType === '1'">
               <el-radio
                 :value="item.isRight"
-                label="1"
+                :label="1"
               >{{ item.code + '. ' + item.title }}</el-radio>
             </div>
             <!-- 多选 -->
