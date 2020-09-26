@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="新增目录" :visible.sync="addDialogVisible" width="30%" @close="$emit('close', false)">
     <el-form :model="directory" :rules="rules" ref="directoryRef" label-width="80px">
-      <el-form-item :label="$t('table.subjectName')">
+      <el-form-item :label="$t('table.subjectName')" v-if="!subjectdir">
         <el-select v-model="directory.subjectID" placeholder="请选择" clearable>
           <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
@@ -23,6 +23,7 @@ import { add } from '@/api/hmmm/directorys'
 
 export default {
   name: 'DirectoryAddIndex',
+  props: ['subjectdir', 'subjectID'],
   data() {
     return {
       // 控制添加弹层的显示与隐藏
@@ -59,7 +60,7 @@ export default {
       this.$refs.directoryRef.validate(valid => {
         if (!valid) return false
         add({
-          subjectID: this.directory.subjectID,
+          subjectID: this.directory.subjectID ? this.directory.subjectID : this.subjectID,
           directoryName: this.directory.directoryName
         })
           .then(data => {

@@ -71,7 +71,7 @@
         </div>
         <!-- end -->
         <!-- 新增目录弹层 -->
-        <directorys-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addDirectory="addDirectorys" />
+        <directorys-add v-if="isAddDialogShow" :subjectdir="subjectdir" :subjectID="requestDirectory.subjectID" @close="isAddDialogShow = false" @addDirectory="addDirectorys" />
         <!-- 编辑目录弹层 -->
         <directorys-edit v-if="isEditDialogShow" :directoryObj="directoryObj" @close="isEditDialogShow = false" @EditDirectory="EditDirectorys" />
       </el-card>
