@@ -9,59 +9,59 @@
           <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
-        <el-form ref="formData">
+        <el-form ref="formData" label-width="100px">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
-                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择">
+                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in subjects" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="二级目录">
-                <el-select v-model="formData.catalogID" placeholder="请选择">
+                <el-select v-model="formData.catalogID" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in catalogs" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="标签">
-                <el-select v-model="formData.tagList" placeholder="请选择">
+                <el-select v-model="formData.tagList" placeholder="请选择" clearable>
                   <el-option v-for="(item, index) in tags" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="关键字">
-                <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
+                <el-input v-model="formData.keyword" placeholder="根据题干搜索" clearable></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="6">
               <el-form-item label="试题类型">
-                <el-select v-model="formData.questionType" placeholder="请选择">
+                <el-select v-model="formData.questionType" placeholder="请选择" clearable>
                   <el-option v-for="item in questions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="难度">
-                <el-select v-model="formData.difficuly" placeholder="请选择">
+                <el-select v-model="formData.difficuly" placeholder="请选择" clearable>
                   <el-option v-for="item in difficulted" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="方向">
-                <el-select v-model="formData.direction" placeholder="请选择">
+                <el-select v-model="formData.direction" placeholder="请选择" clearable>
                   <el-option v-for="item in directions" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="录入人">
-                <el-select v-model="formData.creatorID" placeholder="请选择">
+                <el-select v-model="formData.creatorID" placeholder="请选择" clearable>
                   <el-option v-for="item in users" :key="item.id" :label="item.username" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -69,22 +69,22 @@
 
             <el-col :span="6">
               <el-form-item label="题目备注">
-                <el-input v-model="formData.remarks"></el-input>
+                <el-input v-model="formData.remarks" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="企业简称">
-                <el-input v-model="formData.shortName"></el-input>
+                <el-input v-model="formData.shortName" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item class="city" label="城市">
                 <!-- 城市 -->
-                <el-select @change="getProvince" v-model="formData.province" placeholder="请选择">
+                <el-select @change="getProvince" v-model="formData.province" placeholder="请选择" clearable>
                   <el-option v-for="item in citys.provinces" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
                 <!-- 区县 -->
-                <el-select v-model="formData.city" placeholder="请选择">
+                <el-select v-model="formData.city" placeholder="请选择" clearable>
                   <el-option v-for="item in citys.cityData" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
@@ -107,7 +107,7 @@
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
         <!-- 数据表格 -->
-        <el-table :data="questionList" style="width: 100%">
+        <el-table :data="questionList">
           <el-table-column label="试题编号" prop="number"></el-table-column>
           <el-table-column label="学科" prop="subject"></el-table-column>
           <el-table-column label="目录" prop="catalog"></el-table-column>
@@ -118,12 +118,12 @@
               <span v-if="scope.row.questionType === '3'">简答</span>
             </template>
           </el-table-column>
-          <el-table-column label="题干">
+          <el-table-column label="题干" min-width="200">
             <template slot-scope="scope">
               <div v-html="scope.row.question"></div>
             </template>
           </el-table-column>
-          <el-table-column label="录入时间">
+          <el-table-column label="录入时间" min-width="200">
             <template slot-scope="scope">
               {{ scope.row.addDate | parseTimeByString }}
             </template>
@@ -159,18 +159,18 @@
           <!-- 操作按钮 -->
           <el-table-column label="操作" fixed="right" width="230px">
             <template slot-scope="scope">
-              <el-row>
+              <el-row type="flex" justify="space-around">
                 <!-- 预览 -->
-                <el-button @click="previewDialogVisible = true" plain type="primary" size="mini">预览</el-button>
+                <el-link :underline="false" type="primary" @click="previewDialogVisible = true" plain size="mini">预览</el-link>
                 <!-- 审核 -->
-                <el-button @click="checkDialogVisible = true" plain type="success" size="mini">审核</el-button>
+                <el-link :underline="false" type="primary" @click="checkDialogVisible = true" plain size="mini">审核</el-link>
                 <!-- 修改 -->
-                <el-button plain type="info" size="mini">修改</el-button>
+                <el-link :underline="false" type="primary" plain size="mini">修改</el-link>
                 <!-- 上架 -->
-                <el-button v-if="scope.row.publishState === 1" plain type="warning" size="mini" @click="choicePublishState(scope.row)">上架</el-button>
-                <el-button v-else-if="scope.row.publishState === 0" plain type="warning" size="mini" @click="choicePublishState(scope.row)">下架</el-button>
+                <el-link :underline="false" type="primary" v-if="scope.row.publishState === 1" plain size="mini" @click="choicePublishState(scope.row)">上架</el-link>
+                <el-link :underline="false" type="primary" v-else-if="scope.row.publishState === 0" plain size="mini" @click="choicePublishState(scope.row)">下架</el-link>
                 <!-- 删除 -->
-                <el-button @click="removeQuestion(scope.row)" plain type="danger" size="mini">删除</el-button>
+                <el-link type="primary" @click="removeQuestion(scope.row)" plain size="mini">删除</el-link>
               </el-row>
             </template>
           </el-table-column>
