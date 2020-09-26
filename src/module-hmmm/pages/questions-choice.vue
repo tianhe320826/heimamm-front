@@ -91,8 +91,8 @@
             </el-col>
             <el-col :span="6">
               <el-form-item>
-                <el-button @keyup.enter="search" @click="search()">搜索</el-button>
-                <el-button @click="clear()" type="primary">清除</el-button>
+                <el-button @click="clear">清除</el-button>
+                <el-button type="primary" @keyup.enter="search" @click="search">搜索</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -100,9 +100,9 @@
         <!-- Tab栏切换 -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
           <el-tab-pane label="全部" name="all"></el-tab-pane>
-          <el-tab-pane label="待审核" name="toAudit"></el-tab-pane>
-          <el-tab-pane label="已审核" name="approved"></el-tab-pane>
-          <el-tab-pane label="已拒绝" name="refused"></el-tab-pane>
+          <el-tab-pane label="待审核" name="0"></el-tab-pane>
+          <el-tab-pane label="已审核" name="1"></el-tab-pane>
+          <el-tab-pane label="已拒绝" name="2"></el-tab-pane>
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
@@ -139,7 +139,7 @@
           <!-- 审核状态 -->
           <el-table-column label="审核状态" prop="chkState">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 0">未审核</span>
+              <span v-if="scope.row.chkState === 0">待审核</span>
               <span v-if="scope.row.chkState === 1">已审核</span>
               <span v-if="scope.row.chkState === 2">已拒绝</span>
             </template>
@@ -320,11 +320,9 @@ export default {
       this.getList()
       // 学科的数据列表
       const { data: subjectArr } = await subjectList()
-      // console.log(subjectArr)
       this.subjects = subjectArr
       // 录入人的数据列表
       const { data: userArr } = await userList()
-      // console.log(userArr)
       this.users = userArr
     },
     // 搜索
@@ -351,15 +349,22 @@ export default {
     },
     // 获取到市,下辖的区县
     getProvince(cityName) {
-      // this.formData.city = ''
       this.citys.cityData = citys(cityName)
     },
     // 获取列表数据
     async getList() {
-      // const params = this.formData
-      const { data: res } = await choice()
-      console.log(res)
-      this.questionList = res.items
+      const { data: res } = await choice({
+        chkState: this.activeName === 'all' ? null : this.activeName - 0
+      })
+      if (this.activeName === 'all') {
+        this.questionList = res.items
+      } else if (this.activeName === '0') {
+        this.questionList = res.items
+      } else if (this.activeName === '1') {
+        this.questionList = res.items
+      } else {
+        this.questionList = res.items
+      }
       this.total = res.counts
     },
     // 当前页数
@@ -377,19 +382,18 @@ export default {
       if (subjectID) {
         const { data: directoryrArr } = await catalogList(subjectID)
         this.catalogs = directoryrArr
-        // console.log(this.catalogs)
         const { data: tagArr } = await tagsList(subjectID)
         this.tags = tagArr
-        // console.log(this.tags)
       } else {
         this.catalogs = []
         this.tags = []
       }
     },
     // tab栏点击切换
-    handleTabsClick() {},
+    handleTabsClick(tab) {
+      this.getList()
+    },
     // 上架下架
-
     async choicePublishState(row) {
       // 请求接口的参数有问题
       const params = {}
