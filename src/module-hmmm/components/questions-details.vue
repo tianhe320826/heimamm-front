@@ -32,6 +32,16 @@
         <span class="pvw">【 题干 】 :</span>
         <div v-html="detailsList.question">{{ detailsList.question }}</div>
         <p><span>选项:</span>( 以下选中的选项为正确答案 )</p>
+        <div v-for="item in detailsList.options" :key="item.id">
+          <!-- 单选 -->
+          <div v-if="detailsList.questionType === '1'">
+            <el-radio :value="item.isRight" :label="1">{{ item.code + '. ' + item.title }}</el-radio>
+          </div>
+          <!-- 多选 -->
+          <div v-if="detailsList.questionType === '2'">
+            <el-checkbox :value="item.isRight ? true : false">{{ item.code + '. ' + item.title }}</el-checkbox>
+          </div>
+        </div>
       </el-col>
     </el-row>
     <!-- 题干 -->
@@ -40,7 +50,10 @@
     <el-row class="pvw" :gutter="20">
       <el-col :span="10">
         <span class="pvw">【 参考答案 】 :</span>
-        <el-button size="mini" type="danger">视频答案预览</el-button>
+        <el-button size="mini" type="danger" @click="ppp = true">视频答案预览</el-button>
+        <div class="video" v-show="ppp">
+          <video controls :src="detailsList.videoURL"></video>
+        </div>
       </el-col>
     </el-row>
     <!-- 参考答案 -->
@@ -67,11 +80,10 @@
 <script>
 import { detail } from '@/api/hmmm/questions.js'
 export default {
-  name: 'kkkk',
   data() {
     return {
-      detailsList: {}
-      // dialogVisible: this.dialogShow
+      detailsList: {},
+      ppp: false // 视频控制键
     }
   },
   computed: {
@@ -110,9 +122,10 @@ export default {
           id: this.dialogID
         })
         this.detailsList = data
-        console.log(data)
       } catch (error) {
-        console.log(error)
+        this.$alert(error, '错误提示', {
+          confirmButtonText: '确定'
+        })
       }
     }
   }
@@ -127,7 +140,7 @@ export default {
     color: #666;
     font-weight: 700;
     margin-right: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
     .el-button {
       margin-left: 15px;
     }
@@ -138,6 +151,15 @@ export default {
   .pvButton {
     float: right;
     margin-top: 20px;
+  }
+  .video {
+    width: 400px;
+    height: 300px;
+    margin-top: 10px;
+    video {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>

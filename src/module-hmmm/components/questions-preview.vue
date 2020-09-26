@@ -52,7 +52,10 @@
     <el-row class="pvw" :gutter="20">
       <el-col :span="10">
         <span class="pvw">[参考答案] : </span>
-        <el-button size="mini" type="danger" :src="question.videURL">视频答案预览</el-button>
+        <el-button size="mini" type="danger" @click="ppp = true">视频答案预览</el-button>
+        <div class="video" v-show="ppp">
+          <video controls :src="question.videoURL"></video>
+        </div>
       </el-col>
     </el-row>
     <!-- 参考答案 -->
@@ -89,7 +92,8 @@ export default {
   name: 'QuestionsPreview',
   data() {
     return {
-      myData: {}
+      myData: {},
+      ppp: false // 视频控制键
     }
   },
   props: {

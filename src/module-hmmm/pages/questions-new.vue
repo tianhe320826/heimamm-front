@@ -51,10 +51,10 @@
         </el-form-item>
         <!-- 富文本编辑器 -->
         <el-form-item label="题干：" label-width="10%" prop="question">
-          <quill-editor v-model="reqParmas.question" style="width: 90%"></quill-editor>
+          <quill-editor v-model="reqParmas.question" :options="editorOption" style="width: 90%"></quill-editor>
         </el-form-item>
         <!-- 选项 -->
-        <el-form-item v-show="isOpeionsShow" label="选项：" label-width="10%">
+        <el-form-item class="questionStem" v-show="isOpeionsShow" label="选项：" label-width="10%">
           <div class="option_item" v-for="(item, index) in questionsOptinos" :key="index">
             <el-radio v-show="isRadioShow" v-model="isRadioed" @change="handelradioChange(index, $event)" :label="String.fromCharCode(item)" border></el-radio>
             <el-checkbox v-show="isCheckBoxShow" v-model="isCheckList" @change="handelcheckChange(index, $event)" :label="String.fromCharCode(item)" border></el-checkbox>
@@ -74,12 +74,12 @@
           <template slot="options"> </template>
         </question-select> -->
         <!-- 视频解析地址 -->
-        <el-form-item label="解析视频地址" label-width="10%">
+        <el-form-item label="解析视频地址" label-width="10%" prop="videoURL">
           <el-input placeholder="请输入解析视频地址" v-model="reqParmas.videoURL" clearable style="width: 30%"> </el-input>
         </el-form-item>
         <!-- 答案解析 -->
         <el-form-item label="答案解析：" label-width="10%" prop="answer">
-          <quill-editor v-model="reqParmas.answer"></quill-editor>
+          <quill-editor :options="editorOption" v-model="reqParmas.answer"></quill-editor>
         </el-form-item>
         <!-- 题目备注 -->
         <el-form-item label="题目备注：" label-width="10%">
@@ -92,8 +92,12 @@
           </el-select>
         </el-form-item>
         <!-- 确认提交 -->
-        <el-form-item label-width="10%">
+        <el-form-item v-if="isSubmit" label-width="10%">
           <el-button type="primary" @click="Submit">确认提交</el-button>
+        </el-form-item>
+        <!-- 确认修改 -->
+        <el-form-item v-else label-width="10%">
+          <el-button type="success" @click="Update">确认修改</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -107,14 +111,34 @@ import { simple as simpleTags } from '@/api/hmmm/tags'
 import { provinces, citys } from '@/api/hmmm/citys.js'
 import { difficulty, questionType, direction } from '@/api/hmmm/constants'
 import { list as companysList } from '@/api/hmmm/companys'
-import { add as addQuestion } from '@/api/hmmm/questions'
+import { add as addQuestion, detail as detailQuestion, update as updateQuestion } from '@/api/hmmm/questions'
+import { validateURL } from '@/utils/validate'
 // 导入选择框静态数据
 export default {
   name: 'QuestionsNew',
   components: {},
   props: {},
   data() {
+    const validateUrl = (rule, value, callback) => {
+      if (!validateURL(this.reqParmas.videoURL)) {
+        callback(new Error('请输入正确的视频地址'))
+      } else {
+        callback()
+      }
+    }
     return {
+      editorOption: {
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'], // 加粗 斜体 下划线 删除线
+            ['blockquote', 'code-block'], // 引用  代码块
+            [{ list: 'ordered' }, { list: 'bullet' }], // 有序、无序列表
+            ['link', 'image'] // 链接、图片
+          ] // 工具菜单栏配置
+        },
+        placeholder: '请输入内容' // 提示
+      },
+      isSubmit: true,
       subjectOptions: [],
       dirOptions: [],
       companyOptions: [],
@@ -133,6 +157,7 @@ export default {
       isBtnShow: true,
       isRadioShow: true,
       isCheckBoxShow: false,
+      tagstemp: '',
       // 请求参数
       reqParmas: {
         // number: 0, // 试题编号 后台生成
@@ -182,16 +207,17 @@ export default {
         isPrefect: false
       },
       rules: {
-        subject: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        directory: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        companys: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        province: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        city: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        direction: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        questionType: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        difficulity: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        question: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        answer: [{ required: true, message: '不能为空', trigger: 'blur' }]
+        subject: [{ required: true, message: '学科不能为空', trigger: 'blur' }],
+        directory: [{ required: true, message: '目录不能为空', trigger: 'blur' }],
+        companys: [{ required: true, message: '企业不能为空', trigger: 'blur' }],
+        province: [{ required: true, message: '省不能为空', trigger: 'blur' }],
+        city: [{ required: true, message: '市不能为空', trigger: 'blur' }],
+        direction: [{ required: true, message: '方向不能为空', trigger: 'blur' }],
+        questionType: [{ required: true, message: '题型不能为空', trigger: 'blur' }],
+        difficulity: [{ required: true, message: '难度不能为空', trigger: 'blur' }],
+        question: [{ required: true, message: '题干不能为空', trigger: 'blur' }],
+        answer: [{ required: true, message: '答案不能为空', trigger: 'blur' }],
+        videoURL: [{ required: true, validator: validateUrl, trigger: 'blur' }]
       }
     }
   },
@@ -209,15 +235,32 @@ export default {
   watch: {},
   created() {
     this.Loading()
+    if (this.$route.query.id) {
+      this.editQuestions()
+    }
   },
   mounted() {},
   methods: {
+    async editQuestions() {
+      const { data: resq } = await detailQuestion({ id: this.$route.query.id })
+      this.tagstemp = resq.tags
+      resq.tags = resq.tags.split(',')
+      resq.options = resq.options.map((item) => {
+        item.isRight = item.isRight === 0 && true
+        return item
+      })
+
+      console.log(resq)
+      this.reqParmas = resq
+      this.isSubmit = false
+    },
     async Loading() {
+      // 把学科id改成
       this.getSubData()
       this.getCityData()
       this.getCompanys()
     },
-    async getSubData() {
+    async getSubData(id) {
       const { data: subRes } = await subSimple()
       this.subjectOptions = subRes
 
@@ -244,9 +287,8 @@ export default {
       this.tagsOptinos = resTags
     },
     handelTagsChange(e) {
-      const q = e.join()
-      this.reqParmas.tags = q
-      // console.log(q)
+      this.reqParmas.tags = e
+      this.tagstemp = e.join()
     },
     async getCompanys() {
       const { data: companys } = await companysList()
@@ -285,10 +327,12 @@ export default {
         this.isBtnDisable = false
         this.isCheckBoxShow = true
         this.isRadioShow = false
-      } else {
+      } else if (e === '单选') {
         this.isBtnShow = true
         this.isOpeionsShow = true
         this.isBtnDisable = true
+        this.isCheckBoxShow = false
+        this.isRadioShow = true
       }
     },
     handleTitle(index, e) {
@@ -331,24 +375,35 @@ export default {
       // code是啥
       this.reqParmas.options[index].code = e
     },
-    Submit() {
+    async Submit() {
+      this.reqParmas.tags = this.tagstemp
       // console.log(this.reqParmas)
-      this.$confirm('即将提交，请检查题目信息 ' + ', 是否继续?', '提示', {
+      await this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning'
       })
-        .then(async () => {
-          await addQuestion(this.reqParmas)
-            .then((response) => {
-              this.$message.success('已成功' + status + '!')
-              this.getList(this.reqParmas)
-            })
-            .catch((response) => {
-              this.$message.error(status + '失败!')
-            })
-        })
-        .catch(() => {
-          this.$message.info('已取消操作!')
-        })
+      try {
+        await addQuestion(this.reqParmas)
+        this.$message.success('已成功' + status + '!')
+      } catch (error) {
+        this.$message.error('失败')
+      }
+    },
+    async Update() {
+      this.reqParmas.tags = this.tagstemp
+      await this.$confirm('确认修改?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      try {
+        await updateQuestion(this.reqParmas)
+        this.$router.push('/questions/list')
+        this.$message.success('已修改' + status + '!')
+      } catch (error) {
+        this.$message.error('失败')
+      }
     }
   }
 }
@@ -375,6 +430,9 @@ export default {
       height: 80px;
       line-height: 80px;
     }
+  }
+  .questionStem {
+    margin-top: 60px;
   }
 }
 </style>
