@@ -10,7 +10,7 @@
         </div>
 
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="80px">
+        <el-form class="from" ref="formData" label-width="80px" size="small">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -373,7 +373,7 @@ export default {
       this.dialogVisible = true
     },
 
-    // 关闭对话框
+    // 关闭预览对话框
     isDialogShow() {
       this.dialogVisible = false
     }
