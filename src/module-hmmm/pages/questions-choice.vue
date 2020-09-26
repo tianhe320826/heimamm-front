@@ -9,7 +9,7 @@
           <el-button type="success" icon="el-icon-edit" size="small" @click="$router.push(`new/${formData.subjectID}`)">新增试题</el-button>
         </div>
         <!-- 表单区域 -->
-        <el-form ref="formData" label-width="80px">
+        <el-form ref="formData">
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
@@ -99,18 +99,25 @@
         </el-form>
         <!-- Tab栏切换 -->
         <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
+<<<<<<< HEAD
           <el-tab-pane label="全部" name="all">全部</el-tab-pane>
           <el-tab-pane label="待审核" name="toCheck">待审核</el-tab-pane>
           <el-tab-pane label="已审核" name="checked">已审核</el-tab-pane>
           <el-tab-pane label="已拒绝" name="refused">已拒绝</el-tab-pane>
+=======
+          <el-tab-pane label="全部" name="all"></el-tab-pane>
+          <el-tab-pane label="待审核" name="toAudit"></el-tab-pane>
+          <el-tab-pane label="已审核" name="approved"></el-tab-pane>
+          <el-tab-pane label="已拒绝" name="refused"></el-tab-pane>
+>>>>>>> 1070adfed4d7a411a550dcf477cee87004cc6529
         </el-tabs>
         <!-- 数据记录 -->
         <el-alert class="alert" type="info" show-icon :title="`数据一共${total}条`"> </el-alert>
         <!-- 数据表格 -->
         <el-table :data="questionList" style="width: 100%">
-          <el-table-column label="试题编号" prop="number" width="210px"> </el-table-column>
-          <el-table-column label="学科" prop="subject"> </el-table-column>
-          <el-table-column label="目录" prop="catalog"> </el-table-column>
+          <el-table-column label="试题编号" prop="number"></el-table-column>
+          <el-table-column label="学科" prop="subject"></el-table-column>
+          <el-table-column label="目录" prop="catalog"></el-table-column>
           <el-table-column label="题型" prop="questionType">
             <template slot-scope="scope">
               <span v-if="scope.row.questionType === '1'">单选</span>
@@ -135,17 +142,19 @@
               <span v-if="scope.row.chkState === 3">困难</span>
             </template>
           </el-table-column>
-          <el-table-column label="录入人" prop="creator"> </el-table-column>
+          <el-table-column label="录入人" prop="creator"></el-table-column>
           <!-- 审核状态 -->
           <el-table-column label="审核状态" prop="chkState">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 1">待发布</span>
-              <span v-if="scope.row.chkState === 2">已发布</span>
-              <span v-if="scope.row.chkState === 3">已下架</span>
+              <span v-if="scope.row.chkState === 0">未审核</span>
+              <span v-if="scope.row.chkState === 1">已审核</span>
+              <span v-if="scope.row.chkState === 2">已拒绝</span>
             </template>
           </el-table-column>
+          <!-- 审核意见 -->
+          <el-table-column label="审核意见" prop="chkRemarks"></el-table-column>
           <!-- 审核人 -->
-          <el-table-column label="审核人" prop="chkUser"> </el-table-column>
+          <el-table-column label="审核人" prop="chkUser"></el-table-column>
           <!-- 发布状态 -->
           <el-table-column label="发布状态" prop="publishState">
             <template slot-scope="scope">
@@ -164,18 +173,15 @@
                 <el-button @click="checkDialogVisible = true" plain type="success" size="mini">审核</el-button>
                 <!-- 修改 -->
                 <el-button plain type="info" size="mini">修改</el-button>
-
                 <!-- 上架 -->
                 <el-button v-if="scope.row.publishState === 1" plain type="warning" size="mini" @click="choicePublishState(scope.row)">上架</el-button>
                 <el-button v-else-if="scope.row.publishState === 0" plain type="warning" size="mini" @click="choicePublishState(scope.row)">下架</el-button>
-
                 <!-- 删除 -->
                 <el-button @click="removeQuestion(scope.row)" plain type="danger" size="mini">删除</el-button>
               </el-row>
             </template>
           </el-table-column>
         </el-table>
-
         <!-- 分页 -->
         <div class="block">
           <el-pagination
