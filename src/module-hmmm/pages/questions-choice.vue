@@ -165,7 +165,7 @@
                 <!-- 审核 -->
                 <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
                 <!-- 修改 -->
-                <el-link @click="$router.push(`new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
+                <el-link @click="$router.push(`new/subjectID=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
                 <!-- 上架 -->
                 <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
                 <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
@@ -192,11 +192,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
-        <questions-preview
-          v-if="previewDialogVisible"
-          :question="questionInfo"
-          @updataButton="isDialogShow"
-        ></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
