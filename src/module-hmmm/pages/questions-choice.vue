@@ -191,7 +191,7 @@
         </div>
       </el-card>
       <!-- 预览对话框 -->
-      <el-dialog :visible.sync="previewDialogVisible">
+      <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
         <questions-preview
           v-if="previewDialogVisible"
           :question="questionInfo"
