@@ -192,11 +192,7 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
-        <questions-preview
-          v-if="previewDialogVisible"
-          :question="questionInfo"
-          @updataButton="isDialogShow"
-        ></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
       <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
