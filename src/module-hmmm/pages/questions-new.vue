@@ -54,7 +54,7 @@
           <quill-editor v-model="reqParmas.question" :options="editorOption" style="width: 90%"></quill-editor>
         </el-form-item>
         <!-- 选项 -->
-        <el-form-item v-show="isOpeionsShow" label="选项：" label-width="10%">
+        <el-form-item class="questionStem" v-show="isOpeionsShow" label="选项：" label-width="10%">
           <div class="option_item" v-for="(item, index) in questionsOptinos" :key="index">
             <el-radio v-show="isRadioShow" v-model="isRadioed" @change="handelradioChange(index, $event)" :label="String.fromCharCode(item)" border></el-radio>
             <el-checkbox v-show="isCheckBoxShow" v-model="isCheckList" @change="handelcheckChange(index, $event)" :label="String.fromCharCode(item)" border></el-checkbox>
@@ -450,6 +450,9 @@ export default {
       height: 80px;
       line-height: 80px;
     }
+  }
+  .questionStem {
+    margin-top: 60px;
   }
 }
 </style>

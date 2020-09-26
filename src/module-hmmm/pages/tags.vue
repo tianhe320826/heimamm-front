@@ -66,7 +66,7 @@
         </div>
         <!-- end -->
         <!-- 新增标签弹层 -->
-        <tags-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addTags="addTags" />
+        <tags-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addTags="addTags" :subjecttag="subjecttag" :subjectID="requestTags.subjectID" />
         <!-- 编辑标签弹层 -->
         <tags-edit v-if="isEditDialogShow" :tagObj="tagObj" @close="isEditDialogShow = false" @EditTag="tagEdit" />
       </el-card>

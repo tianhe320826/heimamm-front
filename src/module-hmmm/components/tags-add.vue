@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="新增标签" :visible.sync="addDialogVisible" width="30%" @close="$emit('close', false)">
     <el-form :model="tags" :rules="rules" ref="tagsRef" label-width="80px">
-      <el-form-item :label="$t('table.subjectName')">
+      <el-form-item :label="$t('table.subjectName')" v-if="!subjecttag">
         <el-select v-model="tags.subjectID" placeholder="请选择" clearable>
           <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
@@ -23,6 +23,7 @@ import { add } from '@/api/hmmm/tags'
 
 export default {
   name: 'TagsAddIndex',
+  props: ['subjecttag', 'subjectID'],
   data() {
     return {
       // 控制添加弹层的显示与隐藏
@@ -58,7 +59,7 @@ export default {
       this.$refs.tagsRef.validate(valid => {
         if (!valid) return false
         add({
-          subjectID: this.tags.subjectID,
+          subjectID: this.tags.subjectID ? this.tags.subjectID : this.subjectID,
           tagName: this.tags.tagName
         })
           .then(data => {
