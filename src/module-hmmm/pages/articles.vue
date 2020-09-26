@@ -6,7 +6,7 @@
         <el-form :inline="true" :model="requestParameters" ref="requestParameters">
           <div class="filter-container">
             <el-form-item :label="$t('table.keyword')">
-              <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.searchKeyword')" class="filter-item" v-model="requestParameters.keyword"></el-input>
+              <el-input @keyup.enter.native="handleFilter" style="width: 200px" :placeholder="$t('table.searchKeyword')" class="filter-item" v-model="requestParameters.keyword"></el-input>
             </el-form-item>
             <el-form-item :label="$t('table.state')">
               <el-select placeholder="请选择" clearable v-model="requestParameters.state">
@@ -100,70 +100,7 @@
     </div>
   </div>
 </template>
-<style rel="stylesheet/scss" lang="scss" scoped>
-.alert {
-  margin: 10px 0px;
-}
-.pagination {
-  margin-top: 10px;
-}
-.el-form {
-  margin-left: 30px;
-}
 
-.disabled .el-button--primary {
-  background-color: #dbdada;
-  border: 1px solid #dbdada;
-  color: #999;
-  cursor: not-allowed;
-}
-.el-link {
-  padding: 5px;
-}
-.el-icon-film {
-  padding: 0 5px;
-  color: #0000ff;
-  font-size: 18px;
-}
-.video {
-  background: rgba(0, 0, 0, 0.3);
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-}
-.close-btn {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translate(-50%);
-  background: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-  text-align: center;
-  line-height: 50px;
-  color: #fff;
-  font-size: 20px;
-}
-.video-box {
-  width: 800px;
-  height: 450px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.video-box video {
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-}
-</style>
 <script>
 import { list, remove, changeState, detail } from '@/api/hmmm/articles'
 import PageTool from './../components/pageTool'
@@ -180,7 +117,6 @@ export default {
   data() {
     var validateUrl = (rule, value, callback) => {
       if (!validateURL(value)) {
-        console.log(validateURL(value))
         callback(new Error('请输入正确的视频地址'))
       } else {
         callback()
@@ -225,13 +161,13 @@ export default {
         this.requestParameters.state = null
       }
       list(params)
-        .then(data => {
+        .then((data) => {
           this.dataList = data.data.items
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -318,12 +254,12 @@ export default {
       })
         .then(() => {
           remove({ id: user })
-            .then(response => {
+            .then((response) => {
               this.$message.success('删除成功')
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败!')
             })
         })
@@ -344,12 +280,12 @@ export default {
         state: row.state ? 0 : 1
       }
       changeState(params)
-        .then(data => {
+        .then((data) => {
           this.$message.success('操作成功')
           row.state = row.state ? 0 : 1
           this.getList()
         })
-        .catch(data => {
+        .catch((data) => {
           this.$message.error('操作失败!')
         })
     }
@@ -361,3 +297,68 @@ export default {
   }
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.alert {
+  margin: 10px 0px;
+}
+.pagination {
+  margin-top: 10px;
+}
+.el-form {
+  margin-left: 30px;
+}
+
+.disabled .el-button--primary {
+  background-color: #dbdada;
+  border: 1px solid #ebebeb;
+  color: #999;
+  cursor: not-allowed;
+}
+.el-link {
+  padding: 5px;
+}
+.el-icon-film {
+  padding: 0 5px;
+  color: #0000ff;
+  font-size: 18px;
+}
+.video {
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+.close-btn {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translate(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  color: #fff;
+  font-size: 20px;
+}
+.video-box {
+  width: 800px;
+  height: 450px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.video-box video {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+</style>

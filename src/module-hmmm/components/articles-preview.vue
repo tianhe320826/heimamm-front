@@ -27,7 +27,7 @@ export default {
     // 弹层显示
     dialogFormV() {
       this.dialogFormVisible = true
-      console.log(this.articleInfo)
+      // console.log(this.articleInfo)
     }
   }
 }

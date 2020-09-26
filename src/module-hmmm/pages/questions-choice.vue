@@ -151,9 +151,7 @@
           <!-- 发布状态 -->
           <el-table-column label="发布状态" prop="publishState" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 1">发布</span>
-              <span v-if="scope.row.chkState === 2">已发布</span>
-              <span v-if="scope.row.chkState === 3">已下架</span>
+              <span>{{ scope.row.publishState ? '已上架' : '已下架' }}</span>
             </template>
           </el-table-column>
           <!-- 操作按钮 -->
@@ -163,12 +161,18 @@
                 <!-- 预览 -->
                 <el-link @click="question(scope.row)" :underline="false" type="primary">预览</el-link>
                 <!-- 审核 -->
-                <el-link @click="checkDialogVisible = true" :underline="false" type="primary">审核</el-link>
+                <el-link @click="checkDialog(scope.row.id)" :disabled="scope.row.chkState === 0 ? false : true" :underline="false" :type="scope.row.chkState === 0 ? 'primary' : 'info'">审核</el-link>
                 <!-- 修改 -->
-                <el-link @click="$router.push(`/questions/new?id=${scope.row.id}`)" type="primary" :underline="false">修改</el-link>
+                <el-link
+                  @click="$router.push(`/questions/new?id=${scope.row.id}`)"
+                  :disabled="scope.row.publishState ? true : false"
+                  :type="scope.row.publishState ? 'info' : 'primary'"
+                  :underline="false"
+                  >修改</el-link
+                >
                 <!-- 上架 -->
-                <el-link v-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row)">上架</el-link>
-                <el-link v-else-if="scope.row.publishState === 0" type="primary" @click="choicePublishState(scope.row)">下架</el-link>
+                <el-link v-if="scope.row.publishState === 0" :underline="false" type="primary" @click="choicePublishState(scope.row, 0)">上架</el-link>
+                <el-link v-else-if="scope.row.publishState === 1" :underline="false" type="primary" @click="choicePublishState(scope.row, 1)">下架</el-link>
                 <!-- 删除 -->
                 <el-link @click="removeQuestion(scope.row)" :underline="false" type="primary">删除</el-link>
               </el-row>
@@ -192,25 +196,10 @@
       </el-card>
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="previewDialogVisible">
-        <questions-preview
-          v-if="previewDialogVisible"
-          :question="questionInfo"
-          @updataButton="isDialogShow"
-        ></questions-preview>
+        <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible = false"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
-      <el-dialog title="试题审核" width="400px" :visible.sync="checkDialogVisible">
-        <el-form>
-          <el-radio-group v-model="checkForm.choiceState">
-            <el-radio :label="true">通过</el-radio>
-            <el-radio :label="false">拒绝</el-radio>
-          </el-radio-group>
-          <br />
-          <el-input type="textarea" placeholder="请输入审核意见" required style="width: 300px; margin: 20px 0 20px 0" v-model="checkForm.textarea"> </el-input>
-          <el-button>取消</el-button>
-          <el-button type="primary">确认</el-button>
-        </el-form>
-      </el-dialog>
+      <questions-check v-on:newDataes="handleLoadDataList" :checkForm="checkForm" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
     </div>
   </div>
 </template>
@@ -232,23 +221,26 @@ import { choice, remove, choicePublish } from '@/api/hmmm/questions'
 import { provinces, citys } from '@/api/hmmm/citys'
 // 导入预览框组件
 import QuestionsPreview from '../components/questions-preview'
-
+import QuestionsCheck from '../components/questions-check'
 export default {
   components: {
-    QuestionsPreview
+    QuestionsPreview,
+    QuestionsCheck
   },
   data() {
     return {
-      // 试题信息
-      questionInfo: {},
+      // 审核表单数据
+      checkForm: {
+        id: null,
+        chkState: 1,
+        chkRemarks: ''
+      },
       // 试题类型
       questionType,
       // 难度
       difficulty,
       // 控制预览对话框的显示与否
       previewDialogVisible: false,
-      // 控制审核对话框显示
-      checkDialogVisible: false,
       // 基础题库数据列表
       formData: {
         // 学科ID
@@ -306,20 +298,12 @@ export default {
       // 试题数据总条数
       total: 0,
       // tab栏默认选择
-      activeName: 'all',
-      // 审核表单数据
-      checkForm: {
-        id: 0,
-        choiceState: false,
-        textarea: ''
-      }
+      activeName: 'all'
     }
   },
   created() {
     // 请求省市联动数据
     this.Init()
-    // 请求试题列表数据
-    this.getList()
   },
   methods: {
     // 省市联动
@@ -401,10 +385,6 @@ export default {
       this.questionInfo = e
       this.previewDialogVisible = true
     },
-    // 关闭预览对话框
-    isDialogShow() {
-      this.previewDialogVisible = false
-    },
     // 清除
     clear() {
       for (var key in this.formData) {
@@ -418,23 +398,37 @@ export default {
     handleTabsClick() {
       this.getList()
     },
-    // 上架下架
-    async choicePublishState(row) {
+    // 审核
+    checkDialog(id) {
+      this.checkForm.id = id
+      this.$refs.quesCheck.dialogFormV()
+    },
+    // 审核完成刷新列表
+    handleLoadDataList() {
+      this.getList()
+    },
+    // 弹框关闭
+    handleCloseModal() {
+      this.$refs.quesCheck.dialogFormH()
+    },
+    async choicePublishState(row, state) {
       // 请求接口的参数有问题
-      const params = {}
-      params.id = row.id
-      params.PublishState = row.PublishState
-      await this.$confirm('您确定下架这道题目码?', '提示', {
+      const params = {
+        id: row.id,
+        publishState: state ? 0 : 1
+      }
+      const pubText = state ? '下架' : '上架'
+      await this.$confirm(`您确定${pubText}这道题目吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
       try {
         await choicePublish(params)
-        this.$message.success('上架成功')
+        this.$message.success(`${pubText}成功`)
         this.getList()
       } catch (error) {
-        this.$message.error('上架失败')
+        this.$message.error(`${pubText}失败`)
       }
     }
   }
