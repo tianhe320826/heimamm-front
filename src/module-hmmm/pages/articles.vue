@@ -106,11 +106,7 @@
 }
 .pagination {
   margin-top: 10px;
-  // text-align: right;
 }
-</style>
-
-<style>
 .el-form {
   margin-left: 30px;
 }
@@ -173,7 +169,7 @@ import { list, remove, changeState, detail } from '@/api/hmmm/articles'
 import PageTool from './../components/pageTool'
 import ArticlesPreview from './../components/articles-preview'
 import ArticlesAdd from './../components/articles-add'
-
+import { validateURL } from '@/utils/validate'
 export default {
   name: 'base-users',
   components: {
@@ -182,6 +178,14 @@ export default {
     ArticlesAdd
   },
   data() {
+    var validateUrl = (rule, value, callback) => {
+      if (!validateURL(value)) {
+        console.log(validateURL(value))
+        callback(new Error('请输入正确的视频地址'))
+      } else {
+        callback()
+      }
+    }
     return {
       articleInfo: {},
       articleId: 0,
@@ -203,7 +207,8 @@ export default {
       ruleInline: {
         // 表单验证
         title: [{ required: true, message: '文章标题不能为空', trigger: 'blur' }],
-        articleBody: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }]
+        articleBody: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }],
+        videoURL: [{ validator: validateUrl, trigger: 'blur' }]
       },
       formData: {
         title: '',
@@ -290,7 +295,6 @@ export default {
     // 表单详情数据加载
     hanldeEditForm(objeditId) {
       this.formData.id = objeditId
-      //   // this.setupData()
       detail({ id: objeditId }).then((data, err) => {
         var datalist = data.data
         if (err) {
@@ -305,9 +309,7 @@ export default {
     // 编辑
     handleUpdate(objeditId) {
       this.query()
-      // var _this = this
       this.text = '编辑'
-      // this.articleId = id
       // console.log(id, this.articleId)
       this.$refs.addSkill.dialogFormV()
       this.hanldeEditForm(objeditId)
@@ -337,12 +339,9 @@ export default {
       this.text = '预览'
       this.$refs.artPreview.dialogFormV()
       this.articleInfo = info
-      // console.log(info)
-      // console.log(this.articleInfo)
     },
     // 启用 禁用
     handleUse(row) {
-      // console.log(id)
       const params = {
         id: row.id,
         state: row.state ? 0 : 1
@@ -359,8 +358,6 @@ export default {
         })
     }
   },
-  // 挂载结束
-  mounted: function() {},
   // 创建完毕状态
   created() {
     // 读取数据
@@ -373,8 +370,6 @@ export default {
         lett.handleFilter(this.requestParameters)
       }
     }
-  },
-  // 组件更新
-  updated: function() {}
+  }
 }
 </script>
