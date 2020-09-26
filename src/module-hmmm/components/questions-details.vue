@@ -33,11 +33,14 @@
         <div v-html="detailsList.question">{{ detailsList.question }}</div>
         <p><span>选项:</span>( 以下选中的选项为正确答案 )</p>
         <div v-for="item in detailsList.options" :key="item.id">
-          <el-radio v-if="detailsList.questionType === 0" :value="item.isRight === 0" :label="item.isRight === '1'"
-            ><span>{{ item.code }}</span
-            >{{ item.title }}</el-radio
-          >
-          <el-checkbox v-else :value="item.isRight === 1" :label="item.isRight === '2'"> {{ item.title }}</el-checkbox>
+          <!-- 单选 -->
+          <div v-if="detailsList.questionType === '1'">
+            <el-radio :value="item.isRight" :label="1">{{ item.code + '. ' + item.title }}</el-radio>
+          </div>
+          <!-- 多选 -->
+          <div v-if="detailsList.questionType === '2'">
+            <el-checkbox :value="item.isRight ? true : false">{{ item.code + '. ' + item.title }}</el-checkbox>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -77,11 +80,10 @@
 <script>
 import { detail } from '@/api/hmmm/questions.js'
 export default {
-  name: 'kkkk',
   data() {
     return {
       detailsList: {},
-      ppp: false // 视屏控制键
+      ppp: false // 视频控制键
     }
   },
   computed: {
@@ -120,9 +122,10 @@ export default {
           id: this.dialogID
         })
         this.detailsList = data
-        console.log(data)
       } catch (error) {
-        console.log(error)
+        this.$alert(error, '错误提示', {
+          confirmButtonText: '确定'
+        })
       }
     }
   }
