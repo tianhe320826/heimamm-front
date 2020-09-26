@@ -33,9 +33,11 @@
             </el-row> -->
           </div>
           <!-- 顶部栏 -->
+
           <!-- 提示 -->
           <el-alert :title="`总共${counts}条数据!`" type="info" :closable="false" show-icon></el-alert>
           <!-- 提示 -->
+
           <!-- table表格 -->
           <div>
             <el-table class="randomsTable" :data="isTableData" style="width: 100%">
@@ -78,8 +80,9 @@
             layout=" prev, pager, next,total, sizes, jumper"
           ></el-pagination>
           <!-- 分页栏 -->
+
           <!-- 弹框 -->
-          <el-dialog title="组件详情" :visible.sync="dialogShow" width="65%">
+          <el-dialog v-if="dialogShow" title="组件详情" :visible.sync="dialogShow" width="65%">
             <!-- 子组件 -->
             <questions-details :dialogID="dialogID"> </questions-details>
             <!-- 子组件 -->
@@ -101,7 +104,6 @@ import questionsDetails from '../components/questions-details.vue'
 export default {
   data() {
     return {
-      // search: '',
       isTableData: [],
       // 查询参数对象
       queryInfo: {
