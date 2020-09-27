@@ -57,24 +57,24 @@ export default {
         .then(({ data }) => {
           this.list = data
         })
-        .catch((e) => {
+        .catch(e => {
           this.$message('获取学科列表失败')
         })
     },
     // 点击确定按钮修改目录
     EditDirectory() {
-      this.$refs.directoryRef.validate((valid) => {
+      this.$refs.directoryRef.validate(valid => {
         if (!valid) return false
         update({
           id: this.editObject.id,
           subjectID: this.editObject.subjectID ? this.editObject.subjectID : this.subjectEdit.subjectID,
           directoryName: this.editObject.directoryName
         })
-          .then((data) => {
+          .then(data => {
             this.$message.success('修改学科目录成功')
             this.$emit('EditDirectory')
           })
-          .catch((e) => {
+          .catch(e => {
             this.$message('修改失败，请稍后重试')
             this.$emit('close')
           })
