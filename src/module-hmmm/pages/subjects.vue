@@ -4,36 +4,26 @@
       <el-card>
         <!-- 搜索 -->
         <el-form :model="requestParameters" ref="requestParameters" :inline="true">
-          <div class="filter-container">
-            <el-form-item label="学科名称">
-              <el-input @keyup.enter.native="handleFilter" v-model="requestParameters.subjectName" clearable></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
-              <el-button type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
-            </el-form-item>
-            <el-button class="fr" round @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
-          </div>
+          <el-form-item label="学科名称">
+            <el-input @keyup.enter.native="handleFilter" v-model="requestParameters.subjectName" clearable></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="default" @click="resetForm">{{ $t('table.clear') }}</el-button>
+            <el-button type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
+          </el-form-item>
+          <el-button class="fr" round @click="handleCreate" icon="el-icon-edit" type="success">{{ $t('table.addSubjects') }}</el-button>
         </el-form>
         <!-- 记录总条数的弹框 -->
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
         <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
-          <el-table-column type="index" width="60" label="序号"> </el-table-column>
-          <el-table-column label="学科名称">
-            <template slot-scope="scope">
-              <span>{{ scope.row.subjectName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="创建者">
-            <template slot-scope="scope">
-              <span>{{ scope.row.username }}</span>
-            </template>
-          </el-table-column>
+          <el-table-column type="index" width="60" label="序号"></el-table-column>
+          <el-table-column label="学科名称" prop="subjectName"></el-table-column>
+          <el-table-column label="创建者" prop="username"></el-table-column>
           <el-table-column label="创建日期">
             <template slot-scope="scope">
-              <span>{{ scope.row.addDate | parseTimeByString() }}</span>
+              <span>{{ scope.row.addDate | parseTimeByString }}</span>
             </template>
           </el-table-column>
           <el-table-column label="前台是否显示">
@@ -41,21 +31,9 @@
               <span>{{ scope.row.isFrontDisplay ? '是' : '否' }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="二级目录">
-            <template slot-scope="scope">
-              <span>{{ scope.row.twoLevelDirectory }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="标签">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tags }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="题目数量">
-            <template slot-scope="scope">
-              <span>{{ scope.row.totals }}</span>
-            </template>
-          </el-table-column>
+          <el-table-column label="二级目录" prop="twoLevelDirectory"></el-table-column>
+          <el-table-column label="标签" prop="tags"></el-table-column>
+          <el-table-column label="题目数量" prop="totals"></el-table-column>
           <!-- 按钮 -->
           <el-table-column label="操作" align="center" min-width="140">
             <template slot-scope="scope">
@@ -79,7 +57,7 @@
         </div>
         <!-- end -->
         <!-- 新增标签弹层  -->
-        <subjects-add ref="addSubjects" @newDataes="handleLoadDataList" @handleCloseModal="handleCloseModal" @updateSubject="updateSubject"></subjects-add>
+        <subjects-add ref="addSubjects" @close="handleCloseModal" @updateSubject="getSubjectsList"></subjects-add>
 
         <!-- 编辑弹框 -->
         <el-dialog title="编辑学科" :visible.sync="dialogEditVisible" width="30%">
@@ -91,7 +69,7 @@
               <el-switch v-model="editForm.isFrontDisplay" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
+          <div slot="footer">
             <el-button @click="dialogEditVisible = false">取消</el-button>
             <el-button type="primary" @click="createEdit">确认</el-button>
           </div>
@@ -106,7 +84,7 @@
   margin: 10px 0px;
 }
 .pagination {
-  margin-top: 10px;
+  margin-top: 20px;
   text-align: right;
 }
 </style>
@@ -159,7 +137,6 @@ export default {
         this.total = data.counts
         this.alertText = `共 ${this.total} 条记录`
         this.listLoading = false
-        // console.log(this.dataList)
       } catch (e) {
         this.$message.e('错了哦，这是一条错误消息')
       }
@@ -167,10 +144,6 @@ export default {
     // 重置
     resetForm() {
       this.requestParameters.subjectName = ''
-      this.getSubjectsList()
-    },
-    // 子组件传来的更新列表
-    updateSubject() {
       this.getSubjectsList()
     },
     // 搜索信息
@@ -190,24 +163,22 @@ export default {
       this.requestParameters.page = val
       this.getSubjectsList()
     },
-    // 新增学科刷新列表
-    handleLoadDataList() {
-      this.getSubjectsList()
-    },
+    // // 新增学科刷新列表
+    // handleLoadDataList() {
+    //   this.getSubjectsList()
+    // },
     // 新增学科
     handleCreate() {
       this.$refs.addSubjects.dialogFormV()
     },
     // 确认编辑按钮
     createEdit() {
-      this.$refs.editFormRef.validate(async valid => {
+      this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return false
         await update(this.editForm)
-        // console.log(data)
         // 关闭弹框
         this.dialogEditVisible = false
         this.$message.success('编辑成功！')
-        // this.editForm = {}
         // 更新学科列表
         this.getSubjectsList()
       })
@@ -249,12 +220,12 @@ export default {
       })
         .then(() => {
           remove({ id: id })
-            .then(response => {
+            .then((response) => {
               this.$message.success('成功删除了该学科')
               this.dataList.splice(id, 1)
               this.getSubjectsList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败!')
             })
         })

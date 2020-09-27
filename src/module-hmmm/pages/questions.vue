@@ -14,7 +14,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="学科">
-                <el-select @change="changeSubject(formData.subjectID)" v-model="formData.subjectID" placeholder="请选择">
+                <el-select @change="changeSubject(formData.subjectID, $event)" v-model="formData.subjectID" placeholder="请选择">
                   <el-option v-for="(item, index) in subjects" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -35,7 +35,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="关键字">
-                <el-input v-model="formData.keyword" placeholder="根据题干搜索"></el-input>
+                <el-input v-model="formData.keyword" placeholder="根据题干搜索" @keyup.enter.native="getList"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -90,8 +90,8 @@
             </el-col>
             <el-col :span="6">
               <el-form-item>
-                <el-button @keyup.enter="search" @click="search()">搜索</el-button>
-                <el-button @click="clear()" type="primary">清除</el-button>
+                <el-button @click="getList">搜索</el-button>
+                <el-button @click="clear" type="primary">清除</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -165,7 +165,7 @@
 
       <!-- 预览对话框 -->
       <el-dialog title="题目预览" :visible.sync="dialogVisible">
-        <questions-preview v-if="dialogVisible" :question="questionInfo" @updataButton="isDialogShow"></questions-preview>
+        <questions-preview v-if="dialogVisible" :question="questionInfo" @updataButton="dialogVisible = false"></questions-preview>
       </el-dialog>
     </div>
   </div>
@@ -270,20 +270,13 @@ export default {
     this.getList()
     // 学科的数据列表
     const { data: subjectArr } = await subjectList()
-    // console.log(subjectArr)
     this.subjects = subjectArr
     // 录入人的数据列表
     const { data: userArr } = await userList()
-    // console.log(userArr)
     this.users = userArr
   },
 
   methods: {
-    // 搜索
-    search() {
-      this.getList()
-    },
-
     // 清除
     clear() {
       for (var key in this.formData) {
@@ -291,6 +284,7 @@ export default {
           this.formData[key] = null
         }
       }
+      this.getList()
     },
 
     // 删除试题操作
@@ -327,15 +321,12 @@ export default {
 
     // 获取到市,下辖的区县
     getProvince(cityName) {
-      // this.formData.city = ''
       this.citys.cityData = citys(cityName)
     },
 
     // 获取列表数据
     async getList() {
-      // const params = this.formData
       const { data: res } = await list(this.formData)
-      // console.log(res)
       this.questionList = res.items
       this.total = res.counts
     },
@@ -353,14 +344,12 @@ export default {
     },
 
     // 二级目录 和 标签
-    async changeSubject(subjectID) {
+    async changeSubject(subjectID, e) {
       if (subjectID) {
-        const { data: directoryrArr } = await catalogList(subjectID)
+        const { data: directoryrArr } = await catalogList({ subjectID: e })
         this.catalogs = directoryrArr
-        // console.log(this.catalogs)
         const { data: tagArr } = await tagsList(subjectID)
         this.tags = tagArr
-        // console.log(this.tags)
       } else {
         this.catalogs = []
         this.tags = []
@@ -371,11 +360,6 @@ export default {
     question(e) {
       this.questionInfo = e
       this.dialogVisible = true
-    },
-
-    // 关闭预览对话框
-    isDialogShow() {
-      this.dialogVisible = false
     }
   }
 }

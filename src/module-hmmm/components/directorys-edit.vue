@@ -1,7 +1,7 @@
 <template>
-  <el-dialog title="修改目录" :visible.sync="EditDialogVisible" width="30%" @close="$emit('close', false)">
+  <el-dialog title="修改目录" :visible.sync="EditDialogVisible" width="30%" @close="$emit('close')">
     <el-form :model="editObject" :rules="rules" ref="directoryRef" label-width="80px">
-      <el-form-item :label="$t('table.subjectName')">
+      <el-form-item :label="$t('table.subjectName')" v-if="!subjectEdit.subjectID">
         <el-select v-model="editObject.subjectID" placeholder="请选择" clearable>
           <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
@@ -11,7 +11,7 @@
       </el-form-item>
     </el-form>
     <span slot="footer">
-      <el-button @click="$emit('close', false)">{{ $t('table.cancel') }}</el-button>
+      <el-button @click="$emit('close')">{{ $t('table.cancel') }}</el-button>
       <el-button type="primary" @click="EditDirectory">{{ $t('table.confirm') }}</el-button>
     </span>
   </el-dialog>
@@ -25,6 +25,10 @@ export default {
   name: 'DirectoryEdit',
   props: {
     directoryObj: {
+      type: Object,
+      required: true
+    },
+    subjectEdit: {
       type: Object,
       required: true
     }
@@ -44,7 +48,9 @@ export default {
     }
   },
   created() {
-    this.getSubjectList()
+    if (this.subjectEdit.subjectID === undefined) {
+      this.getSubjectList()
+    }
   },
   methods: {
     // 获取学科列表
@@ -53,22 +59,26 @@ export default {
         .then(({ data }) => {
           this.list = data
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message('获取学科列表失败')
         })
     },
     // 点击确定按钮修改目录
     EditDirectory() {
-      this.$refs.directoryRef.validate(valid => {
+      this.$refs.directoryRef.validate((valid) => {
         if (!valid) return false
-        update(this.editObject)
-          .then(data => {
-            this.$message.success('修改学科目录成功')
+        update({
+          id: this.editObject.id,
+          subjectID: this.editObject.subjectID ? this.editObject.subjectID : this.subjectEdit.subjectID,
+          directoryName: this.editObject.directoryName
+        })
+          .then((data) => {
             this.$emit('EditDirectory')
+            this.$message.success('修改学科目录成功')
           })
-          .catch(e => {
-            this.$message('修改失败，请稍后重试')
+          .catch((e) => {
             this.$emit('close')
+            this.$message('修改失败，请稍后重试')
           })
       })
     }

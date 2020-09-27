@@ -3,12 +3,12 @@
   <div class="directorys-container">
     <div class="app-container">
       <el-card shadow="never">
-        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="subjecttag">
+        <el-breadcrumb separator-class="el-icon-arrow-right" v-if="requestTags.subjecttag">
           <el-breadcrumb-item>学科管理</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ subjecttag }}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ requestTags.subjecttag }}</el-breadcrumb-item>
           <el-breadcrumb-item>标签管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <div class="line" v-if="subjecttag"></div>
+        <div class="line" v-if="requestTags.subjecttag"></div>
         <!-- 搜索 -->
         <el-form :model="requestTags" :inline="true">
           <el-form-item :label="$t('table.tagName')" class="tagName">
@@ -21,14 +21,14 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="defalut" @click="clearForm">{{ $t('table.clear') }}</el-button>
+            <el-button @click="clearForm">{{ $t('table.clear') }}</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
-            <el-button v-if="subjecttag" type="text" style="margin-left: 10px;" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
-            <el-button size="small" round style="margin-left: 10px;" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
+            <el-button v-if="requestTags.subjecttag" type="text" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
+            <el-button round @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
           </el-form-item>
         </el-form>
         <!-- 数据总量提示 -->
@@ -36,7 +36,7 @@
         <!-- end -->
         <!-- 数据 -->
         <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
-          <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
+          <el-table-column :label="$t('table.id')" width="80" type="index"></el-table-column>
           <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
           <el-table-column :label="$t('table.tagName')" prop="tagName"></el-table-column>
           <el-table-column :label="$t('table.createdBy')" prop="username"></el-table-column>
@@ -51,7 +51,7 @@
             </template>
           </el-table-column>
           <!-- 操作 -->
-          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
+          <el-table-column align="center" :label="$t('table.actions')">
             <template slot-scope="scoped">
               <el-link type="primary" :underline="false" @click="handleChange(scoped.row)">{{ scoped.row.state ? '禁用' : '启用' }}</el-link>
               <el-link :type="scoped.row.state ? 'info' : 'primary'" :underline="false" :disabled="scoped.row.state ? true : false" @click="handleUpdate(scoped.row)">修改</el-link>
@@ -66,9 +66,9 @@
         </div>
         <!-- end -->
         <!-- 新增标签弹层 -->
-        <tags-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addTags="addTags" />
+        <tags-add v-if="isAddDialogShow" @close="isAddDialogShow = false" @addTags="addTags" :subjectAdd="requestTags" />
         <!-- 编辑标签弹层 -->
-        <tags-edit v-if="isEditDialogShow" :tagObj="tagObj" @close="isEditDialogShow = false" @EditTag="tagEdit" />
+        <tags-edit v-if="isEditDialogShow" :tagObj="tagObj" :subjectEdit="requestTags" @close="isEditDialogShow = false" @EditTag="tagEdit" />
       </el-card>
     </div>
   </div>
@@ -102,13 +102,13 @@ export default {
       listLoading: false,
       // 数据总数提示文本
       alertText: '',
-      subjecttag: this.$route.query.name,
       requestTags: {
         page: 1,
         pagesize: 10,
         tagName: null,
         state: null,
         // 添加搜索ID
+        subjecttag: this.$route.query.name,
         subjectID: this.$route.query.id
       }
     }
@@ -131,7 +131,7 @@ export default {
           this.alertText = `共 ${data.counts} 条记录`
           this.listLoading = false
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -172,10 +172,10 @@ export default {
         id: row.id,
         state: row.state ? 0 : 1
       })
-        .then(data => {
+        .then((data) => {
           row.state = row.state ? 0 : 1
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -195,11 +195,11 @@ export default {
       })
         .then(() => {
           remove({ id: row.id })
-            .then(response => {
+            .then((response) => {
               this.$message.success('已成功删除该目录')
               this.getList()
             })
-            .catch(response => {
+            .catch((response) => {
               this.$message.error('删除失败，请稍后重试')
             })
         })

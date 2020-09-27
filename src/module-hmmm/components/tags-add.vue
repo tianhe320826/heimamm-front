@@ -1,7 +1,7 @@
 <template>
-  <el-dialog title="新增标签" :visible.sync="addDialogVisible" width="30%" @close="$emit('close', false)">
+  <el-dialog title="新增标签" :visible.sync="addDialogVisible" width="30%" @close="$emit('close')">
     <el-form :model="tags" :rules="rules" ref="tagsRef" label-width="80px">
-      <el-form-item :label="$t('table.subjectName')">
+      <el-form-item :label="$t('table.subjectName')" v-if="!subjectAdd.subjecttag">
         <el-select v-model="tags.subjectID" placeholder="请选择" clearable>
           <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
@@ -11,7 +11,7 @@
       </el-form-item>
     </el-form>
     <span slot="footer">
-      <el-button @click="$emit('close', false)">{{ $t('table.cancel') }}</el-button>
+      <el-button @click="$emit('close')">{{ $t('table.cancel') }}</el-button>
       <el-button type="primary" @click="addTag">{{ $t('table.confirm') }}</el-button>
     </span>
   </el-dialog>
@@ -23,6 +23,12 @@ import { add } from '@/api/hmmm/tags'
 
 export default {
   name: 'TagsAddIndex',
+  props: {
+    subjectAdd: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       // 控制添加弹层的显示与隐藏
@@ -40,7 +46,9 @@ export default {
     }
   },
   created() {
-    this.getSubjectList()
+    if (this.subjectAdd.subjectID === undefined) {
+      this.getSubjectList()
+    }
   },
   methods: {
     // 获取简单学科列表
@@ -49,25 +57,25 @@ export default {
         .then(({ data }) => {
           this.list = data
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message('获取学科列表失败')
         })
     },
     // 点击确定按钮添加目录
     addTag() {
-      this.$refs.tagsRef.validate(valid => {
+      this.$refs.tagsRef.validate((valid) => {
         if (!valid) return false
         add({
-          subjectID: this.tags.subjectID,
+          subjectID: this.tags.subjectID ? this.tags.subjectID : this.subjectAdd.subjectID,
           tagName: this.tags.tagName
         })
-          .then(data => {
-            this.$message.success('添加学科标签成功')
+          .then((data) => {
             this.$emit('addTags')
+            this.$message.success('添加学科标签成功')
           })
-          .catch(e => {
-            this.$message('添加失败，请稍后重试')
+          .catch((e) => {
             this.$emit('close')
+            this.$message('添加失败，请稍后重试')
           })
       })
     }
