@@ -103,7 +103,7 @@ export default {
     }
   },
   computed: {
-    difficulty: function () {
+    difficulty: function() {
       if (this.myData.difficulty === '1') {
         return '简单'
       } else if (this.myData.difficulty === '2') {
@@ -121,7 +121,6 @@ export default {
     // 请求基础题库详情
     async getList() {
       const res = await detail({ id: this.question.id })
-      console.log(res)
       this.myData = res.data
     }
   }

@@ -245,12 +245,11 @@ export default {
       const { data: resq } = await detailQuestion({ id: this.$route.query.id })
       this.tagstemp = resq.tags
       resq.tags = resq.tags.split(',')
-      resq.options = resq.options.map((item) => {
+      resq.options = resq.options.map(item => {
         item.isRight = item.isRight === 0 && true
         return item
       })
-
-      console.log(resq)
+      // console.log(resq)
       this.reqParmas = resq
       this.isSubmit = false
     },
@@ -313,7 +312,7 @@ export default {
     },
     handelSingle(e) {
       this.reqParmas.questionType = e
-      console.log(e, this.reqParmas)
+      // console.log(e, this.reqParmas)
       // 单选 显示四个选项 按钮禁用
       // 多选
       // 简答  隐藏这个模块
@@ -337,7 +336,7 @@ export default {
     },
     handleDiff(e) {
       this.reqParmas.difficulty = e
-      console.log(this.reqParmas.difficulty)
+      // console.log(this.reqParmas.difficulty)
     },
     handleTitle(index, e) {
       this.reqParmas.options[index].title = e
@@ -381,7 +380,7 @@ export default {
     },
     async Submit() {
       this.reqParmas.tags = this.tagstemp
-      console.log(this.reqParmas)
+      // console.log(this.reqParmas)
       await this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -399,8 +398,7 @@ export default {
       this.reqParmas.tags = this.tagstemp
       this.reqParmas.questionType = this.questionTypeTemp
       this.reqParmas.difficulty = this.diffTemp
-      // this.reqParmas.difficulty =
-      console.log(this.reqParmas)
+      // console.log(this.reqParmas)
       await this.$confirm('确认修改?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
