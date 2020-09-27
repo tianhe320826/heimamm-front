@@ -53,8 +53,8 @@
       <el-col :span="10">
         <span class="pvw">[参考答案] : </span>
         <el-button size="mini" type="danger" @click="ppp = true">视频答案预览</el-button>
-        <div class="video" v-show="ppp">
-          <video controls :src="question.videoURL"></video>
+        <div class="box" v-show="ppp">
+          <video class="video" controls :src="question.videoURL"></video>
         </div>
       </el-col>
     </el-row>
@@ -103,7 +103,7 @@ export default {
     }
   },
   computed: {
-    difficulty: function () {
+    difficulty: function() {
       if (this.myData.difficulty === '1') {
         return '简单'
       } else if (this.myData.difficulty === '2') {
@@ -121,7 +121,6 @@ export default {
     // 请求基础题库详情
     async getList() {
       const res = await detail({ id: this.question.id })
-      console.log(res)
       this.myData = res.data
     }
   }
@@ -146,6 +145,13 @@ export default {
   .pvButton {
     float: right;
     margin-top: 20px;
+  }
+  .box {
+    width: 400px;
+    height: 400px;
+    .video {
+      width: 100%;
+    }
   }
 }
 </style>

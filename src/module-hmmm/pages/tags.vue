@@ -21,14 +21,14 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="defalut" @click="clearForm">{{ $t('table.clear') }}</el-button>
+            <el-button @click="clearForm">{{ $t('table.clear') }}</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
-            <el-button v-if="requestTags.subjecttag" type="text" style="margin-left: 10px" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
-            <el-button size="small" round style="margin-left: 10px" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
+            <el-button v-if="requestTags.subjecttag" type="text" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
+            <el-button round @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addTag') }}</el-button>
           </el-form-item>
         </el-form>
         <!-- 数据总量提示 -->
@@ -36,7 +36,7 @@
         <!-- end -->
         <!-- 数据 -->
         <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
-          <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
+          <el-table-column :label="$t('table.id')" width="80" type="index"></el-table-column>
           <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
           <el-table-column :label="$t('table.tagName')" prop="tagName"></el-table-column>
           <el-table-column :label="$t('table.createdBy')" prop="username"></el-table-column>
@@ -51,7 +51,7 @@
             </template>
           </el-table-column>
           <!-- 操作 -->
-          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
+          <el-table-column align="center" :label="$t('table.actions')">
             <template slot-scope="scoped">
               <el-link type="primary" :underline="false" @click="handleChange(scoped.row)">{{ scoped.row.state ? '禁用' : '启用' }}</el-link>
               <el-link :type="scoped.row.state ? 'info' : 'primary'" :underline="false" :disabled="scoped.row.state ? true : false" @click="handleUpdate(scoped.row)">修改</el-link>

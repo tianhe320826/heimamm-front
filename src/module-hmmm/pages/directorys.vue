@@ -9,7 +9,7 @@
         </el-breadcrumb>
         <div class="line" v-if="requestDirectory.subjectdir"></div>
         <!-- 搜索 -->
-        <el-form :model="requestDirectory" ref="requestDirectoryRef" :inline="true">
+        <el-form :model="requestDirectory" :inline="true">
           <el-form-item :label="$t('table.directoryName')" class="directoryName">
             <el-input v-model="requestDirectory.directoryName" clearable @keyup.enter.native="getList"></el-input>
           </el-form-item>
@@ -20,27 +20,27 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="defalut" @click="clearForm">{{ $t('table.clear') }}</el-button>
+            <el-button @click="clearForm">{{ $t('table.clear') }}</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="getList">{{ $t('table.search') }}</el-button>
           </el-form-item>
           <el-form-item class="fr">
-            <el-button v-if="requestDirectory.subjectdir" type="text" style="margin-left: 10px" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
-            <el-button size="small" round style="margin-left: 10px" @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addDirectory') }}</el-button>
+            <el-button v-if="requestDirectory.subjectdir" type="text" @click="$router.push('/subjects/list')" icon="el-icon-back">返回学科</el-button>
+            <el-button round @click="isAddDialogShow = true" type="success" icon="el-icon-edit">{{ $t('table.addDirectory') }}</el-button>
           </el-form-item>
         </el-form>
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
         <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
-          <el-table-column :label="$t('table.id')" width="80" prop="id"></el-table-column>
+          <el-table-column :label="$t('table.id')" type="index" width="80"></el-table-column>
           <el-table-column :label="$t('table.subjectName')" prop="subjectName"></el-table-column>
           <el-table-column :label="$t('table.directoryName')" prop="directoryName"></el-table-column>
           <el-table-column :label="$t('table.createdBy')" prop="username"></el-table-column>
           <el-table-column :label="$t('table.creatdate')" :sort-method="changesort" sortable>
-            <template slot-scope="scope">
-              <span>{{ scope.row.addDate | parseTimeByString }}</span>
+            <template slot-scope="scoped">
+              <span>{{ scoped.row.addDate | parseTimeByString }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('table.QuestionsNum')" prop="totals"></el-table-column>

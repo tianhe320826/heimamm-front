@@ -4,29 +4,27 @@
       <el-card shadow="never">
         <!-- 搜索 -->
         <el-form :inline="true" :model="requestParameters" ref="requestParameters">
-          <div class="filter-container">
-            <el-form-item :label="$t('table.keyword')">
-              <el-input @keyup.enter.native="handleFilter" style="width: 200px" :placeholder="$t('table.searchKeyword')" class="filter-item" v-model="requestParameters.keyword"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('table.state')">
-              <el-select placeholder="请选择" clearable v-model="requestParameters.state">
-                <el-option label="启用" value="1"></el-option>
-                <el-option label="禁用" value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button class="filter-item" type="default" size="small" @click="resetForm">清空</el-button>
-            </el-form-item>
-            <el-form-item>
-              <el-button class="filter-item" size="small" type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
-            </el-form-item>
-            <el-button class="filter-item fr" size="small" style="margin-left: 10px" @click="handleCreate" type="success" icon="el-icon-edit">{{ $t('table.addSkill') }}</el-button>
-          </div>
+          <el-form-item :label="$t('table.keyword')">
+            <el-input clearable @keyup.enter.native="handleFilter" :placeholder="$t('table.searchKeyword')" v-model="requestParameters.keyword"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('table.state')">
+            <el-select placeholder="请选择" clearable v-model="requestParameters.state">
+              <el-option label="启用" value="1"></el-option>
+              <el-option label="禁用" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="resetForm">清空</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleFilter">{{ $t('table.search') }}</el-button>
+          </el-form-item>
+          <el-button class="fr" @click="handleCreate" type="success" icon="el-icon-edit">{{ $t('table.addSkill') }}</el-button>
         </el-form>
         <el-alert v-if="alertText !== ''" :title="alertText" type="info" class="alert" :closable="false" show-icon></el-alert>
         <!-- end -->
         <!-- 数据 -->
-        <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间" fit highlight-current-row style="width: 100%">
+        <el-table :data="dataList" v-loading="listLoading" element-loading-text="给我一点时间">
           <el-table-column align="center" type="index" :label="$t('table.id')" width="60"> </el-table-column>
           <el-table-column align="center" :label="$t('table.articleTitle')" width="400">
             <template slot-scope="scope">
@@ -34,19 +32,11 @@
               <i v-if="scope.row.videoURL" class="el-icon-film" @click="playVideo(scope.row.videoURL)"></i>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('table.reads')">
-            <template slot-scope="scope">
-              <span>{{ scope.row.visits }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" :label="$t('table.creator')">
-            <template slot-scope="scope">
-              <span>{{ scope.row.username }}</span>
-            </template>
-          </el-table-column>
+          <el-table-column align="center" :label="$t('table.reads')" prop="visits"></el-table-column>
+          <el-table-column align="center" :label="$t('table.creator')" prop="username"></el-table-column>
           <el-table-column align="center" :label="$t('table.inputtime')">
             <template slot-scope="scope">
-              <span>{{ scope.row.createTime | parseTimeByString() }}</span>
+              <span>{{ scope.row.createTime | parseTimeByString }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" :label="$t('table.state')">
@@ -55,9 +45,9 @@
             </template>
           </el-table-column>
           <!-- 按钮 -->
-          <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width" width="170">
+          <el-table-column align="center" :label="$t('table.actions')" width="240">
             <template slot-scope="scope">
-              <el-link :underline="false" type="primary" @click="handlePreview(scope.row)">{{ $t('table.preview') }} </el-link>
+              <el-link :underline="false" type="primary" @click="handlePreview(scope.row)">{{ $t('table.preview') }}</el-link>
               <el-link :underline="false" type="primary" @click="handleUse(scope.row)">{{ $t(scope.row.state ? 'table.unused' : 'table.use') }}</el-link>
               <el-link :underline="false" :type="scope.row.state ? 'info' : 'primary'" :disabled="scope.row.state ? true : false" @click="handleUpdate(scope.row.id)">{{ $t('table.edit') }}</el-link>
               <el-link :underline="false" :type="scope.row.state ? 'info' : 'primary'" :disabled="scope.row.state ? true : false" @click="removeUser(scope.row.id)">{{ $t('table.delete') }}</el-link>
@@ -66,7 +56,7 @@
         </el-table>
         <!-- 视频 -->
         <div class="video" v-if="showVideo">
-          <div class="close-btn" @click="closeVideo">
+          <div class="close-btn" @click="showVideo = false">
             <i class="el-icon-close"></i>
           </div>
           <div class="video-box">
@@ -88,8 +78,8 @@
           v-bind:is="ArticlesAdd"
           :ruleInline="ruleInline"
           :formBase="formData"
-          v-on:handleCloseModal="handleCloseModal"
-          v-on:newDataes="handleLoadDataList"
+          @handleCloseModal="handleCloseModal"
+          @newDataes="getList"
           ref="addSkill"
           :text="text"
           :pageTitle="pageTitle"
@@ -161,13 +151,13 @@ export default {
         this.requestParameters.state = null
       }
       list(params)
-        .then((data) => {
+        .then(data => {
           this.dataList = data.data.items
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch((e) => {
+        .catch(e => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -194,10 +184,6 @@ export default {
       this.requestParameters.page = val
       this.getList(this.requestParameters)
     },
-    // 新增技巧刷新列表
-    handleLoadDataList() {
-      this.getList()
-    },
     // 搜索的项目
     query() {
       this.formData = {
@@ -220,10 +206,6 @@ export default {
     playVideo(url) {
       this.showVideo = true
       this.videoURL = url
-    },
-    // 点击关闭视频
-    closeVideo() {
-      this.showVideo = false
     },
     // 编辑
     // 表单详情数据加载
@@ -254,12 +236,12 @@ export default {
       })
         .then(() => {
           remove({ id: user })
-            .then((response) => {
+            .then(response => {
               this.$message.success('删除成功')
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error('删除失败!')
             })
         })
@@ -280,12 +262,12 @@ export default {
         state: row.state ? 0 : 1
       }
       changeState(params)
-        .then((data) => {
+        .then(data => {
           this.$message.success('操作成功')
           row.state = row.state ? 0 : 1
           this.getList()
         })
-        .catch((data) => {
+        .catch(data => {
           this.$message.error('操作失败!')
         })
     }
@@ -303,7 +285,7 @@ export default {
   margin: 10px 0px;
 }
 .pagination {
-  margin-top: 10px;
+  margin: 20px 0;
 }
 .el-form {
   margin-left: 30px;
@@ -347,6 +329,7 @@ export default {
   line-height: 50px;
   color: #fff;
   font-size: 20px;
+  cursor: pointer;
 }
 .video-box {
   width: 800px;

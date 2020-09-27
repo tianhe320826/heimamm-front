@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增标签" :visible.sync="addDialogVisible" width="30%" @close="$emit('close', false)">
+  <el-dialog title="新增标签" :visible.sync="addDialogVisible" width="30%" @close="$emit('close')">
     <el-form :model="tags" :rules="rules" ref="tagsRef" label-width="80px">
       <el-form-item :label="$t('table.subjectName')" v-if="!subjectAdd.subjecttag">
         <el-select v-model="tags.subjectID" placeholder="请选择" clearable>
@@ -11,7 +11,7 @@
       </el-form-item>
     </el-form>
     <span slot="footer">
-      <el-button @click="$emit('close', false)">{{ $t('table.cancel') }}</el-button>
+      <el-button @click="$emit('close')">{{ $t('table.cancel') }}</el-button>
       <el-button type="primary" @click="addTag">{{ $t('table.confirm') }}</el-button>
     </span>
   </el-dialog>
@@ -46,7 +46,9 @@ export default {
     }
   },
   created() {
-    this.getSubjectList()
+    if (this.subjectAdd.subjectID === undefined) {
+      this.getSubjectList()
+    }
   },
   methods: {
     // 获取简单学科列表
@@ -68,12 +70,12 @@ export default {
           tagName: this.tags.tagName
         })
           .then((data) => {
-            this.$message.success('添加学科标签成功')
             this.$emit('addTags')
+            this.$message.success('添加学科标签成功')
           })
           .catch((e) => {
-            this.$message('添加失败，请稍后重试')
             this.$emit('close')
+            this.$message('添加失败，请稍后重试')
           })
       })
     }

@@ -103,7 +103,7 @@ export default {
     questionsDetails
   },
   // 挂载结束
-  mounted: function () {},
+  mounted: function() {},
   created() {
     this.getQuestionData()
   },
@@ -150,7 +150,7 @@ export default {
             message: '删除成功!111'
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.dir(err)
           this.$message({
             type: 'info',
@@ -162,7 +162,7 @@ export default {
     // 点击删除按钮时处理isTableData数据
     deleteLIstIndex(id) {
       const deleteData = []
-      this.isTableData.filter((item) => {
+      this.isTableData.filter(item => {
         if (item.id !== id) {
           deleteData.push(item)
         }
@@ -179,7 +179,7 @@ export default {
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .container {
   .el-alert {
     margin: 20px 0;
