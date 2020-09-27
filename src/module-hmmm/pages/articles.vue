@@ -161,13 +161,13 @@ export default {
         this.requestParameters.state = null
       }
       list(params)
-        .then((data) => {
+        .then(data => {
           this.dataList = data.data.items
           this.total = data.data.counts
           this.alertText = `共 ${this.total} 条记录`
           this.listLoading = false
         })
-        .catch((e) => {
+        .catch(e => {
           this.$message.e('错了哦，这是一条错误消息')
         })
     },
@@ -254,12 +254,12 @@ export default {
       })
         .then(() => {
           remove({ id: user })
-            .then((response) => {
+            .then(response => {
               this.$message.success('删除成功')
               this.dataList.splice(user, 1)
               this.getList(this.requestParameters)
             })
-            .catch((response) => {
+            .catch(response => {
               this.$message.error('删除失败!')
             })
         })
@@ -280,12 +280,12 @@ export default {
         state: row.state ? 0 : 1
       }
       changeState(params)
-        .then((data) => {
+        .then(data => {
           this.$message.success('操作成功')
           row.state = row.state ? 0 : 1
           this.getList()
         })
-        .catch((data) => {
+        .catch(data => {
           this.$message.error('操作失败!')
         })
     }
