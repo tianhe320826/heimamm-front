@@ -98,7 +98,7 @@
           </el-row>
         </el-form>
         <!-- Tab栏切换 -->
-        <el-tabs v-model="activeName" type="card" @tab-click="handleTabsClick">
+        <el-tabs v-model="activeName" type="card" @tab-click="getList">
           <el-tab-pane label="全部" name="all"></el-tab-pane>
           <el-tab-pane label="待审核" name="0"></el-tab-pane>
           <el-tab-pane label="已审核" name="1"></el-tab-pane>
@@ -199,7 +199,7 @@
         <questions-preview v-if="previewDialogVisible" :question="questionInfo" @updataButton="previewDialogVisible = false"></questions-preview>
       </el-dialog>
       <!-- 审核对话框 -->
-      <questions-check v-on:newDataes="handleLoadDataList" :checkForm="checkForm" ref="quesCheck" v-on:handleCloseModal="handleCloseModal"></questions-check>
+      <questions-check @newDataes="getList" :checkForm="checkForm" ref="quesCheck" @handleCloseModal="handleCloseModal"></questions-check>
     </div>
   </div>
 </template>
@@ -246,7 +246,7 @@ export default {
         // 学科ID
         subjectID: null,
         // 关键字
-        keyword: '',
+        keyword: null,
         // 试题类型
         questionType: null,
         // 标签
@@ -347,15 +347,7 @@ export default {
         pagesize: this.formData.pagesize,
         chkState: this.activeName === 'all' ? null : this.activeName - 0
       })
-      if (this.activeName === 'all') {
-        this.questionList = res.items
-      } else if (this.activeName === '0') {
-        this.questionList = res.items
-      } else if (this.activeName === '1') {
-        this.questionList = res.items
-      } else {
-        this.questionList = res.items
-      }
+      this.questionList = res.items
       this.total = res.counts
     },
     // 当前页数
@@ -394,18 +386,10 @@ export default {
       }
       this.getList()
     },
-    // tab栏点击切换
-    handleTabsClick() {
-      this.getList()
-    },
     // 审核
     checkDialog(id) {
       this.checkForm.id = id
       this.$refs.quesCheck.dialogFormV()
-    },
-    // 审核完成刷新列表
-    handleLoadDataList() {
-      this.getList()
     },
     // 弹框关闭
     handleCloseModal() {
