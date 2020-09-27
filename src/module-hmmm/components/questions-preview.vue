@@ -53,8 +53,8 @@
       <el-col :span="10">
         <span class="pvw">[参考答案] : </span>
         <el-button size="mini" type="danger" @click="ppp = true">视频答案预览</el-button>
-        <div class="video" v-show="ppp">
-          <video controls :src="question.videoURL"></video>
+        <div class="box" v-show="ppp">
+          <video class="video" controls :src="question.videoURL"></video>
         </div>
       </el-col>
     </el-row>
@@ -146,6 +146,13 @@ export default {
   .pvButton {
     float: right;
     margin-top: 20px;
+  }
+  .box {
+    width: 400px;
+    height: 400px;
+    .video {
+      width: 100%;
+    }
   }
 }
 </style>
