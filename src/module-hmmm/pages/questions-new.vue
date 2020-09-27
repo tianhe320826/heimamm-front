@@ -40,13 +40,13 @@
         </el-form-item>
         <!-- 选择按钮 -->
         <el-form-item label="题型：" label-width="10%" prop="questionType">
-          <el-radio-group v-model="reqParmas.questionType" @change="handelSingle">
-            <el-radio v-for="(item, index) in questionType" :key="index" :label="item.label" border></el-radio>
+          <el-radio-group v-model="reqParmas.questionType">
+            <el-radio border v-for="(item, index) in questionType" @change="handelSingle" :key="index" :label="item.value + ''">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="难度：" label-width="10%" prop="difficulity">
           <el-radio-group v-model="reqParmas.difficulty">
-            <el-radio v-for="(item, index) in difficulty" :key="index" :label="item.label" @change="reqParmas.difficulty = $event" border></el-radio>
+            <el-radio border v-for="(item, index) in difficulty" @change="handleDiff" :key="index" :label="item.value + ''">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <!-- 富文本编辑器 -->
@@ -167,8 +167,8 @@ export default {
         province: '', // 城市
         city: '', // 地区
         direction: '', // 方向
-        questionType: '', // 题型
-        difficulty: '', // 难度
+        questionType: '1', // 题型
+        difficulty: '1', // 难度
         question: '', // 题干
         options: [
           {
@@ -313,27 +313,31 @@ export default {
     },
     handelSingle(e) {
       this.reqParmas.questionType = e
-      // console.log(e)
+      console.log(e, this.reqParmas)
       // 单选 显示四个选项 按钮禁用
       // 多选
       // 简答  隐藏这个模块
-      if (e === '简答') {
+      if (e === '1') {
         this.isOpeionsShow = false
         this.isBtnShow = false
-      } else if (e === '多选') {
+      } else if (e === '2') {
         // 框变成方的 按钮
         this.isBtnShow = true
         this.isOpeionsShow = true
         this.isBtnDisable = false
         this.isCheckBoxShow = true
         this.isRadioShow = false
-      } else if (e === '单选') {
+      } else if (e === '3') {
         this.isBtnShow = true
         this.isOpeionsShow = true
         this.isBtnDisable = true
         this.isCheckBoxShow = false
         this.isRadioShow = true
       }
+    },
+    handleDiff(e) {
+      this.reqParmas.difficulty = e
+      console.log(this.reqParmas.difficulty)
     },
     handleTitle(index, e) {
       this.reqParmas.options[index].title = e
@@ -377,7 +381,7 @@ export default {
     },
     async Submit() {
       this.reqParmas.tags = this.tagstemp
-      // console.log(this.reqParmas)
+      console.log(this.reqParmas)
       await this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -386,12 +390,17 @@ export default {
       try {
         await addQuestion(this.reqParmas)
         this.$message.success('已成功' + status + '!')
+        this.$router.push('/questions/list')
       } catch (error) {
         this.$message.error('失败')
       }
     },
     async Update() {
       this.reqParmas.tags = this.tagstemp
+      this.reqParmas.questionType = this.questionTypeTemp
+      this.reqParmas.difficulty = this.diffTemp
+      // this.reqParmas.difficulty =
+      console.log(this.reqParmas)
       await this.$confirm('确认修改?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

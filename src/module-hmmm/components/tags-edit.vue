@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="修改标签" :visible.sync="EditDialogVisible" width="30%" @close="$emit('close', false)">
     <el-form :model="editObject" :rules="rules" ref="tagRef" label-width="100px">
-      <el-form-item :label="$t('table.subjectName')">
+      <el-form-item :label="$t('table.subjectName')" v-if="!subjectEdit.subjecttag">
         <el-select v-model="editObject.subjectID" placeholder="请选择" clearable>
           <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
@@ -25,6 +25,10 @@ export default {
   name: 'TagEditIndex',
   props: {
     tagObj: {
+      type: Object,
+      required: true
+    },
+    subjectEdit: {
       type: Object,
       required: true
     }
@@ -52,20 +56,24 @@ export default {
         .then(({ data }) => {
           this.list = data
         })
-        .catch(e => {
+        .catch((e) => {
           this.$message('获取学科列表失败')
         })
     },
     // 点击确定按钮修改标签
     EditTag() {
-      this.$refs.tagRef.validate(valid => {
+      this.$refs.tagRef.validate((valid) => {
         if (!valid) return false
-        update(this.editObject)
-          .then(data => {
+        update({
+          id: this.editObject.id,
+          subjectID: this.editObject.subjectID ? this.editObject.subjectID : this.subjectEdit.subjectID,
+          tagName: this.editObject.tagName
+        })
+          .then((data) => {
             this.$message.success('修改学科目录成功')
             this.$emit('EditTag')
           })
-          .catch(e => {
+          .catch((e) => {
             this.$message('修改失败，请稍后重试')
             this.$emit('close')
           })

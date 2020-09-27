@@ -130,18 +130,18 @@
           </el-table-column>
           <el-table-column label="难度" prop="difficulty" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 1">简单</span>
-              <span v-if="scope.row.chkState === 2">一般</span>
-              <span v-if="scope.row.chkState === 3">困难</span>
+              <span v-if="scope.row.chkState === '1'">简单</span>
+              <span v-if="scope.row.chkState === '2'">一般</span>
+              <span v-if="scope.row.chkState === '3'">困难</span>
             </template>
           </el-table-column>
           <el-table-column label="录入人" prop="creator" min-width="100"></el-table-column>
           <!-- 审核状态 -->
           <el-table-column label="审核状态" prop="chkState" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.chkState === 0">待审核</span>
-              <span v-if="scope.row.chkState === 1">已审核</span>
-              <span v-if="scope.row.chkState === 2">已拒绝</span>
+              <span v-if="scope.row.chkState === '0'">待审核</span>
+              <span v-if="scope.row.chkState === '1'">已审核</span>
+              <span v-if="scope.row.chkState === '2'">已拒绝</span>
             </template>
           </el-table-column>
           <!-- 审核意见 -->
